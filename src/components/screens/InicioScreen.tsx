@@ -11,6 +11,7 @@ interface InicioScreenProps {
   onOpenAdvisorChat: (initialMsg?: string) => void;
   onOpenReminders: () => void;
   onOpenActionGuide: (topicId: string) => void;
+  onOpenAdmin?: () => void;
 }
 
 export const InicioScreen: React.FC<InicioScreenProps> = ({
@@ -23,6 +24,7 @@ export const InicioScreen: React.FC<InicioScreenProps> = ({
   onOpenAdvisorChat,
   onOpenReminders,
   onOpenActionGuide,
+  onOpenAdmin,
 }) => {
   // Calculations
   const totalBalance = debts.reduce((sum, d) => sum + d.balance, 0);
@@ -56,14 +58,28 @@ export const InicioScreen: React.FC<InicioScreenProps> = ({
           </p>
         </div>
 
-        <button
-          onClick={onOpenReminders}
-          title="Configurar recordatorios"
-          className="relative w-11 h-11 rounded-2xl bg-white border border-[#eaedff] flex items-center justify-center text-[#0037b0] shadow-xs hover:bg-[#f2f5ff] transition-colors cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[24px]">notifications_active</span>
-          <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-amber-500 ring-2 ring-white"></span>
-        </button>
+        <div className="flex items-center gap-2">
+          {onOpenAdmin && (
+            <button
+              onClick={onOpenAdmin}
+              title="Panel de Administrador"
+              className="px-3 py-2 rounded-2xl bg-slate-900 hover:bg-slate-800 active:scale-95 text-white font-label-md text-[12px] font-bold shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[16px] text-amber-400">admin_panel_settings</span>
+              <span className="hidden xs:inline">Administrador</span>
+              <span className="xs:hidden">Admin</span>
+            </button>
+          )}
+
+          <button
+            onClick={onOpenReminders}
+            title="Configurar recordatorios"
+            className="relative w-11 h-11 rounded-2xl bg-white border border-[#eaedff] flex items-center justify-center text-[#0037b0] shadow-xs hover:bg-[#f2f5ff] transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[24px]">notifications_active</span>
+            <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-amber-500 ring-2 ring-white"></span>
+          </button>
+        </div>
       </div>
 
       {/* 2. Cuatro Tarjetas KPI Principales */}
@@ -386,18 +402,23 @@ export const InicioScreen: React.FC<InicioScreenProps> = ({
         </div>
       </div>
 
-      {/* Banner Orientación Virtual Asesor AlDía */}
+      {/* Banner Orientación Virtual Bot IA de Asesoramiento */}
       <div className="rounded-3xl bg-gradient-to-r from-blue-50 to-indigo-50 p-4 border border-blue-200/60 flex items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-11 h-11 rounded-2xl bg-[#0037b0] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-            <span className="material-symbols-outlined text-[22px]">support_agent</span>
+          <div className="w-11 h-11 rounded-2xl bg-[#0037b0] text-cyan-300 flex items-center justify-center flex-shrink-0 shadow-sm">
+            <span className="material-symbols-outlined text-[24px]">smart_toy</span>
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="font-label-md text-[13px] font-bold text-[#131b2e] truncate">
-              Asesor AlDía
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="font-label-md text-[13px] font-bold text-[#131b2e] truncate">
+                Bot IA de Asesoramiento
+              </span>
+              <span className="px-1.5 py-0.2 rounded text-[8px] font-extrabold bg-cyan-100 text-[#0037b0] uppercase">
+                24/7
+              </span>
+            </div>
             <span className="font-body-sm text-[11px] text-[#434655] truncate">
-              Orientación personalizada y respuestas a tus dudas
+              Orientación financiera instantánea para tus dudas
             </span>
           </div>
         </div>
@@ -406,7 +427,7 @@ export const InicioScreen: React.FC<InicioScreenProps> = ({
           onClick={() => onOpenAdvisorChat()}
           className="px-4 py-2 rounded-xl bg-[#0037b0] text-white text-[12px] font-bold hover:bg-[#002f99] active:scale-95 transition-all shadow-xs flex-shrink-0 cursor-pointer"
         >
-          Preguntar
+          Consultar
         </button>
       </div>
     </div>

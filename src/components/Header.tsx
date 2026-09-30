@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
       case 'educacion':
         return 'Educación & Reporte SBS';
       case 'asesor':
-        return 'Asesor AlDía';
+        return 'Bot IA de Asesoramiento';
       default:
         return 'Inicio';
     }

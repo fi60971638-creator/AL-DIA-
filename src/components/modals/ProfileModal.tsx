@@ -7,6 +7,7 @@ interface ProfileModalProps {
   onClose: () => void;
   onRestartWelcome: () => void;
   onLogout: () => void;
+  onOpenAdmin?: () => void;
 }
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({
@@ -14,6 +15,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   onClose,
   onRestartWelcome,
   onLogout,
+  onOpenAdmin,
 }) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
@@ -30,7 +32,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#747686] hover:text-[#131b2e]"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#747686] hover:text-[#131b2e] cursor-pointer"
           >
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
@@ -42,12 +44,21 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
             {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </div>
           <h4 className="font-headline-sm text-[16px] font-bold text-[#131b2e]">
-            {user.name || 'Usuario AlDía'}
+            {user.name || 'Invitado'}
           </h4>
-          <span className="text-[12px] text-[#747686]">{user.email}</span>
-          <span className="text-[11px] text-[#0037b0] font-semibold mt-0.5">
-            📱 {user.phone || '987 654 321'}
-          </span>
+          {user.email && (
+            <span className="text-[12px] text-[#747686]">{user.email}</span>
+          )}
+          {user.phone && (
+            <span className="text-[11px] text-[#0037b0] font-semibold mt-0.5">
+              📱 {user.phone}
+            </span>
+          )}
+          {user.isAdmin && (
+            <span className="mt-1 px-2.5 py-0.5 rounded-full bg-blue-100 text-[#0037b0] text-[10px] font-extrabold uppercase">
+              Super Administrador
+            </span>
+          )}
         </div>
 
         {/* Info Grid */}
@@ -66,8 +77,11 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-[#434655]">Orientadora:</span>
-            <span className="text-[#0037b0] font-bold">Diana (Asesora AlDía)</span>
+            <span className="text-[#434655]">Asistencia:</span>
+            <span className="text-[#0037b0] font-bold flex items-center gap-1">
+              <span className="material-symbols-outlined text-[15px] text-cyan-600">smart_toy</span>
+              Bot IA de Asesoramiento
+            </span>
           </div>
         </div>
 
@@ -78,13 +92,27 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
         {/* Action buttons */}
         <div className="flex flex-col gap-2 pt-1">
+          {onOpenAdmin && (
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onOpenAdmin();
+              }}
+              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-label-md text-[13px] font-bold flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[18px] text-amber-400">admin_panel_settings</span>
+              <span>Acceso Administrador</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={() => {
               onClose();
               onRestartWelcome();
             }}
-            className="w-full py-2.5 rounded-xl bg-[#faf8ff] hover:bg-[#eaedff] text-[#0037b0] font-label-md text-[13px] font-bold flex items-center justify-center gap-2 border border-[#eaedff] transition-all"
+            className="w-full py-2.5 rounded-xl bg-[#faf8ff] hover:bg-[#eaedff] text-[#0037b0] font-label-md text-[13px] font-bold flex items-center justify-center gap-2 border border-[#eaedff] transition-all cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">play_circle</span>
             <span>Ver pantalla de bienvenida</span>
@@ -96,10 +124,10 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               onClose();
               onLogout();
             }}
-            className="w-full py-2 rounded-xl text-rose-600 hover:bg-rose-50 text-[12px] font-semibold flex items-center justify-center gap-1 transition-all"
+            className="w-full py-2 rounded-xl text-rose-600 hover:bg-rose-50 text-[12px] font-semibold flex items-center justify-center gap-1 transition-all cursor-pointer"
           >
             <span className="material-symbols-outlined text-[16px]">logout</span>
-            <span>Cerrar sesión</span>
+            <span>Cerrar sesión / Salir</span>
           </button>
         </div>
       </div>

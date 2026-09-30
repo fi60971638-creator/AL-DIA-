@@ -3,20 +3,19 @@ import { DebtItem, QuotaItem, AdvisoryTopic, NotificationItem, BudgetData, Remin
 export const APP_NAME = 'AlDía';
 export const APP_SLOGAN = 'Entiende tus deudas. Organiza tus pagos. Avanza tranquilo.';
 
-export const APP_LOGO_URL =
-  'https://lh3.googleusercontent.com/aida/AEtjO1VH6JBh4DoiJT6QG365oqtBFHPtnOFhj3Tgnbqj1z7FPScMgLbKmLfqEavGh3Nv0WG5cTrR4VtFQ1f2yIbS7l2-50a3-WfihTvhLaT_ByIhkE_MP2lA5w73EPJvhylYeqg_URQuG_Jyw_UUcvtjoVzMn9yNw430CVczaorIZmnaVacJrHkV_vqhYKMG-SxD9DdtO-gKFCtVip8Hx-TW87sw01PhOtUDT7TwOJnDHUyy91m40Fh2W3Erijs1';
+export const APP_LOGO_URL = '/logo-aldia.svg';
 
 export const PIGGY_BANK_IMG_URL =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuBwmra63VSe-6ZrRops3QlO9eW_3GeNeQ_wzN8gHmn1DUPnKv9-ikOcLCJ4yxPALxpu_yWqKkl5KP34GXzBfA08eUqAx9f0-JUFKHFMwdoHsL3azjOxRHjEFcbjQIrPR0QSUJUJLdUWKpvthyjg526pH2CLx78FUJwfLI6QK6YxgEfjJrzRcBzztKjqUwXvd10u_dMcFbqYm0kZbsvUjVYTFq8nU9ZtY8DdHSzLNYQ-sxTuzCuurKmOeA';
 
 export const ADVISOR_PHOTO_URL =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuDcqth5f6ymCZ0lFUPiYSajPMMjvQNfIn6PMbiIqsj1vpt09qyvCiporXbOYFiXpFKW62DQeGMmH9L-UyOStPwR4KEgL3RHMZ_IsHrw46Bf_Z-veuDT-O44D_fC4gWSYZ5nH4l5WAotPUp9dBoYCeo0rgD6wRwT-QYsQeq7UreCotv4GLjjOog4LNi99xaO3ZivLBgPSiD0A92wPDGcECs52DZ1I6IxYZicusEfC7tLTojdT1oM0uvlLw';
+  'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80';
 
 export const INITIAL_USER: UserProfile = {
-  name: 'Carlos Mendoza',
-  email: 'carlos.mendoza@correo.com',
-  phone: '987 654 321',
-  isLoggedIn: true,
+  name: '',
+  email: '',
+  phone: '',
+  isLoggedIn: false,
 };
 
 export const INITIAL_DEBTS: DebtItem[] = [
@@ -414,3 +413,225 @@ export const ADVISORY_TOPICS: AdvisoryTopic[] = [
 
 export const LEGAL_DISCLAIMER =
   'AlDía es una plataforma digital de educación, registro y orientación financiera personal. AlDía no es una entidad bancaria ni financiera, no otorga préstamos, no realiza cobro de deudas, no intermedia transacciones y no garantiza la aprobación de créditos ni acuerdos contractuales con entidades de crédito. La información y cálculos provistos son meramente orientativos para el usuario.';
+
+export const ADMIN_AUTH_CONFIG = {
+  authorizedEmail: 'zonyukimordonezcaqui@gmail.com',
+  authorizedPassword: '12346',
+  adminName: 'Zony Uki M. Ordoñez',
+  role: 'Super Administrador',
+};
+
+export const INITIAL_ADMIN_USERS = [
+  {
+    id: 'usr-001',
+    name: 'Zony Uki M. Ordoñez',
+    email: 'zonyukimordonezcaqui@gmail.com',
+    phone: '+51 987 654 321',
+    role: 'Administrador' as const,
+    status: 'Activo' as const,
+    joinedDate: '2026-01-15',
+    totalDebts: 4,
+    totalBalance: 4850,
+    delinquentCount: 1,
+  },
+  {
+    id: 'usr-002',
+    name: 'María Elena Flores Ramos',
+    email: 'm.flores@empresa.com.pe',
+    phone: '+51 912 345 678',
+    role: 'Usuario' as const,
+    status: 'Activo' as const,
+    joinedDate: '2026-03-10',
+    totalDebts: 3,
+    totalBalance: 7200,
+    delinquentCount: 0,
+  },
+  {
+    id: 'usr-003',
+    name: 'Jorge Luis Huamán Díaz',
+    email: 'jorge.huaman92@gmail.com',
+    phone: '+51 945 112 233',
+    role: 'Usuario' as const,
+    status: 'Activo' as const,
+    joinedDate: '2026-05-22',
+    totalDebts: 5,
+    totalBalance: 12400,
+    delinquentCount: 2,
+  },
+  {
+    id: 'usr-004',
+    name: 'Lucía Beatriz Morales Soto',
+    email: 'lucia.morales.soto@outlook.com',
+    phone: '+51 977 889 900',
+    role: 'Usuario' as const,
+    status: 'Activo' as const,
+    joinedDate: '2026-07-04',
+    totalDebts: 2,
+    totalBalance: 3100,
+    delinquentCount: 0,
+  },
+  {
+    id: 'usr-005',
+    name: 'Invitado_Lima_04',
+    email: 'invitado.lima04@aldia.pe',
+    phone: 'Sin registrar',
+    role: 'Invitado' as const,
+    status: 'Activo' as const,
+    joinedDate: '2026-09-28',
+    totalDebts: 1,
+    totalBalance: 950,
+    delinquentCount: 0,
+  },
+  {
+    id: 'usr-006',
+    name: 'Renzo Aguilar Torres',
+    email: 'raguilar.peru@gmail.com',
+    phone: '+51 966 332 110',
+    role: 'Usuario' as const,
+    status: 'Suspendido' as const,
+    joinedDate: '2026-02-18',
+    totalDebts: 4,
+    totalBalance: 18900,
+    delinquentCount: 3,
+  },
+];
+
+export const INITIAL_ADMIN_CONTENTS = [
+  {
+    id: 'cnt-01',
+    title: 'Guía SBS: Calificaciones crediticias (Normal, CPP, Deficiente, Dudoso y Pérdida)',
+    category: 'Educación SBS' as const,
+    summary: 'Explicación detallada de cómo la Superintendencia clasifica el riesgo crediticio en Perú.',
+    readTime: '4 min',
+    isPublished: true,
+    author: 'Equipo Legal & Financiero AlDía',
+    views: 1420,
+    lastUpdated: '2026-09-25',
+  },
+  {
+    id: 'cnt-02',
+    title: 'Diferencia entre Reprogramación y Refinanciamiento Bancario',
+    category: 'Negociación' as const,
+    summary: 'Aprende cuándo conviene pedir un cambio de cronograma sin dañar tu historial SBS.',
+    readTime: '5 min',
+    isPublished: true,
+    author: 'Zony Uki M.',
+    views: 2180,
+    lastUpdated: '2026-09-28',
+  },
+  {
+    id: 'cnt-03',
+    title: 'Cómo entender la TCEA y evitar pagar intereses inflados',
+    category: 'Tasas y TEA' as const,
+    summary: 'Desglose de comisiones, seguros de desgravamen y costos ocultos en tarjetas de crédito.',
+    readTime: '3 min',
+    isPublished: true,
+    author: 'Asesoría AlDía',
+    views: 980,
+    lastUpdated: '2026-09-15',
+  },
+  {
+    id: 'cnt-04',
+    title: 'Presupuesto 50/30/20 adaptado a la economía peruana',
+    category: 'Presupuesto' as const,
+    summary: 'Estrategia práctica para destinar ingresos a necesidades básicas, deseos y fondo de emergencia.',
+    readTime: '6 min',
+    isPublished: true,
+    author: 'Bot IA AlDía',
+    views: 3105,
+    lastUpdated: '2026-09-29',
+  },
+  {
+    id: 'cnt-05',
+    title: 'Derechos del consumidor financiero ante llamadas de cobranza (Ley 29571)',
+    category: 'Derechos Financieros' as const,
+    summary: 'Horarios permitidos, métodos prohibidos de intimidación y cómo denunciar excesos ante Indecopi.',
+    readTime: '4 min',
+    isPublished: false,
+    author: 'Equipo Legal AlDía',
+    views: 450,
+    lastUpdated: '2026-09-20',
+  },
+];
+
+export const INITIAL_ADMIN_RECOMMENDATIONS = [
+  {
+    id: 'rec-01',
+    title: 'Estrategia Bola de Nieve (Priorizar deuda menor)',
+    strategyType: 'Bola de Nieve' as const,
+    description: 'Recomendar pagar primero la deuda con menor saldo para ganar motivación y liberar cuotas rápidamente.',
+    targetCondition: 'Usuarios con 3 o más deudas de saldo variable',
+    impactLevel: 'Alto' as const,
+    isActive: true,
+    appliedCount: 520,
+  },
+  {
+    id: 'rec-02',
+    title: 'Estrategia Avalancha (Priorizar mayor TEA/TCEA)',
+    strategyType: 'Avalancha' as const,
+    description: 'Enfocar todo el excedente en la deuda con mayor tasa de interés (e.g. tarjetas comerciales >50% TEA).',
+    targetCondition: 'Deudas comerciales con tasas superiores al 45% TEA',
+    impactLevel: 'Alto' as const,
+    isActive: true,
+    appliedCount: 840,
+  },
+  {
+    id: 'rec-03',
+    title: 'Alerta de Límite de Endeudamiento (>40% del Sueldo)',
+    strategyType: 'Ahorro de Emergencia' as const,
+    description: 'Disparar notificación y recomendaciones cuando el total de cuotas supera el 40% del ingreso mensual.',
+    targetCondition: 'Ratio de cuotas / ingresos >= 40%',
+    impactLevel: 'Alto' as const,
+    isActive: true,
+    appliedCount: 290,
+  },
+  {
+    id: 'rec-04',
+    title: 'Sugerencia de Consolidación de Deudas',
+    strategyType: 'Consolidación' as const,
+    description: 'Proponer solicitar un préstamo unificado a menor tasa en Caja o Banco para cancelar tarjetas caras.',
+    targetCondition: '2 o más deudas en tarjetas con calificación Normal',
+    impactLevel: 'Medio' as const,
+    isActive: true,
+    appliedCount: 410,
+  },
+];
+
+export const INITIAL_ADMIN_REMINDER_RULES = [
+  {
+    id: 'rem-01',
+    name: 'Aviso Preventivo Temprano (7 días antes)',
+    timing: '7 días antes' as const,
+    channel: 'Push In-App' as const,
+    messageTemplate: '⏰ Hola {nombre}, faltan 7 días para el vencimiento de tu cuota de S/ {monto} en {entidad}. ¡Planifícalo con calma!',
+    isActive: true,
+    triggerCount: 1420,
+  },
+  {
+    id: 'rem-02',
+    name: 'Alerta de Vencimiento Cercano (3 días antes)',
+    timing: '3 días antes' as const,
+    channel: 'Push In-App' as const,
+    messageTemplate: '🔔 Atención {nombre}: Tu cuota de {entidad} por S/ {monto} vence este {fecha}. Recuerda tener el saldo listo.',
+    isActive: true,
+    triggerCount: 2180,
+  },
+  {
+    id: 'rem-03',
+    name: 'Urgente: Vence Mañana (1 día antes)',
+    timing: '1 día antes' as const,
+    channel: 'Push In-App' as const,
+    messageTemplate: '⚠️ ¡Último día previo! Tu cuota en {entidad} vence mañana. Evita comisiones y moras pagando a tiempo.',
+    isActive: true,
+    triggerCount: 1890,
+  },
+  {
+    id: 'rem-04',
+    name: 'Notificación de Regularización de Mora',
+    timing: 'Post-vencimiento (Mora)' as const,
+    channel: 'WhatsApp / SMS' as const,
+    messageTemplate: '🚨 {nombre}, tu cuota de {entidad} tiene días de retraso. Consulta con nuestro Bot IA para alternativas de pago.',
+    isActive: true,
+    triggerCount: 340,
+  },
+];

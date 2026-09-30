@@ -4,7 +4,19 @@
  */
 
 import React, { useState } from 'react';
-import { TabType, DebtItem, QuotaItem, NotificationItem, BudgetData, ReminderConfig, UserProfile } from './types';
+import {
+  TabType,
+  DebtItem,
+  QuotaItem,
+  NotificationItem,
+  BudgetData,
+  ReminderConfig,
+  UserProfile,
+  AdminUserRecord,
+  AdminContentArticle,
+  AdminRecommendationRule,
+  AdminReminderRule,
+} from './types';
 import {
   INITIAL_DEBTS,
   INITIAL_QUOTAS,
@@ -12,6 +24,11 @@ import {
   INITIAL_BUDGET,
   INITIAL_REMINDERS,
   INITIAL_USER,
+  INITIAL_ADMIN_USERS,
+  INITIAL_ADMIN_CONTENTS,
+  INITIAL_ADMIN_RECOMMENDATIONS,
+  INITIAL_ADMIN_REMINDER_RULES,
+  ADMIN_AUTH_CONFIG,
 } from './data/initialData';
 import { Header } from './components/Header';
 import { BottomNav } from './components/BottomNav';
@@ -29,15 +46,24 @@ import { RemindersModal } from './components/modals/RemindersModal';
 import { AdvisorChatModal } from './components/modals/AdvisorChatModal';
 import { NotificationsModal } from './components/modals/NotificationsModal';
 import { ProfileModal } from './components/modals/ProfileModal';
+import { AdminLoginModal } from './components/modals/AdminLoginModal';
+import { AdminPanel } from './components/admin/AdminPanel';
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<TabType>('inicio');
+  const [currentTab, setCurrentTab] = useState<TabType>('bienvenida');
   const [user, setUser] = useState<UserProfile>(INITIAL_USER);
   const [debts, setDebts] = useState<DebtItem[]>(INITIAL_DEBTS);
   const [quotas, setQuotas] = useState<QuotaItem[]>(INITIAL_QUOTAS);
   const [budget, setBudget] = useState<BudgetData>(INITIAL_BUDGET);
   const [reminders, setReminders] = useState<ReminderConfig>(INITIAL_REMINDERS);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
+
+  // Admin states
+  const [adminUsers, setAdminUsers] = useState<AdminUserRecord[]>(INITIAL_ADMIN_USERS);
+  const [adminContents, setAdminContents] = useState<AdminContentArticle[]>(INITIAL_ADMIN_CONTENTS);
+  const [adminRecommendations, setAdminRecommendations] = useState<AdminRecommendationRule[]>(INITIAL_ADMIN_RECOMMENDATIONS);
+  const [adminReminderRules, setAdminReminderRules] = useState<AdminReminderRule[]>(INITIAL_ADMIN_REMINDER_RULES);
+  const [isAdminLoginModalOpen, setIsAdminLoginModalOpen] = useState(false);
 
   // Modals state
   const [selectedDebtDetail, setSelectedDebtDetail] = useState<DebtItem | null>(null);
@@ -205,17 +231,70 @@ export default function App() {
     setCurrentTab('educacion');
   };
 
+  const handleAdminLoginSuccess = () => {
+    setUser({
+      name: ADMIN_AUTH_CONFIG.adminName,
+      email: ADMIN_AUTH_CONFIG.authorizedEmail,
+      phone: '+51 987 654 321',
+      isLoggedIn: true,
+      isAdmin: true,
+    });
+    setCurrentTab('admin');
+  };
+
+  const handleBroadcastNotification = (newNotif: NotificationItem) => {
+    setNotifications((prev) => [newNotif, ...prev]);
+  };
+
+  // 1. Welcome Screen
   if (currentTab === 'bienvenida') {
     return (
-      <WelcomeScreen
-        onStart={() => setCurrentTab('inicio')}
-        onRegisterSuccess={(newUser) => {
-          setUser(newUser);
+      <>
+        <WelcomeScreen
+          onStart={() => setCurrentTab('inicio')}
+          onRegisterSuccess={(newUser) => {
+            setUser(newUser);
+          }}
+          onOpenAdminLogin={handleAdminLoginSuccess}
+        />
+        <AdminLoginModal
+          isOpen={isAdminLoginModalOpen}
+          onClose={() => setIsAdminLoginModalOpen(false)}
+          onLoginSuccess={handleAdminLoginSuccess}
+        />
+      </>
+    );
+  }
+
+  // 2. Admin Panel
+  if (currentTab === 'admin') {
+    return (
+      <AdminPanel
+        onBackToApp={() => setCurrentTab('inicio')}
+        onLogoutAdmin={() => {
+          setUser({
+            name: '',
+            email: '',
+            phone: '',
+            isLoggedIn: false,
+            isAdmin: false,
+          });
+          setCurrentTab('bienvenida');
         }}
+        users={adminUsers}
+        setUsers={setAdminUsers}
+        contents={adminContents}
+        setContents={setAdminContents}
+        recommendations={adminRecommendations}
+        setRecommendations={setAdminRecommendations}
+        reminderRules={adminReminderRules}
+        setReminderRules={setAdminReminderRules}
+        onBroadcastNotification={handleBroadcastNotification}
       />
     );
   }
 
+  // 3. User Main App
   return (
     <div className="min-h-screen bg-[#faf8ff] text-[#131b2e] flex flex-col antialiased selection:bg-blue-100">
       {/* Top Header */}
@@ -240,6 +319,7 @@ export default function App() {
             onOpenAdvisorChat={openAdvisorChat}
             onOpenReminders={() => setIsRemindersOpen(true)}
             onOpenActionGuide={handleOpenActionGuide}
+            onOpenAdmin={() => setIsAdminLoginModalOpen(true)}
           />
         )}
 
@@ -385,8 +465,19 @@ export default function App() {
             });
             setCurrentTab('bienvenida');
           }}
+          onOpenAdmin={() => {
+            setIsProfileOpen(false);
+            setIsAdminLoginModalOpen(true);
+          }}
         />
       )}
+
+      {/* Admin Login Modal (Accessible from anywhere) */}
+      <AdminLoginModal
+        isOpen={isAdminLoginModalOpen}
+        onClose={() => setIsAdminLoginModalOpen(false)}
+        onLoginSuccess={handleAdminLoginSuccess}
+      />
     </div>
   );
 }

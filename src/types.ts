@@ -6,13 +6,61 @@ export type TabType =
   | 'calendario'
   | 'capacidad'
   | 'educacion'
-  | 'asesor';
+  | 'asesor'
+  | 'admin';
 
 export interface UserProfile {
   name: string;
   email: string;
   phone: string;
   isLoggedIn: boolean;
+  isAdmin?: boolean;
+}
+
+export interface AdminUserRecord {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: 'Administrador' | 'Usuario' | 'Invitado';
+  status: 'Activo' | 'Pendiente' | 'Suspendido';
+  joinedDate: string;
+  totalDebts: number;
+  totalBalance: number;
+  delinquentCount: number;
+}
+
+export interface AdminContentArticle {
+  id: string;
+  title: string;
+  category: 'Educación SBS' | 'Negociación' | 'Presupuesto' | 'Tasas y TEA' | 'Derechos Financieros';
+  summary: string;
+  readTime: string;
+  isPublished: boolean;
+  author: string;
+  views: number;
+  lastUpdated: string;
+}
+
+export interface AdminRecommendationRule {
+  id: string;
+  title: string;
+  strategyType: 'Bola de Nieve' | 'Avalancha' | 'Reprogramación' | 'Ahorro de Emergencia' | 'Consolidación';
+  description: string;
+  targetCondition: string;
+  impactLevel: 'Alto' | 'Medio' | 'Informativo';
+  isActive: boolean;
+  appliedCount: number;
+}
+
+export interface AdminReminderRule {
+  id: string;
+  name: string;
+  timing: '7 días antes' | '3 días antes' | '1 día antes' | 'Día del vencimiento' | 'Post-vencimiento (Mora)';
+  channel: 'Push In-App' | 'WhatsApp / SMS' | 'Correo Electrónico';
+  messageTemplate: string;
+  isActive: boolean;
+  triggerCount: number;
 }
 
 export interface DebtItem {

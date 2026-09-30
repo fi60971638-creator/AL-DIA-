@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ADVISOR_PHOTO_URL } from '../../data/initialData';
 
 interface Message {
   id: string;
@@ -21,7 +20,7 @@ export const AdvisorChatModal: React.FC<AdvisorChatModalProps> = ({
     {
       id: 'm-initial',
       sender: 'advisor',
-      text: '¡Hola! Soy Diana, tu orientadora en AlDía. Estoy aquí para ayudarte a entender tus deudas, organizar tus opciones de pago y responder tus preguntas sin estrés ni juicios. ¿En qué puedo orientarte hoy?',
+      text: '¡Hola! Soy tu Bot IA de Asesoramiento de AlDía. Estoy aquí para ayudarte a entender tus deudas, organizar tus opciones de pago y resolver tus dudas financieras en cualquier momento. ¿En qué puedo orientarte hoy?',
       time: 'Ahora',
     },
   ]);
@@ -47,7 +46,7 @@ export const AdvisorChatModal: React.FC<AdvisorChatModalProps> = ({
 
       if (lower.includes('vencid') || lower.includes('atras') || lower.includes('mora')) {
         reply =
-          'Si tienes cuotas atrasadas, lo primero es no tener miedo: en Perú no hay cárcel por deudas civiles. El paso más efectivo es contactar a tu banco o caja antes de que la deuda pase a cobranza externa y solicitar una reprogramación o condonación de moras.';
+          'Si tienes cuotas atrasadas, lo primero es mantener la calma: en Perú no hay cárcel por deudas civiles. El paso más efectivo es contactar a tu banco o caja antes de que la deuda pase a cobranza externa y solicitar una reprogramación o condonación de moras.';
       } else if (lower.includes('sbs') || lower.includes('reporte') || lower.includes('infocorp') || lower.includes('calificaci')) {
         reply =
           'El Reporte de Deudas SBS es 100% gratuito y lo puedes consultar en su portal oficial con tu DNI. Las calificaciones van desde Normal (0), CPP (1), Deficiente (2), Dudoso (3) hasta Pérdida (4). Al regularizarte, tu historial se actualizará en los siguientes cierres mensuales.';
@@ -78,7 +77,7 @@ export const AdvisorChatModal: React.FC<AdvisorChatModalProps> = ({
         },
       ]);
       setIsTyping(false);
-    }, 1000);
+    }, 850);
   };
 
   useEffect(() => {
@@ -145,27 +144,26 @@ export const AdvisorChatModal: React.FC<AdvisorChatModalProps> = ({
         {/* Header */}
         <div className="bg-gradient-to-r from-[#0037b0] to-[#002884] text-white p-4 flex items-center justify-between flex-shrink-0 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <img
-                src={ADVISOR_PHOTO_URL}
-                alt="Diana Asesora AlDía"
-                className="w-10 h-10 rounded-full object-cover border-2 border-white/50"
-              />
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-white rounded-full"></span>
+            <div className="relative w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white shadow-inner">
+              <span className="material-symbols-outlined text-[24px] text-cyan-300">smart_toy</span>
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 border-2 border-[#0037b0] rounded-full"></span>
             </div>
             <div className="flex flex-col">
-              <span className="font-headline-sm text-[15px] font-bold leading-tight">
-                Diana • Orientadora AlDía
+              <span className="font-headline-sm text-[15px] font-bold leading-tight flex items-center gap-1.5">
+                Bot IA de Asesoramiento
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-cyan-400 text-[#002884] uppercase tracking-wider">
+                  IA
+                </span>
               </span>
               <span className="text-[11px] text-blue-200 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                En línea para responder tus dudas
+                En línea • Respuestas al instante
               </span>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
@@ -204,7 +202,7 @@ export const AdvisorChatModal: React.FC<AdvisorChatModalProps> = ({
               <span className="w-2 h-2 rounded-full bg-[#0037b0] animate-bounce"></span>
               <span className="w-2 h-2 rounded-full bg-[#0037b0] animate-bounce [animation-delay:0.2s]"></span>
               <span className="w-2 h-2 rounded-full bg-[#0037b0] animate-bounce [animation-delay:0.4s]"></span>
-              <span className="text-[11px] ml-1">Diana está escribiendo...</span>
+              <span className="text-[11px] ml-1">Bot IA está escribiendo...</span>
             </div>
           )}
         </div>
