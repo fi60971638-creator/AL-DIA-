@@ -8,6 +8,8 @@ interface MisDeudasScreenProps {
   onEditDebt: (debt: DebtItem) => void;
   onDeleteDebt: (debtId: string) => void;
   onOpenAdvisorChat: (initialMsg?: string) => void;
+  onLoadDemoData?: () => void;
+  onClearAllDebts?: () => void;
 }
 
 export const MisDeudasScreen: React.FC<MisDeudasScreenProps> = ({
@@ -17,6 +19,8 @@ export const MisDeudasScreen: React.FC<MisDeudasScreenProps> = ({
   onEditDebt,
   onDeleteDebt,
   onOpenAdvisorChat,
+  onLoadDemoData,
+  onClearAllDebts,
 }) => {
   const [filter, setFilter] = useState<'all' | 'al_dia' | 'proximo' | 'atrasado'>('all');
   const [debtToDelete, setDebtToDelete] = useState<DebtItem | null>(null);
@@ -78,70 +82,109 @@ export const MisDeudasScreen: React.FC<MisDeudasScreenProps> = ({
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-        <button
-          onClick={() => setFilter('all')}
-          className={`px-3.5 py-1.5 rounded-full text-[12px] font-bold transition-all cursor-pointer ${
-            filter === 'all'
-              ? 'bg-[#131b2e] text-white shadow-xs'
-              : 'bg-white text-[#434655] border border-[#eaedff] hover:bg-[#faf8ff]'
-          }`}
-        >
-          Todas ({debts.length})
-        </button>
+      {/* Filter Tabs & Data Mode Actions */}
+      <div className="flex items-center justify-between gap-1 overflow-x-auto pb-1 no-scrollbar">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-3.5 py-1.5 rounded-full text-[12px] font-bold transition-all cursor-pointer ${
+              filter === 'all'
+                ? 'bg-[#131b2e] text-white shadow-xs'
+                : 'bg-white text-[#434655] border border-[#eaedff] hover:bg-[#faf8ff]'
+            }`}
+          >
+            Todas ({debts.length})
+          </button>
 
-        <button
-          onClick={() => setFilter('al_dia')}
-          className={`px-3 py-1.5 rounded-full text-[12px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
-            filter === 'al_dia'
-              ? 'bg-emerald-600 text-white shadow-xs'
-              : 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100'
-          }`}
-        >
-          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-          Al día ({debts.filter((d) => d.status === 'al_dia').length})
-        </button>
+          <button
+            onClick={() => setFilter('al_dia')}
+            className={`px-3 py-1.5 rounded-full text-[12px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
+              filter === 'al_dia'
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            Al día ({debts.filter((d) => d.status === 'al_dia').length})
+          </button>
 
-        <button
-          onClick={() => setFilter('proximo')}
-          className={`px-3 py-1.5 rounded-full text-[12px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
-            filter === 'proximo'
-              ? 'bg-amber-500 text-white shadow-xs'
-              : 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'
-          }`}
-        >
-          <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-          Próximo ({debts.filter((d) => d.status === 'proximo').length})
-        </button>
+          <button
+            onClick={() => setFilter('proximo')}
+            className={`px-3 py-1.5 rounded-full text-[12px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
+              filter === 'proximo'
+                ? 'bg-amber-500 text-white shadow-xs'
+                : 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+            Próximo ({debts.filter((d) => d.status === 'proximo').length})
+          </button>
 
-        <button
-          onClick={() => setFilter('atrasado')}
-          className={`px-3 py-1.5 rounded-full text-[12px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
-            filter === 'atrasado'
-              ? 'bg-rose-600 text-white shadow-xs'
-              : 'bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100'
-          }`}
-        >
-          <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-          Atrasado ({debts.filter((d) => d.status === 'atrasado').length})
-        </button>
+          <button
+            onClick={() => setFilter('atrasado')}
+            className={`px-3 py-1.5 rounded-full text-[12px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
+              filter === 'atrasado'
+                ? 'bg-rose-600 text-white shadow-xs'
+                : 'bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+            Atrasado ({debts.filter((d) => d.status === 'atrasado').length})
+          </button>
+        </div>
+
+        {debts.length > 0 && onClearAllDebts && (
+          <button
+            type="button"
+            onClick={onClearAllDebts}
+            title="Limpiar todas las deudas para empezar de cero"
+            className="px-2.5 py-1 text-[11px] font-bold text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[15px]">clear_all</span>
+            <span>Limpiar</span>
+          </button>
+        )}
       </div>
 
       {/* Lista de Tarjetas de Deudas */}
       <div className="flex flex-col gap-3">
         {filteredDebts.length === 0 ? (
-          <div className="p-8 rounded-3xl bg-white border border-[#eaedff] text-center flex flex-col items-center gap-3">
-            <span className="material-symbols-outlined text-[48px] text-[#747686]">inbox</span>
-            <p className="font-label-md text-[14px] font-semibold text-[#131b2e]">
-              No hay deudas en esta categoría
-            </p>
-            <button
-              onClick={onOpenAddDebt}
-              className="text-[13px] font-bold text-[#0037b0] hover:underline cursor-pointer"
-            >
-              + Registrar una nueva deuda
-            </button>
+          <div className="p-8 rounded-3xl bg-white border border-[#eaedff] text-center flex flex-col items-center gap-4 shadow-xs">
+            <div className="w-16 h-16 rounded-full bg-blue-50 text-[#0037b0] flex items-center justify-center">
+              <span className="material-symbols-outlined text-[36px]">account_balance_wallet</span>
+            </div>
+            <div className="flex flex-col gap-1 max-w-xs">
+              <h3 className="font-headline-sm text-[16px] font-bold text-[#131b2e]">
+                {debts.length === 0 ? 'Sin deudas registradas' : 'No hay deudas en esta categoría'}
+              </h3>
+              <p className="font-body-sm text-[12px] text-[#434655]">
+                {debts.length === 0
+                  ? 'Tu cuenta está limpia. Puedes registrar tus compromisos reales o cargar datos de prueba.'
+                  : 'Prueba cambiando de filtro arriba.'}
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2 w-full max-w-xs">
+              <button
+                type="button"
+                onClick={onOpenAddDebt}
+                className="flex-1 py-2.5 px-4 rounded-xl bg-[#0037b0] text-white font-label-md text-[13px] font-bold hover:bg-[#002f99] shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <span className="material-symbols-outlined text-[18px]">add</span>
+                <span>Registrar deuda</span>
+              </button>
+
+              {onLoadDemoData && (
+                <button
+                  type="button"
+                  onClick={onLoadDemoData}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-label-md text-[12px] font-bold border border-slate-200 cursor-pointer flex items-center justify-center gap-1"
+                >
+                  <span className="material-symbols-outlined text-[16px] text-[#0037b0]">sync</span>
+                  <span>Cargar demo</span>
+                </button>
+              )}
+            </div>
           </div>
         ) : (
           filteredDebts.map((debt) => {

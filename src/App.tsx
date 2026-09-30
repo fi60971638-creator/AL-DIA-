@@ -83,7 +83,50 @@ export default function App() {
   const generateId = (prefix: string) =>
     `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
 
-  // Handlers
+  // Handlers for Data modes
+  const handleLoadDemoData = () => {
+    setDebts(INITIAL_DEBTS);
+    setQuotas(INITIAL_QUOTAS);
+    setBudget(INITIAL_BUDGET);
+    setNotifications(INITIAL_NOTIFICATIONS);
+  };
+
+  const handleClearAllData = () => {
+    setDebts([]);
+    setQuotas([]);
+    setBudget({
+      salary: 0,
+      extraIncome: 0,
+      housing: 0,
+      food: 0,
+      transport: 0,
+      services: 0,
+      education: 0,
+      otherExpenses: 0,
+      simulatedQuota: 0,
+    });
+    setNotifications([
+      {
+        id: 'notif-clean-welcome',
+        title: 'Cuenta limpia activada',
+        desc: 'Tu tablero está listo en S/ 0 para que comiences a registrar tus deudas.',
+        time: 'Justo ahora',
+        read: false,
+        type: 'info',
+      },
+    ]);
+  };
+
+  const handleUserRegistration = (newUser: UserProfile, loadDemoData: boolean = true) => {
+    setUser(newUser);
+    if (loadDemoData) {
+      handleLoadDemoData();
+    } else {
+      handleClearAllData();
+    }
+  };
+
+  // Handlers for payments and debts
   const handlePaymentSuccess = (quotaId: string, operationNumber: string) => {
     setQuotas((prev) =>
       prev.map((q) =>
@@ -252,9 +295,7 @@ export default function App() {
       <>
         <WelcomeScreen
           onStart={() => setCurrentTab('inicio')}
-          onRegisterSuccess={(newUser) => {
-            setUser(newUser);
-          }}
+          onRegisterSuccess={handleUserRegistration}
           onOpenAdminLogin={handleAdminLoginSuccess}
         />
         <AdminLoginModal
@@ -331,6 +372,8 @@ export default function App() {
             onEditDebt={(debt) => setEditingDebt(debt)}
             onDeleteDebt={handleDeleteDebt}
             onOpenAdvisorChat={openAdvisorChat}
+            onLoadDemoData={handleLoadDemoData}
+            onClearAllDebts={handleClearAllData}
           />
         )}
 
@@ -469,6 +512,8 @@ export default function App() {
             setIsProfileOpen(false);
             setIsAdminLoginModalOpen(true);
           }}
+          onLoadDemoData={handleLoadDemoData}
+          onClearAllData={handleClearAllData}
         />
       )}
 

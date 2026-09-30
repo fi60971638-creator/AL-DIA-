@@ -8,6 +8,8 @@ interface ProfileModalProps {
   onRestartWelcome: () => void;
   onLogout: () => void;
   onOpenAdmin?: () => void;
+  onLoadDemoData?: () => void;
+  onClearAllData?: () => void;
 }
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({
@@ -16,6 +18,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   onRestartWelcome,
   onLogout,
   onOpenAdmin,
+  onLoadDemoData,
+  onClearAllData,
 }) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
@@ -82,6 +86,40 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               <span className="material-symbols-outlined text-[15px] text-cyan-600">smart_toy</span>
               Bot IA de Asesoramiento
             </span>
+          </div>
+        </div>
+
+        {/* Data Options Box */}
+        <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
+          <span className="text-[11px] font-bold text-slate-700">Modo de Información:</span>
+          <div className="flex gap-2">
+            {onLoadDemoData && (
+              <button
+                type="button"
+                onClick={() => {
+                  onLoadDemoData();
+                  onClose();
+                }}
+                className="flex-1 py-1.5 px-2.5 rounded-xl bg-blue-50 text-[#0037b0] hover:bg-blue-100 font-bold text-[11px] border border-blue-200 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[15px]">sync</span>
+                <span>Cargar demo</span>
+              </button>
+            )}
+
+            {onClearAllData && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClearAllData();
+                  onClose();
+                }}
+                className="flex-1 py-1.5 px-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-rose-600 hover:bg-rose-50 font-bold text-[11px] border border-slate-200 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[15px]">clear_all</span>
+                <span>Limpiar todo</span>
+              </button>
+            )}
           </div>
         </div>
 

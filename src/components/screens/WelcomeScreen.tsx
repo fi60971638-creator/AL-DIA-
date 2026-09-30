@@ -4,7 +4,7 @@ import { UserProfile } from '../../types';
 
 interface WelcomeScreenProps {
   onStart: () => void;
-  onRegisterSuccess: (user: UserProfile) => void;
+  onRegisterSuccess: (user: UserProfile, loadDemoData?: boolean) => void;
   onOpenAdminLogin: () => void;
 }
 
@@ -23,7 +23,12 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [registerDataMode, setRegisterDataMode] = useState<'clean' | 'demo'>('clean');
+
+  // Guest states
   const [guestName, setGuestName] = useState('');
+  const [guestDataMode, setGuestDataMode] = useState<'demo' | 'clean'>('demo'); // Default with demo data as requested
+
   const [errorMsg, setErrorMsg] = useState('');
 
   // Admin login states
@@ -60,7 +65,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       isLoggedIn: true,
     };
 
-    onRegisterSuccess(newUser);
+    onRegisterSuccess(newUser, registerDataMode === 'demo');
     setViewState('registered_success');
   };
 
@@ -76,7 +81,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       phone: '',
       isLoggedIn: true,
     };
-    onRegisterSuccess(user);
+    // Standard login keeps existing/demo data
+    onRegisterSuccess(user, true);
     onStart();
   };
 
@@ -89,7 +95,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       phone: '',
       isLoggedIn: true,
     };
-    onRegisterSuccess(guestUser);
+    onRegisterSuccess(guestUser, guestDataMode === 'demo');
     onStart();
   };
 
@@ -118,7 +124,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           isLoggedIn: true,
           isAdmin: true,
         };
-        onRegisterSuccess(adminUser);
+        onRegisterSuccess(adminUser, true);
         onOpenAdminLogin();
       } else {
         setIsAdminLoading(false);
@@ -266,26 +272,26 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           </div>
         )}
 
-        {/* 2. Guest Name Prompt Form */}
+        {/* 2. Guest Prompt Form (With options for preloaded demo data or clean start) */}
         {viewState === 'guest_prompt' && (
           <div className="bg-white rounded-3xl p-6 shadow-xl border border-[#eaedff] animate-in fade-in zoom-in-95 duration-200">
             <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto mb-3">
               <span className="material-symbols-outlined text-[32px]">badge</span>
             </div>
 
-            <div className="text-center pb-4">
+            <div className="text-center pb-3">
               <h2 className="font-headline-md text-[22px] font-bold text-[#131b2e]">
                 Ingresar como Invitado
               </h2>
               <p className="font-body-sm text-[13px] text-[#434655] mt-1">
-                Escribe tu nombre para personalizar tu experiencia en AlDía.
+                Personaliza tu ingreso rápido para explorar AlDía.
               </p>
             </div>
 
             <form onSubmit={handleGuestSubmit} className="flex flex-col gap-4">
               <div>
                 <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1.5">
-                  ¿Cómo te gustaría que te llamemos?
+                  ¿Cómo te gustaría que te llamemos? (Opcional)
                 </label>
                 <div className="relative">
                   <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#747686] text-[20px]">
@@ -293,7 +299,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                   </span>
                   <input
                     type="text"
-                    placeholder="Escribe tu nombre o apodo"
+                    placeholder="Escribe tu nombre o apodo (ej. Invitado)"
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
                     autoFocus
@@ -302,39 +308,82 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                 </div>
               </div>
 
+              {/* Data mode selection for Guest */}
+              <div>
+                <label className="font-label-sm text-[12px] font-bold text-[#131b2e] block mb-2">
+                  Selecciona el modo de inicio:
+                </label>
+                <div className="flex flex-col gap-2">
+                  <label
+                    onClick={() => setGuestDataMode('demo')}
+                    className={`flex items-start gap-3 p-3 rounded-2xl border transition-all cursor-pointer ${
+                      guestDataMode === 'demo'
+                        ? 'bg-blue-50/70 border-[#0037b0] ring-1 ring-[#0037b0]'
+                        : 'bg-white border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="guestMode"
+                      checked={guestDataMode === 'demo'}
+                      onChange={() => setGuestDataMode('demo')}
+                      className="mt-0.5 text-[#0037b0]"
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-bold text-[13px] text-[#131b2e] flex items-center gap-1">
+                        <span>Con información y montos de ejemplo</span>
+                        <span className="text-[10px] px-1.5 py-0.5 bg-emerald-100 text-emerald-800 font-extrabold rounded">
+                          Recomendado
+                        </span>
+                      </span>
+                      <span className="text-[11px] text-[#5b5e70] mt-0.5">
+                        Incluye deudas simuladas (Banco, Caja, Tarjeta) y montos para ver la app en acción.
+                      </span>
+                    </div>
+                  </label>
+
+                  <label
+                    onClick={() => setGuestDataMode('clean')}
+                    className={`flex items-start gap-3 p-3 rounded-2xl border transition-all cursor-pointer ${
+                      guestDataMode === 'clean'
+                        ? 'bg-blue-50/70 border-[#0037b0] ring-1 ring-[#0037b0]'
+                        : 'bg-white border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="guestMode"
+                      checked={guestDataMode === 'clean'}
+                      onChange={() => setGuestDataMode('clean')}
+                      className="mt-0.5 text-[#0037b0]"
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-bold text-[13px] text-[#131b2e]">
+                        En blanco / Limpio (Sin información ni montos)
+                      </span>
+                      <span className="text-[11px] text-[#5b5e70] mt-0.5">
+                        Inicia con tablero en S/ 0 para que agregues tus propias deudas manualmente.
+                      </span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-2xl bg-[#0037b0] text-white font-label-lg text-[15px] font-bold shadow-md hover:bg-[#002f99] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-2xl bg-[#0037b0] text-white font-label-lg text-[15px] font-bold shadow-md hover:bg-[#002f99] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 mt-1"
               >
                 <span>Continuar</span>
                 <span className="material-symbols-outlined text-[19px]">arrow_forward</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setGuestName('Invitado');
-                  const guestUser: UserProfile = {
-                    name: 'Invitado',
-                    email: '',
-                    phone: '',
-                    isLoggedIn: true,
-                  };
-                  onRegisterSuccess(guestUser);
-                  onStart();
-                }}
-                className="text-[12px] text-[#747686] hover:text-[#0037b0] underline text-center cursor-pointer"
-              >
-                Omitir y entrar directamente
               </button>
             </form>
           </div>
         )}
 
-        {/* 3. Register Form */}
+        {/* 3. Register Form (With options for clean start or demo data) */}
         {viewState === 'register' && (
           <div className="bg-white rounded-3xl p-6 shadow-xl border border-[#eaedff] animate-in fade-in zoom-in-95 duration-200">
-            <div className="text-center pb-4">
+            <div className="text-center pb-3">
               <h2 className="font-headline-md text-[22px] font-bold text-[#131b2e]">
                 Crear tu cuenta en AlDía
               </h2>
@@ -344,13 +393,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             </div>
 
             {errorMsg && (
-              <div className="mb-4 p-3 rounded-2xl bg-rose-50 text-rose-700 text-[12px] font-semibold flex items-center gap-2 border border-rose-200">
+              <div className="mb-3 p-3 rounded-2xl bg-rose-50 text-rose-700 text-[12px] font-semibold flex items-center gap-2 border border-rose-200">
                 <span className="material-symbols-outlined text-[18px]">error</span>
                 <span>{errorMsg}</span>
               </div>
             )}
 
-            <form onSubmit={handleRegisterSubmit} className="flex flex-col gap-3.5">
+            <form onSubmit={handleRegisterSubmit} className="flex flex-col gap-3">
               <div>
                 <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
                   Nombre completo
@@ -360,7 +409,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                   placeholder="Ingresa tu nombre"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                  className="w-full px-4 py-2 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
                 />
               </div>
 
@@ -373,7 +422,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                   placeholder="correo@ejemplo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                  className="w-full px-4 py-2 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
                 />
               </div>
 
@@ -386,44 +435,95 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                   placeholder="Opcional"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                  className="w-full px-4 py-2 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
                 />
               </div>
 
-              <div>
-                <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
-                  Contraseña
-                </label>
-                <input
-                  type="password"
-                  placeholder="Mínimo 6 caracteres"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
-                />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
+                    Contraseña
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="Mín. 6 caracteres"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
+                    Confirmar
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="Repite clave"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
-                  Confirmar contraseña
+              {/* Data Mode Choice for Registered Account */}
+              <div className="pt-1">
+                <label className="font-label-sm text-[12px] font-bold text-[#131b2e] block mb-1.5">
+                  ¿Cómo prefieres iniciar tu cuenta?
                 </label>
-                <input
-                  type="password"
-                  placeholder="Repite tu contraseña"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
-                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <label
+                    onClick={() => setRegisterDataMode('clean')}
+                    className={`flex items-start gap-2 p-2.5 rounded-xl border transition-all cursor-pointer ${
+                      registerDataMode === 'clean'
+                        ? 'bg-blue-50/70 border-[#0037b0] ring-1 ring-[#0037b0]'
+                        : 'bg-white border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="registerMode"
+                      checked={registerDataMode === 'clean'}
+                      onChange={() => setRegisterDataMode('clean')}
+                      className="mt-0.5 text-[#0037b0]"
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-bold text-[12px] text-[#131b2e]">✨ Cuenta limpia</span>
+                      <span className="text-[10px] text-[#5b5e70]">Sin deudas ni montos cargados</span>
+                    </div>
+                  </label>
+
+                  <label
+                    onClick={() => setRegisterDataMode('demo')}
+                    className={`flex items-start gap-2 p-2.5 rounded-xl border transition-all cursor-pointer ${
+                      registerDataMode === 'demo'
+                        ? 'bg-blue-50/70 border-[#0037b0] ring-1 ring-[#0037b0]'
+                        : 'bg-white border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="registerMode"
+                      checked={registerDataMode === 'demo'}
+                      onChange={() => setRegisterDataMode('demo')}
+                      className="mt-0.5 text-[#0037b0]"
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-bold text-[12px] text-[#131b2e]">📊 Con datos de ejemplo</span>
+                      <span className="text-[10px] text-[#5b5e70]">Montos y deudas de prueba</span>
+                    </div>
+                  </label>
+                </div>
               </div>
 
               <button
                 type="submit"
-                className="mt-2 w-full py-3.5 rounded-2xl bg-[#0037b0] text-white font-label-lg text-[15px] font-bold shadow-md hover:bg-[#002f99] active:scale-[0.98] transition-all cursor-pointer"
+                className="mt-1 w-full py-3.5 rounded-2xl bg-[#0037b0] text-white font-label-lg text-[15px] font-bold shadow-md hover:bg-[#002f99] active:scale-[0.98] transition-all cursor-pointer"
               >
                 Crear mi cuenta
               </button>
 
-              <div className="text-center pt-2">
+              <div className="text-center pt-1">
                 <button
                   type="button"
                   onClick={() => {
@@ -451,7 +551,9 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                 ¡Bienvenido a AlDía!
               </h2>
               <p className="font-body-md text-[15px] text-[#434655] leading-relaxed">
-                Comencemos organizando tus obligaciones financieras de manera sencilla y segura.
+                {registerDataMode === 'demo'
+                  ? 'Hemos precargado datos de ejemplo para que explores cómo organizar tus pagos y deudas.'
+                  : 'Tu cuenta está lista y limpia para que registres tus obligaciones financieras con total tranquilidad.'}
               </p>
             </div>
 
@@ -549,7 +651,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                 Acceso Administrador
               </h2>
               <p className="font-body-sm text-[13px] text-[#434655] mt-1">
-                Ingresa el correo y contraseña oficial del administrador.
+                Ingresa tus credenciales autorizadas de administrador.
               </p>
             </div>
 
