@@ -119,9 +119,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f6fb] text-[#131b2e] flex flex-col antialiased">
+    <div className="min-h-screen bg-[#F7F8FA] text-[#25313C] flex flex-col antialiased">
       {/* Admin Top Navbar */}
-      <header className="sticky top-0 z-40 bg-slate-900 text-white shadow-md border-b border-slate-800">
+      <header className="sticky top-0 z-40 bg-[#0F3D56] text-white border-b border-[#0c2f42]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
           {/* Brand & Admin Title */}
           <div className="flex items-center gap-3">
@@ -132,14 +132,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             />
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-[16px] text-white tracking-tight">
+                <span className="font-bold text-[16px] text-white tracking-tight">
                   {APP_NAME} Admin
                 </span>
-                <span className="px-2 py-0.5 rounded-full bg-blue-500/30 border border-blue-400/40 text-blue-300 text-[10px] font-extrabold uppercase tracking-wider">
-                  Panel de Control
+                <span className="px-2 py-0.5 rounded bg-white/20 text-white text-[10px] font-bold uppercase tracking-wider">
+                  Panel
                 </span>
               </div>
-              <span className="text-[11px] text-slate-400 truncate max-w-xs">
+              <span className="text-[11px] text-white/70 truncate max-w-xs">
                 Sesión de Administrador Autorizada
               </span>
             </div>
@@ -149,16 +149,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={onBackToApp}
-              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-label-md text-[12px] font-bold border border-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[12px] font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <span className="material-symbols-outlined text-[16px]">visibility</span>
-              <span className="hidden sm:inline">Ver Vista Usuario</span>
+              <span className="hidden sm:inline">Ver App</span>
             </button>
 
             <button
               onClick={onLogoutAdmin}
               title="Cerrar Sesión de Administrador"
-              className="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-label-md text-[12px] font-bold border border-rose-500/30 transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 text-[12px] font-medium border border-rose-500/30 transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               <span className="material-symbols-outlined text-[16px]">logout</span>
               <span className="hidden sm:inline">Cerrar Sesión</span>
@@ -168,77 +168,77 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       </header>
 
       {/* Admin Module Navigation Tabs */}
-      <div className="bg-white border-b border-slate-200 shadow-xs sticky top-16 z-30">
+      <div className="bg-[#FFFFFF] border-b border-[#E5E7EB] sticky top-16 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex overflow-x-auto no-scrollbar gap-1 sm:gap-2">
           <button
             onClick={() => setActiveAdminTab('usuarios')}
-            className={`py-3.5 px-4 font-label-md text-[13px] font-bold border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer ${
+            className={`py-3 px-4 text-[13px] font-medium border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer ${
               activeAdminTab === 'usuarios'
-                ? 'border-[#0037b0] text-[#0037b0]'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
+                ? 'border-[#0F3D56] text-[#0F3D56] font-bold'
+                : 'border-transparent text-[#6B7280] hover:text-[#25313C]'
             }`}
           >
-            <span className="material-symbols-outlined text-[19px]">group</span>
+            <span className="material-symbols-outlined text-[18px]">group</span>
             <span>Gestionar Usuarios</span>
-            <span className="ml-1 px-1.5 py-0.5 rounded-full bg-blue-100 text-[#0037b0] text-[10px] font-black">
+            <span className="ml-1 px-1.5 py-0.5 rounded bg-slate-100 text-[#25313C] text-[10px] font-bold">
               {users.length}
             </span>
           </button>
 
           <button
             onClick={() => setActiveAdminTab('contenidos')}
-            className={`py-3.5 px-4 font-label-md text-[13px] font-bold border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer ${
+            className={`py-3 px-4 text-[13px] font-medium border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer ${
               activeAdminTab === 'contenidos'
-                ? 'border-[#0037b0] text-[#0037b0]'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
+                ? 'border-[#0F3D56] text-[#0F3D56] font-bold'
+                : 'border-transparent text-[#6B7280] hover:text-[#25313C]'
             }`}
           >
-            <span className="material-symbols-outlined text-[19px]">article</span>
+            <span className="material-symbols-outlined text-[18px]">article</span>
             <span>Gestionar Contenidos</span>
-            <span className="ml-1 px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-black">
+            <span className="ml-1 px-1.5 py-0.5 rounded bg-slate-100 text-[#25313C] text-[10px] font-bold">
               {contents.length}
             </span>
           </button>
 
           <button
             onClick={() => setActiveAdminTab('recomendaciones')}
-            className={`py-3.5 px-4 font-label-md text-[13px] font-bold border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer ${
+            className={`py-3 px-4 text-[13px] font-medium border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer ${
               activeAdminTab === 'recomendaciones'
-                ? 'border-[#0037b0] text-[#0037b0]'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
+                ? 'border-[#0F3D56] text-[#0F3D56] font-bold'
+                : 'border-transparent text-[#6B7280] hover:text-[#25313C]'
             }`}
           >
-            <span className="material-symbols-outlined text-[19px]">smart_toy</span>
+            <span className="material-symbols-outlined text-[18px]">rule</span>
             <span>Gestionar Recomendaciones</span>
-            <span className="ml-1 px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[10px] font-black">
+            <span className="ml-1 px-1.5 py-0.5 rounded bg-slate-100 text-[#25313C] text-[10px] font-bold">
               {recommendations.length}
             </span>
           </button>
 
           <button
             onClick={() => setActiveAdminTab('recordatorios')}
-            className={`py-3.5 px-4 font-label-md text-[13px] font-bold border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer ${
+            className={`py-3 px-4 text-[13px] font-medium border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer ${
               activeAdminTab === 'recordatorios'
-                ? 'border-[#0037b0] text-[#0037b0]'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
+                ? 'border-[#0F3D56] text-[#0F3D56] font-bold'
+                : 'border-transparent text-[#6B7280] hover:text-[#25313C]'
             }`}
           >
-            <span className="material-symbols-outlined text-[19px]">alarm</span>
+            <span className="material-symbols-outlined text-[18px]">alarm</span>
             <span>Gestionar Recordatorios</span>
-            <span className="ml-1 px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black">
+            <span className="ml-1 px-1.5 py-0.5 rounded bg-slate-100 text-[#25313C] text-[10px] font-bold">
               {reminderRules.length}
             </span>
           </button>
 
           <button
             onClick={() => setActiveAdminTab('estadisticas')}
-            className={`py-3.5 px-4 font-label-md text-[13px] font-bold border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer ${
+            className={`py-3 px-4 text-[13px] font-medium border-b-2 flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer ${
               activeAdminTab === 'estadisticas'
-                ? 'border-[#0037b0] text-[#0037b0]'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
+                ? 'border-[#0F3D56] text-[#0F3D56] font-bold'
+                : 'border-transparent text-[#6B7280] hover:text-[#25313C]'
             }`}
           >
-            <span className="material-symbols-outlined text-[19px]">monitoring</span>
+            <span className="material-symbols-outlined text-[18px]">monitoring</span>
             <span>Estadísticas Globales</span>
           </button>
         </div>

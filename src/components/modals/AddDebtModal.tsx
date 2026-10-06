@@ -7,368 +7,255 @@ interface AddDebtModalProps {
 }
 
 export const AddDebtModal: React.FC<AddDebtModalProps> = ({ onClose, onAddDebt }) => {
-  const [entityName, setEntityName] = useState('');
-  const [entityType, setEntityType] = useState<DebtItem['entityType']>('Banco');
+  const [entity, setEntity] = useState('');
   const [type, setType] = useState<DebtItem['type']>('Crédito personal');
-  const [initialAmount, setInitialAmount] = useState('');
-  const [balance, setBalance] = useState('');
-  const [monthlyQuota, setMonthlyQuota] = useState('');
-  const [dueDate, setDueDate] = useState('');
-  const [pendingQuotas, setPendingQuotas] = useState('');
-  const [totalQuotas, setTotalQuotas] = useState('');
-  const [interestRate, setInterestRate] = useState('');
-  const [status, setStatus] = useState<DebtItem['status']>('al_dia');
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [initialAmount, setInitialAmount] = useState<number | ''>('');
+  const [balance, setBalance] = useState<number | ''>('');
+  const [monthlyQuota, setMonthlyQuota] = useState<number | ''>('');
+  const [dueDateDay, setDueDateDay] = useState<number>(10);
+  const [frequency, setFrequency] = useState<'Mensual' | 'Quincenal'>('Mensual');
+  const [reminderDays, setReminderDays] = useState<number[]>([3, 1]);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  // Auto icon selection based on type
-  const getIcon = (debtType: string) => {
-    switch (debtType) {
-      case 'Tarjeta de crédito':
-        return 'credit_card';
-      case 'Crédito vehicular':
-        return 'directions_car';
-      case 'Crédito hipotecario':
-        return 'home';
-      case 'Crédito para negocio':
-        return 'storefront';
-      case 'Crédito personal':
-        return 'account_balance_wallet';
-      default:
-        return 'receipt_long';
+  const handleToggleReminder = (days: number) => {
+    if (reminderDays.includes(days)) {
+      setReminderDays(reminderDays.filter((d) => d !== days));
+    } else {
+      setReminderDays([...reminderDays, days]);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const balanceNum = parseFloat(balance) || 0;
-    const initialNum = parseFloat(initialAmount) || balanceNum;
-    const quotaNum = parseFloat(monthlyQuota) || (pendingQuotas ? Math.round(balanceNum / Number(pendingQuotas)) : Math.round(balanceNum / 6));
-    const pendingQNum = parseInt(pendingQuotas) || 6;
-    const totalQNum = parseInt(totalQuotas) || Math.max(pendingQNum, 12);
-    const paidNum = Math.max(0, initialNum - balanceNum);
-    const rateNum = interestRate ? parseFloat(interestRate) : undefined;
+    setErrorMsg('');
 
-    const entityDisplayName = entityName.trim() || `${entityType} ${type}`;
+    if (!entity.trim()) {
+      setErrorMsg('Por favor ingresa el nombre de la entidad.');
+      return;
+    }
 
-    // Extract day number for calendar if available
-    const dayMatch = dueDate.match(/\d+/);
-    const dueDateDay = dayMatch ? Math.min(31, Math.max(1, parseInt(dayMatch[0]))) : 15;
+    const finalBalance = typeof balance === 'number' && balance > 0 ? balance : typeof initialAmount === 'number' ? initialAmount : 0;
+    const finalInitial = typeof initialAmount === 'number' && initialAmount > 0 ? initialAmount : finalBalance;
+    const finalQuota = typeof monthlyQuota === 'number' && monthlyQuota > 0 ? monthlyQuota : Math.round(finalBalance / 6) || 100;
 
-    let statusLabel = 'Al día';
-    if (status === 'proximo') statusLabel = 'Próximo a vencer';
-    if (status === 'atrasado') statusLabel = 'Atrasado';
+    if (finalBalance <= 0) {
+      setErrorMsg('Por favor ingresa un saldo pendiente válido.');
+      return;
+    }
 
-    setShowSuccessToast(true);
+    const dueDateStr = `${dueDateDay} de octubre`;
 
-    setTimeout(() => {
-      onAddDebt({
-        entity: entityDisplayName,
-        entityType,
-        type,
-        initialAmount: initialNum,
-        paidAmount: paidNum,
-        balance: balanceNum,
-        monthlyQuota: quotaNum,
-        dueDate: dueDate.trim() || `${dueDateDay} de cada mes`,
-        dueDateDay,
-        pendingQuotas: pendingQNum,
-        totalQuotas: totalQNum,
-        interestRate: rateNum,
-        status,
-        statusLabel,
-        iconName: getIcon(type),
-        notes: `Registrado en AlDía. ${entityType} - ${type}.`,
-      });
-      onClose();
-    }, 600);
+    onAddDebt({
+      entity: entity.trim(),
+      entityType: entity.toLowerCase().includes('caja') ? 'Caja' : entity.toLowerCase().includes('tarjeta') || entity.toLowerCase().includes('ripley') || entity.toLowerCase().includes('saga') ? 'Comercio' : 'Banco',
+      type,
+      initialAmount: finalInitial,
+      paidAmount: Math.max(0, finalInitial - finalBalance),
+      balance: finalBalance,
+      monthlyQuota: finalQuota,
+      dueDate: dueDateStr,
+      dueDateDay,
+      pendingQuotas: Math.ceil(finalBalance / (finalQuota || 1)),
+      totalQuotas: Math.ceil(finalInitial / (finalQuota || 1)) || 12,
+      status: 'proximo',
+      statusLabel: 'Próximo a vencer',
+      iconName: type === 'Tarjeta de crédito' ? 'credit_card' : 'account_balance',
+      notes: `Frecuencia: ${frequency}. Recordatorios: ${reminderDays.join(', ')} días antes.`,
+    });
+
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-      <div className="bg-white rounded-3xl w-full max-w-lg p-5 sm:p-6 shadow-2xl border border-[#eaedff] my-auto animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+      <div className="bg-[#FFFFFF] rounded-xl w-full max-w-md p-6 border border-[#E5E7EB] shadow-lg flex flex-col gap-4">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3.5 border-b border-[#eaedff]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-[#0037b0]/10 text-[#0037b0] flex items-center justify-center font-bold">
-              <span className="material-symbols-outlined text-[22px]">post_add</span>
-            </div>
-            <div>
-              <h3 className="font-headline-sm text-[18px] font-bold text-[#131b2e] leading-tight">
-                Registrar deuda
-              </h3>
-              <p className="font-body-sm text-[12px] text-[#434655]">
-                AlDía te ayuda a tener todas tus cuentas claras
-              </p>
-            </div>
-          </div>
+        <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB]">
+          <h2 className="text-[18px] font-bold text-[#0F3D56]">
+            Agregar deuda
+          </h2>
           <button
+            type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#747686] hover:text-[#131b2e] hover:bg-[#eaedff]/60 transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:text-[#25313C] hover:bg-[#F7F8FA] cursor-pointer"
           >
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
 
-        {/* Success Banner */}
-        {showSuccessToast && (
-          <div className="mt-3 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-2 animate-bounce">
-            <span className="material-symbols-outlined text-emerald-600">check_circle</span>
-            <span className="font-label-md text-[13px] font-bold">
-              Deuda registrada correctamente.
-            </span>
+        {errorMsg && (
+          <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-[#D64545] text-[13px] font-medium">
+            {errorMsg}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="py-3 flex flex-col gap-3.5 max-h-[75vh] overflow-y-auto pr-1">
-          {/* Tipo de deuda */}
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
           <div>
-            <label className="font-label-sm text-[12px] font-semibold text-[#131b2e] block mb-1">
-              Tipo de deuda: <span className="text-red-500">*</span>
+            <label className="text-[13px] font-medium text-[#25313C] block mb-1">
+              Nombre de la entidad
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-              {[
-                'Crédito personal',
-                'Tarjeta de crédito',
-                'Crédito vehicular',
-                'Crédito hipotecario',
-                'Crédito para negocio',
-                'Otro',
-              ].map((opt) => (
-                <button
-                  type="button"
-                  key={opt}
-                  onClick={() => setType(opt as DebtItem['type'])}
-                  className={`py-2 px-2.5 rounded-xl text-[12px] font-medium transition-all text-center border ${
-                    type === opt
-                      ? 'bg-[#0037b0] text-white border-[#0037b0] shadow-xs'
-                      : 'bg-[#faf8ff] text-[#434655] border-[#eaedff] hover:border-[#c4c5d7]'
-                  }`}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
+            <input
+              type="text"
+              required
+              placeholder="ej. BCP, BBVA, Saga Falabella, Caja Arequipa"
+              value={entity}
+              onChange={(e) => setEntity(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
+            />
           </div>
 
-          {/* Entidad Tipo y Nombre */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="font-label-sm text-[12px] font-semibold text-[#131b2e] block mb-1">
-                Tipo de entidad: <span className="text-red-500">*</span>
-              </label>
-              <select
-                value={entityType}
-                onChange={(e) => setEntityType(e.target.value as DebtItem['entityType'])}
-                className="w-full px-3 py-2.5 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] focus:ring-1 focus:ring-[#0037b0] outline-none bg-white font-medium"
-              >
-                <option value="Banco">Banco</option>
-                <option value="Caja">Caja Municipal/Rural</option>
-                <option value="Financiera">Financiera</option>
-                <option value="Cooperativa">Cooperativa</option>
-                <option value="Comercio">Comercio / Tienda</option>
-                <option value="Otra">Otra institución</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="font-label-sm text-[12px] font-semibold text-[#131b2e] block mb-1">
-                Nombre de la entidad: <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Ej: BCP, BBVA, Caja Arequipa, Ripley..."
-                value={entityName}
-                onChange={(e) => setEntityName(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] focus:ring-1 focus:ring-[#0037b0] outline-none font-medium"
-              />
-            </div>
-          </div>
-
-          {/* Montos: Monto Original y Saldo Pendiente */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="font-label-sm text-[12px] font-semibold text-[#131b2e] block mb-1">
-                Monto original total (S/):
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-2.5 text-[#747686] text-[13px] font-bold">S/</span>
-                <input
-                  type="number"
-                  min="0"
-                  step="10"
-                  placeholder="3500"
-                  value={initialAmount}
-                  onChange={(e) => setInitialAmount(e.target.value)}
-                  className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] focus:ring-1 focus:ring-[#0037b0] outline-none font-semibold"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="font-label-sm text-[12px] font-semibold text-[#131b2e] block mb-1">
-                Saldo pendiente actual (S/): <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-2.5 text-[#0037b0] text-[13px] font-bold">S/</span>
-                <input
-                  type="number"
-                  required
-                  min="1"
-                  step="1"
-                  placeholder="1400"
-                  value={balance}
-                  onChange={(e) => setBalance(e.target.value)}
-                  className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-[#0037b0] bg-blue-50/30 text-[14px] text-[#131b2e] focus:ring-1 focus:ring-[#0037b0] outline-none font-bold"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Cuota Mensual y Fecha de Vencimiento */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="font-label-sm text-[12px] font-semibold text-[#131b2e] block mb-1">
-                Cuota mensual (S/): <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-2.5 text-[#747686] text-[13px] font-bold">S/</span>
-                <input
-                  type="number"
-                  required
-                  min="1"
-                  step="1"
-                  placeholder="350"
-                  value={monthlyQuota}
-                  onChange={(e) => setMonthlyQuota(e.target.value)}
-                  className="w-full pl-8 pr-3 py-2.5 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] focus:ring-1 focus:ring-[#0037b0] outline-none font-semibold"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="font-label-sm text-[12px] font-semibold text-[#131b2e] block mb-1">
-                Fecha de vencimiento: <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Ej: 30 de septiembre, día 15"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] focus:ring-1 focus:ring-[#0037b0] outline-none font-medium"
-              />
-            </div>
-          </div>
-
-          {/* Cuotas Pendientes, Totales y Tasa de Interés */}
-          <div className="grid grid-cols-3 gap-2">
-            <div>
-              <label className="font-label-sm text-[11px] font-semibold text-[#434655] block mb-1">
-                Cuotas pend.:
-              </label>
-              <input
-                type="number"
-                min="1"
-                placeholder="4"
-                value={pendingQuotas}
-                onChange={(e) => setPendingQuotas(e.target.value)}
-                className="w-full px-2.5 py-2 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] outline-none text-center font-medium"
-              />
-            </div>
-
-            <div>
-              <label className="font-label-sm text-[11px] font-semibold text-[#434655] block mb-1">
-                Cuotas tot.:
-              </label>
-              <input
-                type="number"
-                min="1"
-                placeholder="10"
-                value={totalQuotas}
-                onChange={(e) => setTotalQuotas(e.target.value)}
-                className="w-full px-2.5 py-2 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] outline-none text-center font-medium"
-              />
-            </div>
-
-            <div>
-              <label className="font-label-sm text-[11px] font-semibold text-[#434655] block mb-1">
-                Tasa TEA (%):
-              </label>
-              <input
-                type="number"
-                step="0.1"
-                placeholder="24.5%"
-                value={interestRate}
-                onChange={(e) => setInterestRate(e.target.value)}
-                className="w-full px-2.5 py-2 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] outline-none text-center font-medium"
-              />
-            </div>
-          </div>
-
-          {/* Estado de la deuda */}
           <div>
-            <label className="font-label-sm text-[12px] font-semibold text-[#131b2e] block mb-1">
-              Estado actual:
+            <label className="text-[13px] font-medium text-[#25313C] block mb-1">
+              Tipo de deuda
             </label>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => setStatus('al_dia')}
-                className={`py-2 px-2 rounded-xl text-[12px] font-semibold flex items-center justify-center gap-1.5 border transition-all ${
-                  status === 'al_dia'
-                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                    : 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                }`}
-              >
-                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                Al día
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setStatus('proximo')}
-                className={`py-2 px-2 rounded-xl text-[12px] font-semibold flex items-center justify-center gap-1.5 border transition-all ${
-                  status === 'proximo'
-                    ? 'bg-amber-500 text-white border-amber-500 shadow-xs'
-                    : 'bg-amber-50 text-amber-800 border-amber-200'
-                }`}
-              >
-                <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                Próximo
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setStatus('atrasado')}
-                className={`py-2 px-2 rounded-xl text-[12px] font-semibold flex items-center justify-center gap-1.5 border transition-all ${
-                  status === 'atrasado'
-                    ? 'bg-rose-600 text-white border-rose-600 shadow-xs'
-                    : 'bg-rose-50 text-rose-800 border-rose-200'
-                }`}
-              >
-                <span className="w-2 h-2 rounded-full bg-rose-400"></span>
-                Atrasado
-              </button>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="pt-3 flex flex-col gap-2">
-            <button
-              type="submit"
-              disabled={showSuccessToast}
-              className="w-full py-3 rounded-2xl bg-[#0037b0] text-white font-label-lg text-[14px] font-bold hover:bg-[#002f99] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer disabled:opacity-75"
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value as any)}
+              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] bg-white outline-none focus:border-[#0F3D56] cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[20px]">check_circle</span>
-              <span>Guardar deuda</span>
-            </button>
+              <option value="Crédito personal">Crédito personal</option>
+              <option value="Tarjeta de crédito">Tarjeta de crédito</option>
+              <option value="Crédito para negocio">Crédito para negocio</option>
+              <option value="Crédito vehicular">Crédito vehicular</option>
+              <option value="Crédito hipotecario">Crédito hipotecario</option>
+              <option value="Otro">Otro compromiso</option>
+            </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-[13px] font-medium text-[#25313C] block mb-1">
+                Monto total (S/)
+              </label>
+              <input
+                type="number"
+                min="1"
+                placeholder="1,500.00"
+                value={initialAmount}
+                onChange={(e) => {
+                  const val = e.target.value === '' ? '' : Number(e.target.value);
+                  setInitialAmount(val);
+                  if (balance === '') setBalance(val);
+                }}
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
+              />
+            </div>
+
+            <div>
+              <label className="text-[13px] font-medium text-[#25313C] block mb-1">
+                Saldo pendiente (S/)
+              </label>
+              <input
+                type="number"
+                min="1"
+                required
+                placeholder="1,200.00"
+                value={balance}
+                onChange={(e) => setBalance(e.target.value === '' ? '' : Number(e.target.value))}
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-[13px] font-medium text-[#25313C] block mb-1">
+                Monto de cuota (S/)
+              </label>
+              <input
+                type="number"
+                min="1"
+                placeholder="200.00"
+                value={monthlyQuota}
+                onChange={(e) => setMonthlyQuota(e.target.value === '' ? '' : Number(e.target.value))}
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
+              />
+            </div>
+
+            <div>
+              <label className="text-[13px] font-medium text-[#25313C] block mb-1">
+                Día de vencimiento
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="31"
+                value={dueDateDay}
+                onChange={(e) => setDueDateDay(Number(e.target.value) || 10)}
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[13px] font-medium text-[#25313C] block mb-1">
+              Frecuencia de pago
+            </label>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setFrequency('Mensual')}
+                className={`flex-1 py-1.5 rounded-lg text-[13px] font-medium border cursor-pointer ${
+                  frequency === 'Mensual'
+                    ? 'bg-[#0F3D56] text-white border-[#0F3D56]'
+                    : 'bg-[#FFFFFF] text-[#25313C] border-[#E5E7EB]'
+                }`}
+              >
+                Mensual
+              </button>
+              <button
+                type="button"
+                onClick={() => setFrequency('Quincenal')}
+                className={`flex-1 py-1.5 rounded-lg text-[13px] font-medium border cursor-pointer ${
+                  frequency === 'Quincenal'
+                    ? 'bg-[#0F3D56] text-white border-[#0F3D56]'
+                    : 'bg-[#FFFFFF] text-[#25313C] border-[#E5E7EB]'
+                }`}
+              >
+                Quincenal
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[13px] font-medium text-[#25313C] block mb-1.5">
+              Recordarme antes del vencimiento:
+            </label>
+            <div className="flex gap-2">
+              {[1, 3, 7].map((days) => {
+                const isSelected = reminderDays.includes(days);
+                return (
+                  <button
+                    key={days}
+                    type="button"
+                    onClick={() => handleToggleReminder(days)}
+                    className={`flex-1 py-1.5 rounded-lg text-[12px] font-medium border transition-colors cursor-pointer ${
+                      isSelected
+                        ? 'bg-emerald-50 text-[#149B8A] border-[#149B8A] font-semibold'
+                        : 'bg-[#FFFFFF] text-[#6B7280] border-[#E5E7EB]'
+                    }`}
+                  >
+                    {days} {days === 1 ? 'día' : 'días'}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="pt-3 flex gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="w-full py-2 rounded-xl text-[#747686] hover:text-[#131b2e] font-label-md text-[13px] cursor-pointer"
+              className="flex-1 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] hover:bg-[#F7F8FA] text-[#25313C] text-[14px] font-medium transition-colors cursor-pointer"
             >
               Cancelar
+            </button>
+            <button
+              type="submit"
+              className="flex-1 py-2.5 rounded-lg bg-[#0F3D56] hover:bg-[#0c2f42] text-white text-[14px] font-medium transition-colors cursor-pointer"
+            >
+              Guardar deuda
             </button>
           </div>
         </form>

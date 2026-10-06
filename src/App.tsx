@@ -31,6 +31,7 @@ import {
   ADMIN_AUTH_CONFIG,
 } from './data/initialData';
 import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
 import { BottomNav } from './components/BottomNav';
 import { WelcomeScreen } from './components/screens/WelcomeScreen';
 import { InicioScreen } from './components/screens/InicioScreen';
@@ -337,74 +338,108 @@ export default function App() {
 
   // 3. User Main App
   return (
-    <div className="min-h-screen bg-[#faf8ff] text-[#131b2e] flex flex-col antialiased selection:bg-blue-100">
-      {/* Top Header */}
-      <Header
+    <div className="min-h-screen bg-[#F7F8FA] text-[#25313C] flex flex-col md:flex-row antialiased">
+      {/* Desktop Sidebar (Only visible on md+) */}
+      <Sidebar
         currentTab={currentTab}
-        unreadNotificationsCount={unreadCount}
-        onOpenNotifications={() => setIsNotificationsOpen(true)}
+        onSelectTab={(tab) => setCurrentTab(tab)}
         onOpenProfile={() => setIsProfileOpen(true)}
         onOpenWelcome={() => setCurrentTab('bienvenida')}
+        user={user}
       />
 
-      {/* Main Container */}
-      <main className="flex-1 w-full pt-16 pb-20">
-        {currentTab === 'inicio' && (
-          <InicioScreen
-            user={user}
-            debts={debts}
-            quotas={quotas}
-            onNavigate={(tab) => setCurrentTab(tab)}
-            onPayQuota={(quota) => setPayingQuota(quota)}
-            onViewDebtDetail={(debt) => setSelectedDebtDetail(debt)}
-            onOpenAdvisorChat={openAdvisorChat}
-            onOpenReminders={() => setIsRemindersOpen(true)}
-            onOpenActionGuide={handleOpenActionGuide}
-            onOpenAdmin={() => setIsAdminLoginModalOpen(true)}
+      {/* Main Container Column */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile Header (Hidden on md+) */}
+        <div className="md:hidden">
+          <Header
+            currentTab={currentTab}
+            unreadNotificationsCount={unreadCount}
+            onOpenNotifications={() => setIsNotificationsOpen(true)}
+            onOpenProfile={() => setIsProfileOpen(true)}
+            onOpenWelcome={() => setCurrentTab('bienvenida')}
           />
-        )}
+        </div>
 
-        {currentTab === 'mis-deudas' && (
-          <MisDeudasScreen
-            debts={debts}
-            onOpenAddDebt={() => setIsAddDebtOpen(true)}
-            onSelectDebt={(debt) => setSelectedDebtDetail(debt)}
-            onEditDebt={(debt) => setEditingDebt(debt)}
-            onDeleteDebt={handleDeleteDebt}
-            onOpenAdvisorChat={openAdvisorChat}
-            onLoadDemoData={handleLoadDemoData}
-            onClearAllDebts={handleClearAllData}
-          />
-        )}
+        {/* Desktop Top Sub-header (notifications & subtle profile) */}
+        <div className="hidden md:flex items-center justify-between px-8 py-4 border-b border-[#E5E7EB] bg-[#FFFFFF]">
+          <div className="flex items-center gap-2">
+            <span className="text-[14px] text-[#6B7280]">
+              {currentTab === 'inicio' && 'Panel principal'}
+              {currentTab === 'mis-deudas' && 'Control de obligaciones de pago'}
+              {currentTab === 'calendario' && 'Cronograma mensual de vencimientos'}
+            </span>
+          </div>
 
-        {currentTab === 'calendario' && (
-          <CalendarioScreen
-            quotas={quotas}
-            onPayQuota={(quota) => setPayingQuota(quota)}
-            onToggleReminder={handleToggleReminder}
-            onDeleteQuota={handleDeleteQuota}
-          />
-        )}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsNotificationsOpen(true)}
+              className="relative w-8 h-8 flex items-center justify-center rounded-lg text-[#6B7280] hover:text-[#0F3D56] hover:bg-[#F7F8FA] border border-[#E5E7EB] transition-colors cursor-pointer"
+              title="Notificaciones"
+            >
+              <span className="material-symbols-outlined text-[18px]">notifications</span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#D64545]"></span>
+              )}
+            </button>
 
-        {currentTab === 'capacidad' && (
-          <CapacidadPagoScreen
-            budget={budget}
-            debts={debts}
-            onSaveBudget={(updated) => setBudget(updated)}
-            onOpenAdvisorChat={openAdvisorChat}
-          />
-        )}
+            <button
+              onClick={() => setIsProfileOpen(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#E5E7EB] hover:bg-[#F7F8FA] text-[13px] font-medium text-[#25313C] transition-colors cursor-pointer"
+            >
+              <div className="w-5 h-5 rounded-full bg-[#0F3D56] text-white flex items-center justify-center text-[10px] font-bold">
+                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <span className="max-w-[120px] truncate">{user.name || 'Mi perfil'}</span>
+            </button>
+          </div>
+        </div>
 
-        {currentTab === 'educacion' && (
-          <EducacionSBSScreen
-            onOpenAdvisorChat={openAdvisorChat}
-            initialTopicId={actionGuideTopic}
-          />
-        )}
-      </main>
+        {/* Screen Content */}
+        <main className="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-6 pb-24 md:pb-12">
+          {currentTab === 'inicio' && (
+            <InicioScreen
+              user={user}
+              debts={debts}
+              quotas={quotas}
+              onNavigate={(tab) => setCurrentTab(tab)}
+              onPayQuota={(quota) => setPayingQuota(quota)}
+              onViewDebtDetail={(debt) => setSelectedDebtDetail(debt)}
+              onOpenAddDebt={() => setIsAddDebtOpen(true)}
+              onOpenAdmin={() => setIsAdminLoginModalOpen(true)}
+            />
+          )}
 
-      {/* Bottom Persistent Navigation */}
-      <BottomNav currentTab={currentTab} onSelectTab={(tab) => setCurrentTab(tab)} />
+          {currentTab === 'mis-deudas' && (
+            <MisDeudasScreen
+              debts={debts}
+              onOpenAddDebt={() => setIsAddDebtOpen(true)}
+              onSelectDebt={(debt) => setSelectedDebtDetail(debt)}
+              onEditDebt={(debt) => setEditingDebt(debt)}
+              onDeleteDebt={handleDeleteDebt}
+              onOpenAdvisorChat={openAdvisorChat}
+              onLoadDemoData={handleLoadDemoData}
+              onClearAllDebts={handleClearAllData}
+            />
+          )}
+
+          {currentTab === 'calendario' && (
+            <CalendarioScreen
+              quotas={quotas}
+              onPayQuota={(quota) => setPayingQuota(quota)}
+              onToggleReminder={handleToggleReminder}
+              onDeleteQuota={handleDeleteQuota}
+            />
+          )}
+        </main>
+
+        {/* Bottom Persistent Navigation for Mobile */}
+        <BottomNav
+          currentTab={currentTab}
+          onSelectTab={(tab) => setCurrentTab(tab)}
+          onOpenProfile={() => setIsProfileOpen(true)}
+        />
+      </div>
 
       {/* Modals */}
       {selectedDebtDetail && (

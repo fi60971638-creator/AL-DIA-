@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { APP_NAME, APP_SLOGAN, LEGAL_DISCLAIMER, ADMIN_AUTH_CONFIG } from '../../data/initialData';
+import { APP_NAME, APP_SLOGAN, LEGAL_DISCLAIMER, ADMIN_AUTH_CONFIG, APP_LOGO_URL } from '../../data/initialData';
 import { UserProfile } from '../../types';
 
 interface WelcomeScreenProps {
@@ -27,7 +27,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
   // Guest states
   const [guestName, setGuestName] = useState('');
-  const [guestDataMode, setGuestDataMode] = useState<'demo' | 'clean'>('demo'); // Default with demo data as requested
+  const [guestDataMode, setGuestDataMode] = useState<'demo' | 'clean'>('demo');
 
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -81,14 +81,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       phone: '',
       isLoggedIn: true,
     };
-    // Standard login keeps existing/demo data
     onRegisterSuccess(user, true);
     onStart();
   };
 
   const handleGuestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const finalName = guestName.trim() || 'Invitado';
+    const finalName = guestName.trim();
     const guestUser: UserProfile = {
       name: finalName,
       email: '',
@@ -106,7 +105,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     const cleanPass = adminPassword.trim();
 
     if (!cleanEmail || !cleanPass) {
-      setErrorMsg('Ingresa el correo y la contraseña del administrador.');
+      setErrorMsg('Ingresa el correo y la contraseña.');
       return;
     }
 
@@ -128,29 +127,24 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         onOpenAdminLogin();
       } else {
         setIsAdminLoading(false);
-        setErrorMsg('Credenciales inválidas. Verifica tu correo o contraseña.');
+        setErrorMsg('Credenciales incorrectas. Verifica tus datos.');
       }
-    }, 350);
+    }, 300);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f2f5ff] via-[#faf8ff] to-white flex flex-col justify-between p-4 sm:p-6 max-w-lg mx-auto">
-      {/* Top Brand Bar */}
+    <div className="min-h-screen bg-[#F7F8FA] flex flex-col justify-between p-4 sm:p-6 max-w-md mx-auto">
+      {/* Top Header */}
       <div className="flex items-center justify-between pt-2">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           <img
-            src="/logo-aldia.svg"
+            src={APP_LOGO_URL}
             alt="Logo AlDía"
-            className="h-10 w-10 object-contain drop-shadow-xs"
+            className="h-7 w-auto object-contain"
           />
-          <div className="flex flex-col">
-            <span className="font-headline-md text-[20px] font-black text-[#0c3260] tracking-tight leading-tight">
-              {APP_NAME}
-            </span>
-            <span className="text-[10px] font-bold text-[#128549] tracking-widest uppercase leading-tight">
-              Finanzas
-            </span>
-          </div>
+          <span className="text-[18px] font-bold text-[#0F3D56]">
+            {APP_NAME}
+          </span>
         </div>
 
         {viewState !== 'landing' ? (
@@ -159,7 +153,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               setErrorMsg('');
               setViewState('landing');
             }}
-            className="text-[13px] font-semibold text-[#0037b0] hover:underline cursor-pointer flex items-center gap-1"
+            className="text-[13px] font-medium text-[#0F3D56] hover:underline cursor-pointer flex items-center gap-1"
           >
             <span className="material-symbols-outlined text-[16px]">arrow_back</span>
             <span>Volver</span>
@@ -170,156 +164,124 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               setErrorMsg('');
               setViewState('admin_login');
             }}
-            className="px-3 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-label-sm text-[12px] font-bold flex items-center gap-1.5 shadow-xs cursor-pointer transition-all active:scale-95"
+            className="px-2.5 py-1 rounded-md text-[12px] font-medium text-[#6B7280] hover:text-[#0F3D56] hover:bg-[#FFFFFF] border border-[#E5E7EB] transition-colors cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[15px] text-amber-400">admin_panel_settings</span>
-            <span>Administrador</span>
+            Administrador
           </button>
         )}
       </div>
 
-      {/* Main Container by State */}
+      {/* Main Body */}
       <div className="my-auto py-6">
         {/* 1. Landing View */}
         {viewState === 'landing' && (
-          <div className="flex flex-col gap-6 text-center animate-in fade-in duration-300">
-            {/* Official Circular Logo Display */}
-            <div className="mx-auto w-32 h-32 rounded-full flex items-center justify-center p-1 hover:scale-105 transition-transform">
-              <img
-                src="/logo-aldia.svg"
-                alt="Logo AlDía Finanzas"
-                className="w-full h-full object-contain drop-shadow-md"
-              />
-            </div>
-
+          <div className="flex flex-col gap-6 text-center">
             <div className="flex flex-col gap-2">
-              <h1 className="font-headline-lg text-[32px] font-extrabold text-[#131b2e] tracking-tight leading-tight">
+              <h1 className="text-[28px] font-bold text-[#0F3D56] tracking-tight">
                 {APP_NAME}
               </h1>
-              <p className="font-headline-sm text-[17px] font-bold text-[#0037b0] leading-snug">
-                “{APP_SLOGAN}”
+              <p className="text-[16px] font-semibold text-[#149B8A]">
+                {APP_SLOGAN}
               </p>
-              <p className="font-body-md text-[14px] text-[#434655] max-w-sm mx-auto mt-1 leading-relaxed">
-                Una forma sencilla de conocer tus obligaciones, organizar tus pagos y recibir orientación financiera con nuestro Bot IA.
+              <p className="text-[14px] text-[#6B7280] max-w-sm mx-auto mt-1 leading-relaxed">
+                Controla tus deudas, consulta tus próximas cuotas y mantén tus pagos organizados en un solo lugar.
               </p>
             </div>
 
-            {/* Feature Highlights */}
-            <div className="grid grid-cols-3 gap-2.5 max-w-sm mx-auto text-left pt-2">
-              <div className="bg-white p-3 rounded-2xl border border-[#eaedff] shadow-xs">
-                <span className="material-symbols-outlined text-[#0037b0] text-[20px]">fact_check</span>
-                <span className="font-label-md text-[12px] font-bold text-[#131b2e] block mt-1">
-                  Claridad
+            {/* Simple Feature Items */}
+            <div className="grid grid-cols-3 gap-2 max-w-sm mx-auto text-center pt-1">
+              <div className="bg-[#FFFFFF] p-3 rounded-lg border border-[#E5E7EB]">
+                <span className="material-symbols-outlined text-[#0F3D56] text-[20px]">fact_check</span>
+                <span className="text-[12px] font-semibold text-[#25313C] block mt-1">
+                  Total claro
                 </span>
-                <span className="text-[10px] text-[#747686]">Conoce cuánto debes exactamente</span>
+                <span className="text-[11px] text-[#6B7280]">Cuánto debes</span>
               </div>
 
-              <div className="bg-white p-3 rounded-2xl border border-[#eaedff] shadow-xs">
-                <span className="material-symbols-outlined text-emerald-600 text-[20px]">event_repeat</span>
-                <span className="font-label-md text-[12px] font-bold text-[#131b2e] block mt-1">
+              <div className="bg-[#FFFFFF] p-3 rounded-lg border border-[#E5E7EB]">
+                <span className="material-symbols-outlined text-[#149B8A] text-[20px]">event_repeat</span>
+                <span className="text-[12px] font-semibold text-[#25313C] block mt-1">
                   Calendario
                 </span>
-                <span className="text-[10px] text-[#747686]">Fechas y alertas a tiempo</span>
+                <span className="text-[11px] text-[#6B7280]">Cuándo pagar</span>
               </div>
 
-              <div className="bg-white p-3 rounded-2xl border border-[#eaedff] shadow-xs">
-                <span className="material-symbols-outlined text-indigo-600 text-[20px]">smart_toy</span>
-                <span className="font-label-md text-[12px] font-bold text-[#131b2e] block mt-1">
-                  Bot IA
+              <div className="bg-[#FFFFFF] p-3 rounded-lg border border-[#E5E7EB]">
+                <span className="material-symbols-outlined text-[#2563EB] text-[20px]">notifications_active</span>
+                <span className="text-[12px] font-semibold text-[#25313C] block mt-1">
+                  Alertas
                 </span>
-                <span className="text-[10px] text-[#747686]">Asesoramiento inteligente</span>
+                <span className="text-[11px] text-[#6B7280]">Sin atrasos</span>
               </div>
             </div>
 
-            {/* Action Buttons: [Crear cuenta] [Iniciar sesión] [Continuar como invitado] [Administrador] */}
-            <div className="flex flex-col gap-2.5 pt-3 max-w-sm mx-auto w-full">
+            {/* Action Buttons */}
+            <div className="flex flex-col gap-2.5 pt-2 max-w-sm mx-auto w-full">
+              <button
+                type="button"
+                onClick={() => setViewState('guest_prompt')}
+                className="w-full py-3 rounded-lg bg-[#0F3D56] hover:bg-[#0c2f42] text-white text-[14px] font-semibold transition-colors cursor-pointer"
+              >
+                Continuar como invitado
+              </button>
+
               <button
                 type="button"
                 onClick={() => setViewState('register')}
-                className="w-full py-3.5 rounded-2xl bg-[#0037b0] text-white font-label-lg text-[15px] font-bold shadow-md hover:bg-[#002f99] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] hover:bg-[#F7F8FA] text-[#25313C] text-[14px] font-medium transition-colors cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[20px]">person_add</span>
-                <span>Crear cuenta</span>
+                Crear cuenta
               </button>
 
               <button
                 type="button"
                 onClick={() => setViewState('login')}
-                className="w-full py-3.5 rounded-2xl bg-white text-[#0037b0] font-label-lg text-[15px] font-bold border border-[#0037b0]/30 shadow-xs hover:bg-[#f2f5ff] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="text-[13px] text-[#6B7280] hover:text-[#0F3D56] underline py-1 cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[20px]">login</span>
-                <span>Iniciar sesión</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setViewState('guest_prompt')}
-                className="w-full py-3 rounded-2xl bg-emerald-50 text-emerald-800 font-label-md text-[14px] font-bold border border-emerald-200 hover:bg-emerald-100/80 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
-              >
-                <span className="material-symbols-outlined text-[19px]">person</span>
-                <span>Continuar como invitado</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setViewState('admin_login')}
-                className="w-full py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-label-md text-[13px] font-bold shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 mt-1"
-              >
-                <span className="material-symbols-outlined text-[18px] text-amber-400">admin_panel_settings</span>
-                <span>Acceso Administrador</span>
+                ¿Ya tienes cuenta? Iniciar sesión
               </button>
             </div>
           </div>
         )}
 
-        {/* 2. Guest Prompt Form (With options for preloaded demo data or clean start) */}
+        {/* 2. Guest Prompt Form */}
         {viewState === 'guest_prompt' && (
-          <div className="bg-white rounded-3xl p-6 shadow-xl border border-[#eaedff] animate-in fade-in zoom-in-95 duration-200">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto mb-3">
-              <span className="material-symbols-outlined text-[32px]">badge</span>
-            </div>
-
-            <div className="text-center pb-3">
-              <h2 className="font-headline-md text-[22px] font-bold text-[#131b2e]">
+          <div className="bg-[#FFFFFF] rounded-xl p-6 border border-[#E5E7EB] shadow-xs flex flex-col gap-4">
+            <div className="text-center">
+              <h2 className="text-[20px] font-bold text-[#0F3D56]">
                 Ingresar como Invitado
               </h2>
-              <p className="font-body-sm text-[13px] text-[#434655] mt-1">
-                Personaliza tu ingreso rápido para explorar AlDía.
+              <p className="text-[13px] text-[#6B7280] mt-0.5">
+                Ingresa a la plataforma de forma rápida.
               </p>
             </div>
 
-            <form onSubmit={handleGuestSubmit} className="flex flex-col gap-4">
+            <form onSubmit={handleGuestSubmit} className="flex flex-col gap-3.5">
               <div>
-                <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1.5">
-                  ¿Cómo te gustaría que te llamemos? (Opcional)
+                <label className="text-[13px] font-medium text-[#25313C] block mb-1">
+                  Nombre o apodo (Opcional)
                 </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#747686] text-[20px]">
-                    person
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="Escribe tu nombre o apodo (ej. Invitado)"
-                    value={guestName}
-                    onChange={(e) => setGuestName(e.target.value)}
-                    autoFocus
-                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#0037b0] text-[15px] font-semibold text-[#131b2e] focus:ring-2 focus:ring-[#0037b0]/20 outline-none"
-                  />
-                </div>
+                <input
+                  type="text"
+                  placeholder=""
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  autoFocus
+                  className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
+                />
               </div>
 
-              {/* Data mode selection for Guest */}
               <div>
-                <label className="font-label-sm text-[12px] font-bold text-[#131b2e] block mb-2">
-                  Selecciona el modo de inicio:
+                <label className="text-[13px] font-medium text-[#25313C] block mb-1.5">
+                  Información inicial:
                 </label>
                 <div className="flex flex-col gap-2">
                   <label
                     onClick={() => setGuestDataMode('demo')}
-                    className={`flex items-start gap-3 p-3 rounded-2xl border transition-all cursor-pointer ${
+                    className={`flex items-start gap-2.5 p-2.5 rounded-lg border transition-colors cursor-pointer ${
                       guestDataMode === 'demo'
-                        ? 'bg-blue-50/70 border-[#0037b0] ring-1 ring-[#0037b0]'
-                        : 'bg-white border-slate-200 hover:bg-slate-50'
+                        ? 'bg-[#F7F8FA] border-[#0F3D56]'
+                        : 'bg-white border-[#E5E7EB]'
                     }`}
                   >
                     <input
@@ -327,27 +289,24 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                       name="guestMode"
                       checked={guestDataMode === 'demo'}
                       onChange={() => setGuestDataMode('demo')}
-                      className="mt-0.5 text-[#0037b0]"
+                      className="mt-0.5 text-[#0F3D56]"
                     />
                     <div className="flex flex-col">
-                      <span className="font-bold text-[13px] text-[#131b2e] flex items-center gap-1">
-                        <span>Con información y montos de ejemplo</span>
-                        <span className="text-[10px] px-1.5 py-0.5 bg-emerald-100 text-emerald-800 font-extrabold rounded">
-                          Recomendado
-                        </span>
+                      <span className="font-semibold text-[13px] text-[#25313C]">
+                        Con datos de ejemplo (Recomendado)
                       </span>
-                      <span className="text-[11px] text-[#5b5e70] mt-0.5">
-                        Incluye deudas simuladas (Banco, Caja, Tarjeta) y montos para ver la app en acción.
+                      <span className="text-[11px] text-[#6B7280]">
+                        Incluye 3 deudas de muestra (S/ 1,800.00 total) para probar.
                       </span>
                     </div>
                   </label>
 
                   <label
                     onClick={() => setGuestDataMode('clean')}
-                    className={`flex items-start gap-3 p-3 rounded-2xl border transition-all cursor-pointer ${
+                    className={`flex items-start gap-2.5 p-2.5 rounded-lg border transition-colors cursor-pointer ${
                       guestDataMode === 'clean'
-                        ? 'bg-blue-50/70 border-[#0037b0] ring-1 ring-[#0037b0]'
-                        : 'bg-white border-slate-200 hover:bg-slate-50'
+                        ? 'bg-[#F7F8FA] border-[#0F3D56]'
+                        : 'bg-white border-[#E5E7EB]'
                     }`}
                   >
                     <input
@@ -355,14 +314,14 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                       name="guestMode"
                       checked={guestDataMode === 'clean'}
                       onChange={() => setGuestDataMode('clean')}
-                      className="mt-0.5 text-[#0037b0]"
+                      className="mt-0.5 text-[#0F3D56]"
                     />
                     <div className="flex flex-col">
-                      <span className="font-bold text-[13px] text-[#131b2e]">
-                        En blanco / Limpio (Sin información ni montos)
+                      <span className="font-semibold text-[13px] text-[#25313C]">
+                        En blanco / Limpio
                       </span>
-                      <span className="text-[11px] text-[#5b5e70] mt-0.5">
-                        Inicia con tablero en S/ 0 para que agregues tus propias deudas manualmente.
+                      <span className="text-[11px] text-[#6B7280]">
+                        Inicia en S/ 0 para registrar tus deudas desde cero.
                       </span>
                     </div>
                   </label>
@@ -371,156 +330,151 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-2xl bg-[#0037b0] text-white font-label-lg text-[15px] font-bold shadow-md hover:bg-[#002f99] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2 mt-1"
+                className="mt-1 w-full py-2.5 rounded-lg bg-[#0F3D56] hover:bg-[#0c2f42] text-white text-[14px] font-semibold transition-colors cursor-pointer"
               >
-                <span>Continuar</span>
-                <span className="material-symbols-outlined text-[19px]">arrow_forward</span>
+                Continuar
               </button>
             </form>
           </div>
         )}
 
-        {/* 3. Register Form (With options for clean start or demo data) */}
+        {/* 3. Register Form */}
         {viewState === 'register' && (
-          <div className="bg-white rounded-3xl p-6 shadow-xl border border-[#eaedff] animate-in fade-in zoom-in-95 duration-200">
-            <div className="text-center pb-3">
-              <h2 className="font-headline-md text-[22px] font-bold text-[#131b2e]">
-                Crear tu cuenta en AlDía
+          <div className="bg-[#FFFFFF] rounded-xl p-6 border border-[#E5E7EB] shadow-xs flex flex-col gap-4">
+            <div className="text-center">
+              <h2 className="text-[20px] font-bold text-[#0F3D56]">
+                Crear tu cuenta
               </h2>
-              <p className="font-body-sm text-[13px] text-[#434655] mt-1">
-                Toma el control de tus finanzas hoy mismo
+              <p className="text-[13px] text-[#6B7280] mt-0.5">
+                Organiza tus pagos y mantente al día
               </p>
             </div>
 
             {errorMsg && (
-              <div className="mb-3 p-3 rounded-2xl bg-rose-50 text-rose-700 text-[12px] font-semibold flex items-center gap-2 border border-rose-200">
-                <span className="material-symbols-outlined text-[18px]">error</span>
-                <span>{errorMsg}</span>
+              <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-[#D64545] text-[12px] font-medium">
+                {errorMsg}
               </div>
             )}
 
             <form onSubmit={handleRegisterSubmit} className="flex flex-col gap-3">
               <div>
-                <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
+                <label className="text-[13px] font-medium text-[#25313C] block mb-1">
                   Nombre completo
                 </label>
                 <input
                   type="text"
-                  placeholder="Ingresa tu nombre"
+                  required
+                  placeholder=""
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-2 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                  className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
                 />
               </div>
 
               <div>
-                <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
+                <label className="text-[13px] font-medium text-[#25313C] block mb-1">
                   Correo electrónico
                 </label>
                 <input
                   type="email"
+                  required
                   placeholder="correo@ejemplo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                  className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
                 />
               </div>
 
               <div>
-                <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
-                  Número de celular
+                <label className="text-[13px] font-medium text-[#25313C] block mb-1">
+                  Teléfono (Opcional)
                 </label>
                 <input
                   type="tel"
-                  placeholder="Opcional"
+                  placeholder="+51 900 000 000"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-4 py-2 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                  className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
+                  <label className="text-[13px] font-medium text-[#25313C] block mb-1">
                     Contraseña
                   </label>
                   <input
                     type="password"
-                    placeholder="Mín. 6 caracteres"
+                    required
+                    placeholder="Mín. 6 car."
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                    className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[13px] text-[#25313C] outline-none focus:border-[#0F3D56]"
                   />
                 </div>
                 <div>
-                  <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
+                  <label className="text-[13px] font-medium text-[#25313C] block mb-1">
                     Confirmar
                   </label>
                   <input
                     type="password"
+                    required
                     placeholder="Repite clave"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#c4c5d7] text-[13px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                    className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[13px] text-[#25313C] outline-none focus:border-[#0F3D56]"
                   />
                 </div>
               </div>
 
-              {/* Data Mode Choice for Registered Account */}
-              <div className="pt-1">
-                <label className="font-label-sm text-[12px] font-bold text-[#131b2e] block mb-1.5">
-                  ¿Cómo prefieres iniciar tu cuenta?
+              <div>
+                <label className="text-[13px] font-medium text-[#25313C] block mb-1">
+                  Modo de cuenta:
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   <label
                     onClick={() => setRegisterDataMode('clean')}
-                    className={`flex items-start gap-2 p-2.5 rounded-xl border transition-all cursor-pointer ${
+                    className={`flex items-center gap-2 p-2 rounded-lg border transition-colors cursor-pointer ${
                       registerDataMode === 'clean'
-                        ? 'bg-blue-50/70 border-[#0037b0] ring-1 ring-[#0037b0]'
-                        : 'bg-white border-slate-200 hover:bg-slate-50'
+                        ? 'bg-[#F7F8FA] border-[#0F3D56]'
+                        : 'bg-white border-[#E5E7EB]'
                     }`}
                   >
                     <input
                       type="radio"
-                      name="registerMode"
+                      name="regMode"
                       checked={registerDataMode === 'clean'}
                       onChange={() => setRegisterDataMode('clean')}
-                      className="mt-0.5 text-[#0037b0]"
+                      className="text-[#0F3D56]"
                     />
-                    <div className="flex flex-col">
-                      <span className="font-bold text-[12px] text-[#131b2e]">✨ Cuenta limpia</span>
-                      <span className="text-[10px] text-[#5b5e70]">Sin deudas ni montos cargados</span>
-                    </div>
+                    <span className="text-[12px] font-medium text-[#25313C]">Desde cero</span>
                   </label>
 
                   <label
                     onClick={() => setRegisterDataMode('demo')}
-                    className={`flex items-start gap-2 p-2.5 rounded-xl border transition-all cursor-pointer ${
+                    className={`flex items-center gap-2 p-2 rounded-lg border transition-colors cursor-pointer ${
                       registerDataMode === 'demo'
-                        ? 'bg-blue-50/70 border-[#0037b0] ring-1 ring-[#0037b0]'
-                        : 'bg-white border-slate-200 hover:bg-slate-50'
+                        ? 'bg-[#F7F8FA] border-[#0F3D56]'
+                        : 'bg-white border-[#E5E7EB]'
                     }`}
                   >
                     <input
                       type="radio"
-                      name="registerMode"
+                      name="regMode"
                       checked={registerDataMode === 'demo'}
                       onChange={() => setRegisterDataMode('demo')}
-                      className="mt-0.5 text-[#0037b0]"
+                      className="text-[#0F3D56]"
                     />
-                    <div className="flex flex-col">
-                      <span className="font-bold text-[12px] text-[#131b2e]">📊 Con datos de ejemplo</span>
-                      <span className="text-[10px] text-[#5b5e70]">Montos y deudas de prueba</span>
-                    </div>
+                    <span className="text-[12px] font-medium text-[#25313C]">Con ejemplo</span>
                   </label>
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="mt-1 w-full py-3.5 rounded-2xl bg-[#0037b0] text-white font-label-lg text-[15px] font-bold shadow-md hover:bg-[#002f99] active:scale-[0.98] transition-all cursor-pointer"
+                className="mt-1 w-full py-2.5 rounded-lg bg-[#0F3D56] hover:bg-[#0c2f42] text-white text-[14px] font-semibold transition-colors cursor-pointer"
               >
-                Crear mi cuenta
+                Crear cuenta
               </button>
 
               <div className="text-center pt-1">
@@ -530,7 +484,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
                     setErrorMsg('');
                     setViewState('login');
                   }}
-                  className="text-[13px] text-[#0037b0] hover:underline font-medium cursor-pointer"
+                  className="text-[13px] text-[#0F3D56] hover:underline"
                 >
                   ¿Ya tienes cuenta? Inicia sesión aquí
                 </button>
@@ -539,96 +493,92 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           </div>
         )}
 
-        {/* 4. Welcome Registered Success */}
+        {/* 4. Registered Success */}
         {viewState === 'registered_success' && (
-          <div className="bg-white rounded-3xl p-8 shadow-xl border border-[#eaedff] text-center flex flex-col gap-5 animate-in zoom-in-95 duration-200">
-            <div className="w-20 h-20 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
-              <span className="material-symbols-outlined text-[44px]">task_alt</span>
+          <div className="bg-[#FFFFFF] rounded-xl p-6 border border-[#E5E7EB] shadow-xs text-center flex flex-col items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-emerald-50 text-[#149B8A] flex items-center justify-center">
+              <span className="material-symbols-outlined text-[28px]">check_circle</span>
             </div>
-
-            <div className="flex flex-col gap-2">
-              <h2 className="font-headline-lg text-[26px] font-bold text-[#131b2e]">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-[20px] font-bold text-[#0F3D56]">
                 ¡Bienvenido a AlDía!
               </h2>
-              <p className="font-body-md text-[15px] text-[#434655] leading-relaxed">
-                {registerDataMode === 'demo'
-                  ? 'Hemos precargado datos de ejemplo para que explores cómo organizar tus pagos y deudas.'
-                  : 'Tu cuenta está lista y limpia para que registres tus obligaciones financieras con total tranquilidad.'}
+              <p className="text-[13px] text-[#6B7280]">
+                Tu cuenta ha sido creada exitosamente.
               </p>
             </div>
-
             <button
               type="button"
               onClick={onStart}
-              className="w-full py-3.5 rounded-2xl bg-[#0037b0] text-white font-label-lg text-[15px] font-bold shadow-md hover:bg-[#002f99] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-lg bg-[#0F3D56] text-white text-[14px] font-semibold cursor-pointer"
             >
-              <span>Comenzar</span>
-              <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+              Comenzar
             </button>
           </div>
         )}
 
         {/* 5. Login View */}
         {viewState === 'login' && (
-          <div className="bg-white rounded-3xl p-6 shadow-xl border border-[#eaedff] animate-in fade-in zoom-in-95 duration-200">
-            <div className="text-center pb-4">
-              <h2 className="font-headline-md text-[22px] font-bold text-[#131b2e]">
-                Iniciar Sesión en AlDía
+          <div className="bg-[#FFFFFF] rounded-xl p-6 border border-[#E5E7EB] shadow-xs flex flex-col gap-4">
+            <div className="text-center">
+              <h2 className="text-[20px] font-bold text-[#0F3D56]">
+                Iniciar sesión
               </h2>
-              <p className="font-body-sm text-[13px] text-[#434655] mt-1">
-                Ingresa para revisar tu estado de cuentas
+              <p className="text-[13px] text-[#6B7280] mt-0.5">
+                Ingresa a tu cuenta de AlDía
               </p>
             </div>
 
             {errorMsg && (
-              <div className="mb-4 p-3 rounded-2xl bg-rose-50 text-rose-700 text-[12px] font-semibold flex items-center gap-2 border border-rose-200">
-                <span className="material-symbols-outlined text-[18px]">error</span>
-                <span>{errorMsg}</span>
+              <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-[#D64545] text-[12px] font-medium">
+                {errorMsg}
               </div>
             )}
 
             <form onSubmit={handleLoginSubmit} className="flex flex-col gap-3.5">
               <div>
-                <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
+                <label className="text-[13px] font-medium text-[#25313C] block mb-1">
                   Correo electrónico
                 </label>
                 <input
                   type="email"
+                  required
                   placeholder="correo@ejemplo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                  className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
                 />
               </div>
 
               <div>
-                <label className="font-label-sm text-[12px] font-semibold text-[#434655] block mb-1">
+                <label className="text-[13px] font-medium text-[#25313C] block mb-1">
                   Contraseña
                 </label>
                 <input
                   type="password"
-                  placeholder="Tu contraseña"
+                  required
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-[#c4c5d7] text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                  className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
                 />
               </div>
 
               <button
                 type="submit"
-                className="mt-2 w-full py-3.5 rounded-2xl bg-[#0037b0] text-white font-label-lg text-[15px] font-bold shadow-md hover:bg-[#002f99] active:scale-[0.98] transition-all cursor-pointer"
+                className="mt-1 w-full py-2.5 rounded-lg bg-[#0F3D56] hover:bg-[#0c2f42] text-white text-[14px] font-semibold transition-colors cursor-pointer"
               >
-                Ingresar a mi cuenta
+                Ingresar
               </button>
 
-              <div className="text-center pt-2">
+              <div className="text-center pt-1">
                 <button
                   type="button"
                   onClick={() => {
                     setErrorMsg('');
                     setViewState('register');
                   }}
-                  className="text-[13px] text-[#0037b0] hover:underline font-medium cursor-pointer"
+                  className="text-[13px] text-[#0F3D56] hover:underline"
                 >
                   ¿No tienes cuenta? Regístrate aquí
                 </button>
@@ -637,74 +587,58 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           </div>
         )}
 
-        {/* 6. Dedicated Admin Login View */}
+        {/* 6. Admin Login View */}
         {viewState === 'admin_login' && (
-          <div className="bg-white rounded-3xl p-6 shadow-xl border border-blue-100 animate-in fade-in zoom-in-95 duration-200">
-            <div className="text-center pb-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-slate-900 to-blue-900 text-amber-400 flex items-center justify-center mx-auto mb-3 shadow-md">
-                <span className="material-symbols-outlined text-[30px]">admin_panel_settings</span>
-              </div>
-              <span className="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-[#0037b0] font-label-sm text-[10px] font-extrabold uppercase tracking-wider mb-1">
-                Administración AlDía
-              </span>
-              <h2 className="font-headline-md text-[22px] font-extrabold text-[#131b2e]">
+          <div className="bg-[#FFFFFF] rounded-xl p-6 border border-[#E5E7EB] shadow-xs flex flex-col gap-4">
+            <div className="text-center">
+              <h2 className="text-[20px] font-bold text-[#0F3D56]">
                 Acceso Administrador
               </h2>
-              <p className="font-body-sm text-[13px] text-[#434655] mt-1">
-                Ingresa tus credenciales autorizadas de administrador.
+              <p className="text-[13px] text-[#6B7280] mt-0.5">
+                Ingreso al panel de gestión
               </p>
             </div>
 
             {errorMsg && (
-              <div className="mb-4 p-3 rounded-2xl bg-rose-50 text-rose-700 text-[12px] font-semibold flex items-center gap-2 border border-rose-200">
-                <span className="material-symbols-outlined text-[18px]">error</span>
-                <span>{errorMsg}</span>
+              <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-[#D64545] text-[12px] font-medium">
+                {errorMsg}
               </div>
             )}
 
             <form onSubmit={handleAdminSubmit} className="flex flex-col gap-3.5">
               <div>
-                <label className="font-label-sm text-[12px] font-bold text-[#434655] block mb-1">
-                  Correo del Administrador
+                <label className="text-[13px] font-medium text-[#25313C] block mb-1">
+                  Correo
                 </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">
-                    mail
-                  </span>
-                  <input
-                    type="email"
-                    placeholder="correo@ejemplo.com"
-                    value={adminEmail}
-                    onChange={(e) => setAdminEmail(e.target.value)}
-                    autoFocus
-                    className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-300 text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
-                  />
-                </div>
+                <input
+                  type="email"
+                  required
+                  placeholder="correo@ejemplo.com"
+                  value={adminEmail}
+                  onChange={(e) => setAdminEmail(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
+                />
               </div>
 
               <div>
-                <label className="font-label-sm text-[12px] font-bold text-[#434655] block mb-1">
+                <label className="text-[13px] font-medium text-[#25313C] block mb-1">
                   Contraseña
                 </label>
                 <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">
-                    lock
-                  </span>
                   <input
                     type={showAdminPass ? 'text' : 'password'}
+                    required
                     placeholder="••••••••"
                     value={adminPassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
-                    className="w-full pl-11 pr-11 py-2.5 rounded-xl border border-slate-300 text-[14px] text-[#131b2e] focus:border-[#0037b0] outline-none"
+                    className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] text-[#25313C] outline-none focus:border-[#0F3D56]"
                   />
                   <button
                     type="button"
                     onClick={() => setShowAdminPass(!showAdminPass)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#6B7280] text-[12px]"
                   >
-                    <span className="material-symbols-outlined text-[18px]">
-                      {showAdminPass ? 'visibility_off' : 'visibility'}
-                    </span>
+                    {showAdminPass ? 'Ocultar' : 'Ver'}
                   </button>
                 </div>
               </div>
@@ -712,28 +646,18 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               <button
                 type="submit"
                 disabled={isAdminLoading}
-                className="mt-2 w-full py-3.5 rounded-2xl bg-slate-900 text-white font-label-lg text-[15px] font-bold shadow-md hover:bg-slate-800 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="mt-1 w-full py-2.5 rounded-lg bg-[#0F3D56] text-white text-[14px] font-semibold transition-colors cursor-pointer disabled:opacity-60"
               >
-                {isAdminLoading ? (
-                  <>
-                    <span className="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
-                    <span>Validando...</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="material-symbols-outlined text-[20px] text-amber-400">admin_panel_settings</span>
-                    <span>Iniciar Sesión Administrador</span>
-                  </>
-                )}
+                {isAdminLoading ? 'Validando...' : 'Ingresar al panel'}
               </button>
             </form>
           </div>
         )}
       </div>
 
-      {/* Bottom Legal Disclaimer */}
-      <footer className="pt-4 pb-2 border-t border-[#eaedff] text-center">
-        <p className="text-[11px] text-[#747686] leading-relaxed">
+      {/* Footer Legal */}
+      <footer className="text-center pt-3 pb-1 border-t border-[#E5E7EB]">
+        <p className="text-[11px] text-[#6B7280]">
           {LEGAL_DISCLAIMER}
         </p>
       </footer>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { APP_NAME, LEGAL_DISCLAIMER } from '../../data/initialData';
 import { UserProfile } from '../../types';
 
@@ -21,153 +21,226 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   onLoadDemoData,
   onClearAllData,
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(user.name || '');
+  const [email, setEmail] = useState(user.email || '');
+  const [phone, setPhone] = useState(user.phone || '');
+  const [showReminders, setShowReminders] = useState(false);
+  const [reminder7, setReminder7] = useState(true);
+  const [reminder3, setReminder3] = useState(true);
+  const [reminder1, setReminder1] = useState(true);
+
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    user.name = name;
+    user.email = email;
+    user.phone = phone;
+    setIsEditing(false);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-      <div className="bg-white rounded-3xl w-full max-w-sm p-5 sm:p-6 shadow-2xl border border-[#eaedff] my-auto animate-in fade-in zoom-in-95 duration-200 flex flex-col gap-4">
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+      <div className="bg-[#FFFFFF] rounded-xl w-full max-w-md p-6 border border-[#E5E7EB] shadow-lg flex flex-col gap-4">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#eaedff]">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-2xl bg-[#0037b0]/10 text-[#0037b0] flex items-center justify-center font-bold">
-              <span className="material-symbols-outlined text-[20px]">person</span>
-            </div>
-            <h3 className="font-headline-sm text-[17px] font-bold text-[#131b2e]">
-              Mi Perfil • {APP_NAME}
-            </h3>
-          </div>
+        <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB]">
+          <h2 className="text-[18px] font-bold text-[#0F3D56]">
+            Perfil de usuario
+          </h2>
           <button
+            type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#747686] hover:text-[#131b2e] cursor-pointer"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:text-[#25313C] hover:bg-[#F7F8FA] cursor-pointer"
           >
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
 
-        {/* User Card */}
-        <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-3xl bg-[#0037b0] text-white flex items-center justify-center text-[22px] font-bold mb-2 shadow-md">
-            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-          </div>
-          <h4 className="font-headline-sm text-[16px] font-bold text-[#131b2e]">
-            {user.name || 'Invitado'}
-          </h4>
-          {user.email && (
-            <span className="text-[12px] text-[#747686]">{user.email}</span>
-          )}
-          {user.phone && (
-            <span className="text-[11px] text-[#0037b0] font-semibold mt-0.5">
-              📱 {user.phone}
-            </span>
-          )}
-          {user.isAdmin && (
-            <span className="mt-1 px-2.5 py-0.5 rounded-full bg-blue-100 text-[#0037b0] text-[10px] font-extrabold uppercase">
-              Super Administrador
-            </span>
-          )}
-        </div>
-
-        {/* Info Grid */}
-        <div className="bg-[#faf8ff] rounded-2xl p-3.5 border border-[#eaedff] text-[12px] flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[#434655]">Estado de cuenta:</span>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">
-              🟢 Activa / AlDía
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[#434655]">Privacidad:</span>
-            <span className="text-[#131b2e] font-medium flex items-center gap-1">
-              <span className="material-symbols-outlined text-[14px] text-emerald-600">lock</span>
-              Datos 100% privados
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-[#434655]">Asistencia:</span>
-            <span className="text-[#0037b0] font-bold flex items-center gap-1">
-              <span className="material-symbols-outlined text-[15px] text-cyan-600">smart_toy</span>
-              Bot IA de Asesoramiento
-            </span>
-          </div>
-        </div>
-
-        {/* Data Options Box */}
-        <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
-          <span className="text-[11px] font-bold text-slate-700">Modo de Información:</span>
-          <div className="flex gap-2">
-            {onLoadDemoData && (
+        {isEditing ? (
+          <form onSubmit={handleSaveProfile} className="flex flex-col gap-3">
+            <div>
+              <label className="text-[13px] font-medium text-[#25313C] block mb-1">Nombre</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] outline-none focus:border-[#0F3D56]"
+              />
+            </div>
+            <div>
+              <label className="text-[13px] font-medium text-[#25313C] block mb-1">Correo electrónico</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] outline-none focus:border-[#0F3D56]"
+              />
+            </div>
+            <div>
+              <label className="text-[13px] font-medium text-[#25313C] block mb-1">Teléfono</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] text-[14px] outline-none focus:border-[#0F3D56]"
+              />
+            </div>
+            <div className="flex gap-2 pt-2">
               <button
                 type="button"
-                onClick={() => {
-                  onLoadDemoData();
-                  onClose();
-                }}
-                className="flex-1 py-1.5 px-2.5 rounded-xl bg-blue-50 text-[#0037b0] hover:bg-blue-100 font-bold text-[11px] border border-blue-200 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                onClick={() => setIsEditing(false)}
+                className="flex-1 py-2 rounded-lg border border-[#E5E7EB] text-[#25313C] text-[13px] font-medium cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[15px]">sync</span>
-                <span>Cargar demo</span>
+                Cancelar
               </button>
-            )}
+              <button
+                type="submit"
+                className="flex-1 py-2 rounded-lg bg-[#0F3D56] text-white text-[13px] font-medium cursor-pointer"
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
+        ) : showReminders ? (
+          <div className="flex flex-col gap-3">
+            <h3 className="text-[15px] font-bold text-[#0F3D56]">Configurar recordatorios</h3>
+            <p className="text-[13px] text-[#6B7280]">
+              Elige con cuánta anticipación deseas recibir avisos antes del vencimiento:
+            </p>
+            <div className="flex flex-col gap-2 pt-1 text-[13px]">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={reminder7}
+                  onChange={(e) => setReminder7(e.target.checked)}
+                  className="rounded text-[#0F3D56]"
+                />
+                <span>7 días antes del vencimiento</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={reminder3}
+                  onChange={(e) => setReminder3(e.target.checked)}
+                  className="rounded text-[#0F3D56]"
+                />
+                <span>3 días antes del vencimiento</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={reminder1}
+                  onChange={(e) => setReminder1(e.target.checked)}
+                  className="rounded text-[#0F3D56]"
+                />
+                <span>1 día antes del vencimiento</span>
+              </label>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowReminders(false)}
+              className="mt-2 w-full py-2 rounded-lg bg-[#0F3D56] text-white text-[13px] font-medium cursor-pointer"
+            >
+              Guardar preferencias
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {/* User Info Block */}
+            <div className="bg-[#F7F8FA] p-4 rounded-lg border border-[#E5E7EB] flex flex-col gap-1">
+              <span className="text-[16px] font-bold text-[#25313C]">
+                {user.name || 'Mi perfil'}
+              </span>
+              <span className="text-[13px] text-[#6B7280]">
+                {user.email || 'Sin correo registrado'}
+              </span>
+              {user.phone && (
+                <span className="text-[13px] text-[#6B7280]">
+                  Tel: {user.phone}
+                </span>
+              )}
+            </div>
 
-            {onClearAllData && (
+            {/* Options List */}
+            <div className="flex flex-col gap-1.5 text-[14px]">
               <button
                 type="button"
-                onClick={() => {
-                  onClearAllData();
-                  onClose();
-                }}
-                className="flex-1 py-1.5 px-2.5 rounded-xl bg-slate-100 text-slate-700 hover:text-rose-600 hover:bg-rose-50 font-bold text-[11px] border border-slate-200 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                onClick={() => setIsEditing(true)}
+                className="w-full py-2 px-3 rounded-lg border border-[#E5E7EB] hover:bg-[#F7F8FA] text-[#25313C] text-left flex items-center justify-between cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[15px]">clear_all</span>
-                <span>Limpiar todo</span>
+                <span>Editar información</span>
+                <span className="material-symbols-outlined text-[18px] text-[#6B7280]">edit</span>
               </button>
-            )}
-          </div>
-        </div>
 
-        {/* Legal Disclaimer Box */}
-        <div className="p-3 rounded-2xl bg-blue-50/60 border border-blue-100 text-[10px] text-[#434655] leading-relaxed">
-          {LEGAL_DISCLAIMER}
-        </div>
+              <button
+                type="button"
+                onClick={() => setShowReminders(true)}
+                className="w-full py-2 px-3 rounded-lg border border-[#E5E7EB] hover:bg-[#F7F8FA] text-[#25313C] text-left flex items-center justify-between cursor-pointer"
+              >
+                <span>Recordatorios</span>
+                <span className="material-symbols-outlined text-[18px] text-[#6B7280]">notifications</span>
+              </button>
 
-        {/* Action buttons */}
-        <div className="flex flex-col gap-2 pt-1">
-          {onOpenAdmin && (
+              {onLoadDemoData && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onLoadDemoData();
+                    onClose();
+                  }}
+                  className="w-full py-2 px-3 rounded-lg border border-[#E5E7EB] hover:bg-[#F7F8FA] text-[#25313C] text-left flex items-center justify-between cursor-pointer"
+                >
+                  <span>Cargar datos de ejemplo</span>
+                  <span className="material-symbols-outlined text-[18px] text-[#6B7280]">sync</span>
+                </button>
+              )}
+
+              {onClearAllData && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClearAllData();
+                    onClose();
+                  }}
+                  className="w-full py-2 px-3 rounded-lg border border-[#E5E7EB] hover:bg-rose-50 text-[#6B7280] hover:text-[#D64545] text-left flex items-center justify-between cursor-pointer"
+                >
+                  <span>Limpiar cuenta (Empezar de cero)</span>
+                  <span className="material-symbols-outlined text-[18px]">clear_all</span>
+                </button>
+              )}
+
+              {onOpenAdmin && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenAdmin();
+                  }}
+                  className="w-full py-2 px-3 rounded-lg border border-[#E5E7EB] hover:bg-[#F7F8FA] text-[#0F3D56] font-medium text-left flex items-center justify-between cursor-pointer"
+                >
+                  <span>Panel Administrador</span>
+                  <span className="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+                </button>
+              )}
+            </div>
+
+            {/* Disclaimer */}
+            <p className="text-[11px] text-[#6B7280] leading-relaxed pt-2 border-t border-[#E5E7EB]">
+              {LEGAL_DISCLAIMER}
+            </p>
+
+            {/* Logout */}
             <button
               type="button"
               onClick={() => {
                 onClose();
-                onOpenAdmin();
+                onLogout();
               }}
-              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-label-md text-[13px] font-bold flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
+              className="w-full py-2 rounded-lg text-[#D64545] hover:bg-rose-50 text-[13px] font-medium transition-colors cursor-pointer text-center"
             >
-              <span className="material-symbols-outlined text-[18px] text-amber-400">admin_panel_settings</span>
-              <span>Acceso Administrador</span>
+              Cerrar sesión
             </button>
-          )}
-
-          <button
-            type="button"
-            onClick={() => {
-              onClose();
-              onRestartWelcome();
-            }}
-            className="w-full py-2.5 rounded-xl bg-[#faf8ff] hover:bg-[#eaedff] text-[#0037b0] font-label-md text-[13px] font-bold flex items-center justify-center gap-2 border border-[#eaedff] transition-all cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[18px]">play_circle</span>
-            <span>Ver pantalla de bienvenida</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              onClose();
-              onLogout();
-            }}
-            className="w-full py-2 rounded-xl text-rose-600 hover:bg-rose-50 text-[12px] font-semibold flex items-center justify-center gap-1 transition-all cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[16px]">logout</span>
-            <span>Cerrar sesión / Salir</span>
-          </button>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
