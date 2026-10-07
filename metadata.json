@@ -1,6 +1,6 @@
 {
   "name": "AlDía",
-  "description": "Entiende tus deudas. Organiza tus pagos. Avanza tranquilo. Plataforma digital de orientación y seguimiento financiero personal.",
+  "description": "Orientación para tus créditos, pagos y cobranzas. Entiende tu situación financiera y conoce qué puedes hacer.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

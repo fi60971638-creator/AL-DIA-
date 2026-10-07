@@ -1,563 +1,195 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React, { useState } from 'react';
-import {
-  TabType,
-  DebtItem,
-  QuotaItem,
-  NotificationItem,
-  BudgetData,
-  ReminderConfig,
-  UserProfile,
-  AdminUserRecord,
-  AdminContentArticle,
-  AdminRecommendationRule,
-  AdminReminderRule,
-} from './types';
-import {
-  INITIAL_DEBTS,
-  INITIAL_QUOTAS,
-  INITIAL_NOTIFICATIONS,
-  INITIAL_BUDGET,
-  INITIAL_REMINDERS,
-  INITIAL_USER,
-  INITIAL_ADMIN_USERS,
-  INITIAL_ADMIN_CONTENTS,
-  INITIAL_ADMIN_RECOMMENDATIONS,
-  INITIAL_ADMIN_REMINDER_RULES,
-  ADMIN_AUTH_CONFIG,
-} from './data/initialData';
-import { Header } from './components/Header';
+import { TabType, SituationId } from './types';
 import { Sidebar } from './components/Sidebar';
+import { Header } from './components/Header';
 import { BottomNav } from './components/BottomNav';
-import { WelcomeScreen } from './components/screens/WelcomeScreen';
+import { Footer } from './components/Footer';
 import { InicioScreen } from './components/screens/InicioScreen';
-import { MisDeudasScreen } from './components/screens/MisDeudasScreen';
-import { CalendarioScreen } from './components/screens/CalendarioScreen';
-import { CapacidadPagoScreen } from './components/screens/CapacidadPagoScreen';
-import { EducacionSBSScreen } from './components/screens/EducacionSBSScreen';
-import { PaymentModal } from './components/modals/PaymentModal';
-import { AddDebtModal } from './components/modals/AddDebtModal';
-import { EditDebtModal } from './components/modals/EditDebtModal';
-import { DebtDetailModal } from './components/modals/DebtDetailModal';
-import { RemindersModal } from './components/modals/RemindersModal';
-import { AdvisorChatModal } from './components/modals/AdvisorChatModal';
-import { NotificationsModal } from './components/modals/NotificationsModal';
-import { ProfileModal } from './components/modals/ProfileModal';
-import { AdminLoginModal } from './components/modals/AdminLoginModal';
-import { AdminPanel } from './components/admin/AdminPanel';
+import { SituacionesScreen } from './components/screens/SituacionesScreen';
+import { VideosScreen } from './components/screens/VideosScreen';
+import { AprendeScreen } from './components/screens/AprendeScreen';
+import { CasosPracticosScreen } from './components/screens/CasosPracticosScreen';
+import { PreguntasFrecuentesScreen } from './components/screens/PreguntasFrecuentesScreen';
+import { AsesoramientoScreen } from './components/screens/AsesoramientoScreen';
+import { DerechosScreen } from './components/screens/DerechosScreen';
+import { FuentesOficialesScreen } from './components/screens/FuentesOficialesScreen';
+import {
+  APP_NAME,
+  APP_SUBTITLE,
+  APP_LOGO_URL,
+  OFFICIAL_SOURCES_DATA,
+} from './data/initialData';
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<TabType>('bienvenida');
-  const [user, setUser] = useState<UserProfile>(INITIAL_USER);
-  const [debts, setDebts] = useState<DebtItem[]>(INITIAL_DEBTS);
-  const [quotas, setQuotas] = useState<QuotaItem[]>(INITIAL_QUOTAS);
-  const [budget, setBudget] = useState<BudgetData>(INITIAL_BUDGET);
-  const [reminders, setReminders] = useState<ReminderConfig>(INITIAL_REMINDERS);
-  const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
+  const [currentTab, setCurrentTab] = useState<TabType>('inicio');
+  const [selectedSituationId, setSelectedSituationId] = useState<SituationId>('no-puedo-pagar');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Admin states
-  const [adminUsers, setAdminUsers] = useState<AdminUserRecord[]>(INITIAL_ADMIN_USERS);
-  const [adminContents, setAdminContents] = useState<AdminContentArticle[]>(INITIAL_ADMIN_CONTENTS);
-  const [adminRecommendations, setAdminRecommendations] = useState<AdminRecommendationRule[]>(INITIAL_ADMIN_RECOMMENDATIONS);
-  const [adminReminderRules, setAdminReminderRules] = useState<AdminReminderRule[]>(INITIAL_ADMIN_REMINDER_RULES);
-  const [isAdminLoginModalOpen, setIsAdminLoginModalOpen] = useState(false);
-
-  // Modals state
-  const [selectedDebtDetail, setSelectedDebtDetail] = useState<DebtItem | null>(null);
-  const [editingDebt, setEditingDebt] = useState<DebtItem | null>(null);
-  const [payingQuota, setPayingQuota] = useState<QuotaItem | null>(null);
-  const [isAddDebtOpen, setIsAddDebtOpen] = useState(false);
-  const [isAdvisorChatOpen, setIsAdvisorChatOpen] = useState(false);
-  const [advisorChatContext, setAdvisorChatContext] = useState<string | undefined>(undefined);
-  const [isRemindersOpen, setIsRemindersOpen] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [actionGuideTopic, setActionGuideTopic] = useState<string | undefined>(undefined);
-
-  // Notification counter
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
-  const generateId = (prefix: string) =>
-    `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
-
-  // Handlers for Data modes
-  const handleLoadDemoData = () => {
-    setDebts(INITIAL_DEBTS);
-    setQuotas(INITIAL_QUOTAS);
-    setBudget(INITIAL_BUDGET);
-    setNotifications(INITIAL_NOTIFICATIONS);
+  const handleNavigate = (tab: TabType) => {
+    setCurrentTab(tab);
+    setIsMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleClearAllData = () => {
-    setDebts([]);
-    setQuotas([]);
-    setBudget({
-      salary: 0,
-      extraIncome: 0,
-      housing: 0,
-      food: 0,
-      transport: 0,
-      services: 0,
-      education: 0,
-      otherExpenses: 0,
-      simulatedQuota: 0,
-    });
-    setNotifications([
-      {
-        id: 'notif-clean-welcome',
-        title: 'Cuenta limpia activada',
-        desc: 'Tu tablero está listo en S/ 0 para que comiences a registrar tus deudas.',
-        time: 'Justo ahora',
-        read: false,
-        type: 'info',
-      },
-    ]);
+  const handleSelectSituation = (id: SituationId) => {
+    setSelectedSituationId(id);
+    setCurrentTab('situaciones');
+    setIsMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleUserRegistration = (newUser: UserProfile, loadDemoData: boolean = true) => {
-    setUser(newUser);
-    if (loadDemoData) {
-      handleLoadDemoData();
-    } else {
-      handleClearAllData();
-    }
-  };
+  const navItems: { id: TabType; label: string; icon: string; emoji?: string }[] = [
+    { id: 'inicio', label: 'Inicio', icon: 'home' },
+    { id: 'situaciones', label: 'Situaciones', icon: 'category' },
+    { id: 'videos', label: 'Videos', icon: 'smart_display', emoji: '🎥' },
+    { id: 'aprende', label: 'Aprende', icon: 'school', emoji: '📚' },
+    { id: 'casos', label: 'Casos prácticos', icon: 'psychology', emoji: '💡' },
+    { id: 'preguntas', label: 'Preguntas frecuentes', icon: 'help_outline', emoji: '❓' },
+    { id: 'asesoramiento', label: 'Orientación personalizada', icon: 'support_agent', emoji: '👤' },
+    { id: 'derechos', label: 'Mis derechos', icon: 'shield', emoji: '🛡️' },
+    { id: 'fuentes', label: 'Fuentes oficiales', icon: 'verified', emoji: '🔗' },
+  ];
 
-  // Handlers for payments and debts
-  const handlePaymentSuccess = (quotaId: string, operationNumber: string) => {
-    setQuotas((prev) =>
-      prev.map((q) =>
-        q.id === quotaId
-          ? {
-              ...q,
-              status: 'paid' as const,
-              statusLabel: 'Pagada',
-              operationNumber,
-              paidDate: 'Hoy',
-            }
-          : q
-      )
-    );
-
-    const paidQuota = quotas.find((q) => q.id === quotaId);
-    if (paidQuota) {
-      if (paidQuota.debtId) {
-        setDebts((prev) =>
-          prev.map((d) =>
-            d.id === paidQuota.debtId
-              ? {
-                  ...d,
-                  paidAmount: (d.paidAmount || 0) + paidQuota.amount,
-                  balance: Math.max(0, d.balance - paidQuota.amount),
-                  status: 'al_dia',
-                  statusLabel: 'Al día',
-                }
-              : d
-          )
-        );
-      }
-
-      const newNotif: NotificationItem = {
-        id: generateId('notif'),
-        title: `Pago confirmado - ${paidQuota.entity}`,
-        desc: `Se registró el abono de S/ ${paidQuota.amount} con N° Op. ${operationNumber}.`,
-        time: 'Justo ahora',
-        read: false,
-        type: 'success',
-      };
-      setNotifications((prev) => [newNotif, ...prev]);
-    }
-  };
-
-  const handleAddDebt = (newDebt: Omit<DebtItem, 'id'>) => {
-    const createdDebt: DebtItem = {
-      ...newDebt,
-      id: generateId('debt'),
-    };
-    setDebts((prev) => [createdDebt, ...prev]);
-
-    const newQuota: QuotaItem = {
-      id: generateId('quota'),
-      debtId: createdDebt.id,
-      entity: createdDebt.entity,
-      debtType: createdDebt.type,
-      quotaNumber: `Cuota 01/${createdDebt.totalQuotas || 12}`,
-      amount: createdDebt.monthlyQuota,
-      dueDate: createdDebt.dueDate,
-      dueDateDay: createdDebt.dueDateDay || 15,
-      month: '2026-09',
-      status: createdDebt.status === 'atrasado' ? 'overdue' : 'pending',
-      statusLabel: createdDebt.status === 'atrasado' ? 'Atrasada' : 'Próxima',
-      daysRemaining: 10,
-      hasReminder: true,
-    };
-    setQuotas((prev) => [newQuota, ...prev]);
-
-    const newNotif: NotificationItem = {
-      id: generateId('notif'),
-      title: 'Nueva deuda registrada',
-      desc: `Registraste ${createdDebt.entity} por S/ ${createdDebt.balance.toLocaleString()}.`,
-      time: 'Justo ahora',
-      read: false,
-      type: 'info',
-    };
-    setNotifications((prev) => [newNotif, ...prev]);
-  };
-
-  const handleEditDebt = (updatedDebt: DebtItem) => {
-    setDebts((prev) => prev.map((d) => (d.id === updatedDebt.id ? updatedDebt : d)));
-    const newNotif: NotificationItem = {
-      id: generateId('notif'),
-      title: 'Deuda actualizada',
-      desc: `Se actualizaron los datos de ${updatedDebt.entity}.`,
-      time: 'Justo ahora',
-      read: false,
-      type: 'info',
-    };
-    setNotifications((prev) => [newNotif, ...prev]);
-  };
-
-  const handleDeleteDebt = (debtId: string) => {
-    const debtToDelete = debts.find((d) => d.id === debtId);
-    setDebts((prev) => prev.filter((d) => d.id !== debtId));
-    if (debtToDelete) {
-      setQuotas((prev) => prev.filter((q) => q.debtId !== debtId && q.entity !== debtToDelete.entity));
-
-      const newNotif: NotificationItem = {
-        id: generateId('notif'),
-        title: 'Deuda eliminada',
-        desc: `Se retiró el compromiso de ${debtToDelete.entity} de AlDía.`,
-        time: 'Justo ahora',
-        read: false,
-        type: 'info',
-      };
-      setNotifications((prev) => [newNotif, ...prev]);
-    }
-  };
-
-  const handleDeleteQuota = (quotaId: string) => {
-    const quotaToDelete = quotas.find((q) => q.id === quotaId);
-    setQuotas((prev) => prev.filter((q) => q.id !== quotaId));
-    if (quotaToDelete) {
-      const newNotif: NotificationItem = {
-        id: generateId('notif'),
-        title: 'Cuota retirada',
-        desc: `Se retiró la cuota de ${quotaToDelete.entity} (${quotaToDelete.quotaNumber}).`,
-        time: 'Justo ahora',
-        read: false,
-        type: 'info',
-      };
-      setNotifications((prev) => [newNotif, ...prev]);
-    }
-  };
-
-  const handleToggleReminder = (quotaId: string) => {
-    setQuotas((prev) =>
-      prev.map((q) => (q.id === quotaId ? { ...q, hasReminder: !q.hasReminder } : q))
-    );
-  };
-
-  const handleMarkAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  };
-
-  const openAdvisorChat = (context?: string) => {
-    setAdvisorChatContext(context);
-    setIsAdvisorChatOpen(true);
-  };
-
-  const handleOpenActionGuide = (topicId: string) => {
-    setActionGuideTopic(topicId);
-    setCurrentTab('educacion');
-  };
-
-  const handleAdminLoginSuccess = () => {
-    setUser({
-      name: ADMIN_AUTH_CONFIG.adminName,
-      email: ADMIN_AUTH_CONFIG.authorizedEmail,
-      phone: '+51 987 654 321',
-      isLoggedIn: true,
-      isAdmin: true,
-    });
-    setCurrentTab('admin');
-  };
-
-  const handleBroadcastNotification = (newNotif: NotificationItem) => {
-    setNotifications((prev) => [newNotif, ...prev]);
-  };
-
-  // 1. Welcome Screen
-  if (currentTab === 'bienvenida') {
-    return (
-      <>
-        <WelcomeScreen
-          onStart={() => setCurrentTab('inicio')}
-          onRegisterSuccess={handleUserRegistration}
-          onOpenAdminLogin={handleAdminLoginSuccess}
-        />
-        <AdminLoginModal
-          isOpen={isAdminLoginModalOpen}
-          onClose={() => setIsAdminLoginModalOpen(false)}
-          onLoginSuccess={handleAdminLoginSuccess}
-        />
-      </>
-    );
-  }
-
-  // 2. Admin Panel
-  if (currentTab === 'admin') {
-    return (
-      <AdminPanel
-        onBackToApp={() => setCurrentTab('inicio')}
-        onLogoutAdmin={() => {
-          setUser({
-            name: '',
-            email: '',
-            phone: '',
-            isLoggedIn: false,
-            isAdmin: false,
-          });
-          setCurrentTab('bienvenida');
-        }}
-        users={adminUsers}
-        setUsers={setAdminUsers}
-        contents={adminContents}
-        setContents={setAdminContents}
-        recommendations={adminRecommendations}
-        setRecommendations={setAdminRecommendations}
-        reminderRules={adminReminderRules}
-        setReminderRules={setAdminReminderRules}
-        onBroadcastNotification={handleBroadcastNotification}
-      />
-    );
-  }
-
-  // 3. User Main App
   return (
-    <div className="min-h-screen bg-[#F7F8FA] text-[#25313C] flex flex-col md:flex-row antialiased">
-      {/* Desktop Sidebar (Only visible on md+) */}
-      <Sidebar
-        currentTab={currentTab}
-        onSelectTab={(tab) => setCurrentTab(tab)}
-        onOpenProfile={() => setIsProfileOpen(true)}
-        onOpenWelcome={() => setCurrentTab('bienvenida')}
-        user={user}
-      />
+    <div className="min-h-screen bg-[#F7F8FA] text-[#25313C] flex font-sans antialiased selection:bg-teal-100">
+      {/* 1. Desktop Sidebar Navigation (Left column, compact) */}
+      <Sidebar currentTab={currentTab} onNavigate={handleNavigate} />
 
-      {/* Main Container Column */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile Header (Hidden on md+) */}
-        <div className="md:hidden">
-          <Header
-            currentTab={currentTab}
-            unreadNotificationsCount={unreadCount}
-            onOpenNotifications={() => setIsNotificationsOpen(true)}
-            onOpenProfile={() => setIsProfileOpen(true)}
-            onOpenWelcome={() => setCurrentTab('bienvenida')}
+      {/* 2. Mobile Left Drawer Sheet */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Backdrop */}
+          <div
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed inset-0 bg-black/40 backdrop-blur-2xs transition-opacity"
           />
-        </div>
 
-        {/* Desktop Top Sub-header (notifications & subtle profile) */}
-        <div className="hidden md:flex items-center justify-between px-8 py-4 border-b border-[#E5E7EB] bg-[#FFFFFF]">
-          <div className="flex items-center gap-2">
-            <span className="text-[14px] text-[#6B7280]">
-              {currentTab === 'inicio' && 'Panel principal'}
-              {currentTab === 'mis-deudas' && 'Control de obligaciones de pago'}
-              {currentTab === 'calendario' && 'Cronograma mensual de vencimientos'}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsNotificationsOpen(true)}
-              className="relative w-8 h-8 flex items-center justify-center rounded-lg text-[#6B7280] hover:text-[#0F3D56] hover:bg-[#F7F8FA] border border-[#E5E7EB] transition-colors cursor-pointer"
-              title="Notificaciones"
-            >
-              <span className="material-symbols-outlined text-[18px]">notifications</span>
-              {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#D64545]"></span>
-              )}
-            </button>
-
-            <button
-              onClick={() => setIsProfileOpen(true)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#E5E7EB] hover:bg-[#F7F8FA] text-[13px] font-medium text-[#25313C] transition-colors cursor-pointer"
-            >
-              <div className="w-5 h-5 rounded-full bg-[#0F3D56] text-white flex items-center justify-center text-[10px] font-bold">
-                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+          {/* Drawer Content */}
+          <div className="relative w-4/5 max-w-xs bg-white min-h-screen p-5 flex flex-col justify-between shadow-2xl z-50 border-r border-[#E5E7EB] overflow-y-auto">
+            <div className="flex flex-col gap-5">
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB]">
+                <div className="flex items-center gap-2.5">
+                  <img src={APP_LOGO_URL} alt={APP_NAME} className="h-7 w-auto object-contain" />
+                  <div className="flex flex-col">
+                    <span className="text-[17px] font-bold text-[#0F3D56] leading-none">
+                      {APP_NAME}
+                    </span>
+                    <span className="text-[10px] text-[#6B7280] font-medium leading-none mt-0.5">
+                      {APP_SUBTITLE}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:bg-[#F7F8FA] cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[20px]">close</span>
+                </button>
               </div>
-              <span className="max-w-[120px] truncate">{user.name || 'Mi perfil'}</span>
-            </button>
+
+              {/* Navigation Links */}
+              <div className="flex flex-col gap-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] px-2 mb-1">
+                  Menú Principal
+                </span>
+                {navItems.map((item) => {
+                  const isActive = currentTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => handleNavigate(item.id)}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all text-left cursor-pointer ${
+                        isActive
+                          ? 'bg-[#0F3D56] text-white font-semibold shadow-2xs'
+                          : 'text-[#25313C] hover:bg-[#F7F8FA]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        {item.emoji ? (
+                          <span className="text-[15px]">{item.emoji}</span>
+                        ) : (
+                          <span
+                            className="material-symbols-outlined text-[20px]"
+                            style={{ color: isActive ? '#FFFFFF' : '#6B7280' }}
+                          >
+                            {item.icon}
+                          </span>
+                        )}
+                        <span>{item.label}</span>
+                      </div>
+                      <span className="material-symbols-outlined text-[16px] opacity-60">
+                        chevron_right
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Drawer Bottom Sources */}
+            <div className="pt-4 border-t border-[#E5E7EB] flex flex-col gap-2">
+              <span className="text-[11px] font-bold text-[#0F3D56]">Fuentes oficiales</span>
+              <div className="grid grid-cols-3 gap-1.5 text-center text-[11px]">
+                {OFFICIAL_SOURCES_DATA.map((s) => (
+                  <a
+                    key={s.id}
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded-lg bg-[#F7F8FA] border border-[#E5E7EB] font-bold text-[#0F3D56]"
+                  >
+                    {s.name}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
+      )}
 
-        {/* Screen Content */}
-        <main className="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-6 pb-24 md:pb-12">
+      {/* 3. Main Content Column */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <Header
+          currentTab={currentTab}
+          onNavigate={handleNavigate}
+          onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
+        />
+
+        <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 pt-6 sm:pt-8 pb-12">
           {currentTab === 'inicio' && (
             <InicioScreen
-              user={user}
-              debts={debts}
-              quotas={quotas}
-              onNavigate={(tab) => setCurrentTab(tab)}
-              onPayQuota={(quota) => setPayingQuota(quota)}
-              onViewDebtDetail={(debt) => setSelectedDebtDetail(debt)}
-              onOpenAddDebt={() => setIsAddDebtOpen(true)}
-              onOpenAdmin={() => setIsAdminLoginModalOpen(true)}
+              onNavigate={handleNavigate}
+              onSelectSituation={handleSelectSituation}
             />
           )}
 
-          {currentTab === 'mis-deudas' && (
-            <MisDeudasScreen
-              debts={debts}
-              onOpenAddDebt={() => setIsAddDebtOpen(true)}
-              onSelectDebt={(debt) => setSelectedDebtDetail(debt)}
-              onEditDebt={(debt) => setEditingDebt(debt)}
-              onDeleteDebt={handleDeleteDebt}
-              onOpenAdvisorChat={openAdvisorChat}
-              onLoadDemoData={handleLoadDemoData}
-              onClearAllDebts={handleClearAllData}
+          {currentTab === 'situaciones' && (
+            <SituacionesScreen
+              selectedSituationId={selectedSituationId}
+              onSelectSituation={(id) => setSelectedSituationId(id)}
             />
           )}
 
-          {currentTab === 'calendario' && (
-            <CalendarioScreen
-              quotas={quotas}
-              onPayQuota={(quota) => setPayingQuota(quota)}
-              onToggleReminder={handleToggleReminder}
-              onDeleteQuota={handleDeleteQuota}
-            />
-          )}
+          {currentTab === 'videos' && <VideosScreen />}
+
+          {currentTab === 'aprende' && <AprendeScreen />}
+
+          {currentTab === 'casos' && <CasosPracticosScreen />}
+
+          {currentTab === 'preguntas' && <PreguntasFrecuentesScreen />}
+
+          {currentTab === 'asesoramiento' && <AsesoramientoScreen />}
+
+          {currentTab === 'derechos' && <DerechosScreen />}
+
+          {currentTab === 'fuentes' && <FuentesOficialesScreen />}
         </main>
 
-        {/* Bottom Persistent Navigation for Mobile */}
-        <BottomNav
-          currentTab={currentTab}
-          onSelectTab={(tab) => setCurrentTab(tab)}
-          onOpenProfile={() => setIsProfileOpen(true)}
-        />
+        <Footer onNavigate={handleNavigate} />
+
+        <BottomNav currentTab={currentTab} onNavigate={handleNavigate} />
       </div>
-
-      {/* Modals */}
-      {selectedDebtDetail && (
-        <DebtDetailModal
-          debt={selectedDebtDetail}
-          onClose={() => setSelectedDebtDetail(null)}
-          onRegisterPayment={(debt) => {
-            const matchedQuota = quotas.find((q) => q.debtId === debt.id || q.entity === debt.entity);
-            if (matchedQuota) {
-              setPayingQuota(matchedQuota);
-            } else {
-              setPayingQuota({
-                id: generateId('quota'),
-                debtId: debt.id,
-                entity: debt.entity,
-                debtType: debt.type,
-                quotaNumber: `Cuota ${debt.totalQuotas - debt.pendingQuotas + 1}/${debt.totalQuotas}`,
-                amount: debt.monthlyQuota,
-                dueDate: debt.dueDate,
-                dueDateDay: debt.dueDateDay || 15,
-                month: '2026-09',
-                status: 'pending',
-                statusLabel: 'Próxima',
-              });
-            }
-          }}
-          onEditDebt={(debt) => setEditingDebt(debt)}
-          onDeleteDebt={handleDeleteDebt}
-          onOpenAdvisory={(query) => openAdvisorChat(query)}
-        />
-      )}
-
-      {isAddDebtOpen && (
-        <AddDebtModal onClose={() => setIsAddDebtOpen(false)} onAddDebt={handleAddDebt} />
-      )}
-
-      {editingDebt && (
-        <EditDebtModal
-          debt={editingDebt}
-          onClose={() => setEditingDebt(null)}
-          onSaveDebt={handleEditDebt}
-        />
-      )}
-
-      {payingQuota && (
-        <PaymentModal
-          quota={payingQuota}
-          onClose={() => setPayingQuota(null)}
-          onPaymentSuccess={handlePaymentSuccess}
-        />
-      )}
-
-      {isRemindersOpen && (
-        <RemindersModal
-          reminders={reminders}
-          onClose={() => setIsRemindersOpen(false)}
-          onSaveReminders={(updated) => {
-            setReminders(updated);
-            const newNotif: NotificationItem = {
-              id: generateId('notif'),
-              title: 'Recordatorios actualizados',
-              desc: `Alertas configuradas para ${updated.days7 ? '7d, ' : ''}${updated.days3 ? '3d, ' : ''}${updated.days1 ? '1d' : ''} antes.`,
-              time: 'Justo ahora',
-              read: false,
-              type: 'info',
-            };
-            setNotifications((prev) => [newNotif, ...prev]);
-          }}
-        />
-      )}
-
-      {isAdvisorChatOpen && (
-        <AdvisorChatModal
-          initialContext={advisorChatContext}
-          onClose={() => {
-            setIsAdvisorChatOpen(false);
-            setAdvisorChatContext(undefined);
-          }}
-        />
-      )}
-
-      {isNotificationsOpen && (
-        <NotificationsModal
-          notifications={notifications}
-          onClose={() => setIsNotificationsOpen(false)}
-          onMarkAllAsRead={handleMarkAllAsRead}
-        />
-      )}
-
-      {isProfileOpen && (
-        <ProfileModal
-          user={user}
-          onClose={() => setIsProfileOpen(false)}
-          onRestartWelcome={() => setCurrentTab('bienvenida')}
-          onLogout={() => {
-            setUser({
-              name: '',
-              email: '',
-              phone: '',
-              isLoggedIn: false,
-            });
-            setCurrentTab('bienvenida');
-          }}
-          onOpenAdmin={() => {
-            setIsProfileOpen(false);
-            setIsAdminLoginModalOpen(true);
-          }}
-          onLoadDemoData={handleLoadDemoData}
-          onClearAllData={handleClearAllData}
-        />
-      )}
-
-      {/* Admin Login Modal (Accessible from anywhere) */}
-      <AdminLoginModal
-        isOpen={isAdminLoginModalOpen}
-        onClose={() => setIsAdminLoginModalOpen(false)}
-        onLoginSuccess={handleAdminLoginSuccess}
-      />
     </div>
   );
 }

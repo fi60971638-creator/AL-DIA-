@@ -1,76 +1,102 @@
 import React from 'react';
-import { APP_LOGO_URL, APP_NAME, APP_SLOGAN } from '../data/initialData';
+import { APP_NAME, APP_SUBTITLE, APP_LOGO_URL } from '../data/initialData';
 import { TabType } from '../types';
 
 interface HeaderProps {
   currentTab: TabType;
-  unreadNotificationsCount: number;
-  onOpenNotifications: () => void;
-  onOpenProfile: () => void;
-  onOpenWelcome: () => void;
+  onNavigate: (tab: TabType) => void;
+  onOpenMobileMenu?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentTab,
-  unreadNotificationsCount,
-  onOpenNotifications,
-  onOpenProfile,
-  onOpenWelcome,
+  onNavigate,
+  onOpenMobileMenu,
 }) => {
-  const getSubTitle = () => {
+  const getTabLabel = () => {
     switch (currentTab) {
       case 'inicio':
-        return APP_SLOGAN;
-      case 'mis-deudas':
-        return 'Control de obligaciones de pago';
-      case 'calendario':
-        return 'Fechas y cronograma mensual';
+        return 'Inicio';
+      case 'situaciones':
+        return 'Situaciones';
+      case 'videos':
+        return '🎥 Videos';
+      case 'aprende':
+        return '📚 Aprende';
+      case 'casos':
+        return '💡 Casos prácticos';
+      case 'preguntas':
+        return '❓ Preguntas frecuentes';
+      case 'asesoramiento':
+        return '👤 Orientación personalizada';
+      case 'derechos':
+        return '🛡️ Mis derechos';
+      case 'fuentes':
+        return '🔗 Fuentes oficiales';
       default:
-        return APP_SLOGAN;
+        return 'AL DÍA';
     }
   };
 
   return (
-    <header className="sticky top-0 inset-x-0 z-40 bg-[#FFFFFF] border-b border-[#E5E7EB]">
-      <div className="max-w-4xl mx-auto h-16 px-4 sm:px-6 flex items-center justify-between gap-3">
-        <button
-          onClick={onOpenWelcome}
-          title="Ver bienvenida de AlDía"
-          className="flex items-center gap-2.5 min-w-0 text-left hover:opacity-85 transition-opacity cursor-pointer"
-        >
-          <img
-            alt={`Logo ${APP_NAME}`}
-            className="h-8 w-auto object-contain flex-shrink-0"
-            src={APP_LOGO_URL}
-          />
-          <div className="flex flex-col min-w-0">
-            <span className="text-[18px] font-bold text-[#0F3D56] tracking-tight truncate leading-tight">
-              {APP_NAME}
-            </span>
-            <span className="text-[12px] text-[#6B7280] font-normal truncate leading-tight">
-              {getSubTitle()}
-            </span>
-          </div>
-        </button>
+    <header className="sticky top-0 z-20 bg-white border-b border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
+        {/* Left Side: Mobile Menu Button + Brand on Mobile */}
+        <div className="flex items-center gap-3">
+          {onOpenMobileMenu && (
+            <button
+              onClick={onOpenMobileMenu}
+              aria-label="Abrir menú"
+              className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg border border-[#E5E7EB] text-[#0F3D56] hover:bg-[#F7F8FA] transition-colors cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[20px]">menu</span>
+            </button>
+          )}
 
-        <div className="flex items-center gap-2 flex-shrink-0">
           <button
-            aria-label="Notificaciones y recordatorios"
-            onClick={onOpenNotifications}
-            className="relative w-9 h-9 flex items-center justify-center rounded-lg text-[#6B7280] hover:text-[#0F3D56] hover:bg-[#F7F8FA] border border-[#E5E7EB] transition-colors cursor-pointer"
+            onClick={() => onNavigate('inicio')}
+            className="flex items-center gap-2 text-left hover:opacity-90 transition-opacity cursor-pointer lg:hidden"
           >
-            <span className="material-symbols-outlined text-[20px]">notifications</span>
-            {unreadNotificationsCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#D64545] ring-2 ring-white"></span>
-            )}
+            <img
+              src={APP_LOGO_URL}
+              alt={`Logo ${APP_NAME}`}
+              className="h-7 w-auto object-contain"
+            />
+            <div className="flex flex-col">
+              <span className="text-[16px] font-bold text-[#0F3D56] tracking-tight leading-none">
+                {APP_NAME}
+              </span>
+              <span className="text-[9px] text-[#6B7280] font-medium leading-none mt-0.5">
+                {APP_SUBTITLE}
+              </span>
+            </div>
           </button>
 
+          {/* Desktop Current Section Indicator */}
+          <div className="hidden lg:flex items-center gap-2">
+            <span className="text-[14px] font-bold text-[#0F3D56]">
+              {getTabLabel()}
+            </span>
+            <span className="text-[12px] text-[#6B7280]">·</span>
+            <span className="text-[12px] text-[#6B7280]">
+              {APP_NAME} · {APP_SUBTITLE}
+            </span>
+          </div>
+        </div>
+
+        {/* Right Side: Quick Action Button */}
+        <div className="flex items-center gap-2">
           <button
-            aria-label="Perfil de usuario"
-            onClick={onOpenProfile}
-            className="w-9 h-9 rounded-lg bg-[#0F3D56] hover:bg-[#0c2f42] text-white flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer"
+            onClick={() => onNavigate('asesoramiento')}
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-semibold transition-all cursor-pointer shadow-2xs ${
+              currentTab === 'asesoramiento'
+                ? 'bg-[#149B8A] text-white'
+                : 'bg-[#0F3D56] hover:bg-[#0c2f42] text-white'
+            }`}
           >
-            <span className="material-symbols-outlined text-[18px]">person</span>
+            <span className="material-symbols-outlined text-[16px]">support_agent</span>
+            <span className="hidden sm:inline">Orientación personalizada</span>
+            <span className="sm:hidden">Orientación</span>
           </button>
         </div>
       </div>

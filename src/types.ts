@@ -1,153 +1,127 @@
 export type TabType =
-  | 'bienvenida'
-  | 'registro'
   | 'inicio'
-  | 'mis-deudas'
-  | 'calendario'
-  | 'capacidad'
-  | 'educacion'
-  | 'asesor'
-  | 'admin';
+  | 'situaciones'
+  | 'videos'
+  | 'aprende'
+  | 'casos'
+  | 'preguntas'
+  | 'asesoramiento'
+  | 'derechos'
+  | 'fuentes';
 
-export interface UserProfile {
-  name: string;
-  email: string;
-  phone: string;
-  isLoggedIn: boolean;
-  isAdmin?: boolean;
-}
+export type SituationId =
+  | 'no-puedo-pagar'
+  | 'me-atrase'
+  | 'me-estan-cobrando'
+  | 'no-entiendo-credito'
+  | 'quiero-pagar-antes'
+  | 'cuidar-historial'
+  | 'varias-obligaciones';
 
-export interface AdminUserRecord {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  role: 'Administrador' | 'Usuario' | 'Invitado';
-  status: 'Activo' | 'Pendiente' | 'Suspendido';
-  joinedDate: string;
-  totalDebts: number;
-  totalBalance: number;
-  delinquentCount: number;
-}
-
-export interface AdminContentArticle {
-  id: string;
+export interface StepItem {
+  number: number;
   title: string;
-  category: 'Educación SBS' | 'Negociación' | 'Presupuesto' | 'Tasas y TEA' | 'Derechos Financieros';
-  summary: string;
-  readTime: string;
-  isPublished: boolean;
-  author: string;
-  views: number;
-  lastUpdated: string;
-}
-
-export interface AdminRecommendationRule {
-  id: string;
-  title: string;
-  strategyType: 'Bola de Nieve' | 'Avalancha' | 'Reprogramación' | 'Ahorro de Emergencia' | 'Consolidación';
   description: string;
-  targetCondition: string;
-  impactLevel: 'Alto' | 'Medio' | 'Informativo';
-  isActive: boolean;
-  appliedCount: number;
 }
 
-export interface AdminReminderRule {
-  id: string;
-  name: string;
-  timing: '7 días antes' | '3 días antes' | '1 día antes' | 'Día del vencimiento' | 'Post-vencimiento (Mora)';
-  channel: 'Push In-App' | 'WhatsApp / SMS' | 'Correo Electrónico';
-  messageTemplate: string;
-  isActive: boolean;
-  triggerCount: number;
-}
-
-export interface DebtItem {
-  id: string;
-  entity: string;
-  entityType: 'Banco' | 'Caja' | 'Financiera' | 'Cooperativa' | 'Comercio' | 'Otra';
-  type:
-    | 'Crédito personal'
-    | 'Tarjeta de crédito'
-    | 'Crédito vehicular'
-    | 'Crédito hipotecario'
-    | 'Crédito para negocio'
-    | 'Otro';
-  initialAmount: number;
-  paidAmount: number;
-  balance: number; // Saldo pendiente
-  monthlyQuota: number; // Cuota mensual
-  dueDate: string; // ej. "30 de septiembre" o "30/09/2026"
-  dueDateDay: number; // día del mes para calendario
-  pendingQuotas: number;
-  totalQuotas: number;
-  interestRate?: number; // TEA opcional %
-  status: 'al_dia' | 'proximo' | 'atrasado';
-  statusLabel: string;
-  notes?: string;
-  iconName: string;
-}
-
-export interface QuotaItem {
-  id: string;
-  debtId?: string;
-  entity: string;
-  debtType?: string;
-  quotaNumber: string; // ej. "Cuota 03/12"
-  amount: number;
-  dueDate: string; // ej. "30/09/2026"
-  dueDateDay: number; // 1-31
-  month: string; // ej. "2026-09"
-  status: 'paid' | 'pending' | 'overdue';
-  statusLabel: string;
-  operationNumber?: string;
-  paidDate?: string;
-  daysLate?: number;
-  daysRemaining?: number;
-  hasReminder?: boolean;
-}
-
-export interface AdvisoryPoint {
+export interface SituationItem {
+  id: SituationId;
   title: string;
-  desc: string;
-}
-
-export interface AdvisoryTopic {
-  id: string;
-  title: string;
+  homeTitle: string;
+  homeButtonText: string;
+  shortDesc: string;
   subtitle: string;
   icon: string;
   tagColor: string;
-  fullTitle: string;
-  empathy: string;
-  points: AdvisoryPoint[];
+  meaning: string;
+  whatCanYouDo: string[];
+  whatToAvoid: string[];
+  practicalAdvice: string;
+  officialSource: {
+    name: string;
+    description: string;
+    url: string;
+  };
 }
 
-export interface NotificationItem {
+export interface VideoItem {
+  id: string;
+  titulo: string;
+  categoria: 'Créditos' | 'Pagos' | 'Cobranzas' | 'Historial' | 'Derechos' | 'Finanzas personales';
+  duracion: string;
+  fuente: string;
+  url: string;
+  isFeatured?: boolean;
+  descripcion?: string;
+}
+
+export interface FinancialTerm {
+  id: string;
+  term: string;
+  definition: string;
+  example: string;
+  importance: string;
+}
+
+export interface MythTruthItem {
+  id: string;
+  myth: string;
+  truth: string;
+  explanation: string;
+}
+
+export interface PracticalCaseOption {
+  id: string;
+  text: string;
+  isRecommended: boolean;
+  feedback: string;
+}
+
+export interface PracticalCase {
+  id: string;
+  character: string;
+  title: string;
+  situation: string;
+  question: string;
+  options: PracticalCaseOption[];
+  educationalTakeaway: string;
+}
+
+export interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+  category?: string;
+}
+
+export interface OfficialSourceItem {
+  id: string;
+  name: string;
+  fullName: string;
+  description: string;
+  url: string;
+  services: string[];
+}
+
+export interface AdvisoryResult {
+  title: string;
+  whatItMeans: string;
+  whatToCheck: string[];
+  whatToDo: string[];
+  whatToAvoid: string[];
+  advice: string;
+  officialSource: {
+    name: string;
+    url: string;
+  };
+}
+
+export interface RightTopic {
   id: string;
   title: string;
-  desc: string;
-  time: string;
-  read: boolean;
-  type: 'alert' | 'success' | 'info' | 'warning';
-}
-
-export interface BudgetData {
-  salary: number;
-  extraIncome: number;
-  housing: number;
-  food: number;
-  transport: number;
-  services: number;
-  education: number;
-  otherExpenses: number;
-  simulatedQuota: number;
-}
-
-export interface ReminderConfig {
-  days7: boolean;
-  days3: boolean;
-  days1: boolean;
-  enabled: boolean;
+  icon: string;
+  summary: string;
+  points: string[];
+  officialSourceText: string;
+  officialSourceUrl: string;
 }
