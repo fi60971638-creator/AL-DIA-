@@ -8,12 +8,26 @@ import {
   RIGHTS_TOPICS,
   OFFICIAL_SOURCES_DATA,
 } from '../../data/initialData';
-import { EducationalArticle, VideoItem } from '../../types';
+import { EducationalArticle, VideoItem, AprendeSubTab } from '../../types';
 import { ArticleModal } from '../modals/ArticleModal';
 
-export const AprendeFinanzasScreen: React.FC = () => {
-  const [activeMainTab, setActiveMainTab] = useState<'articulos' | 'videos' | 'diccionario' | 'mitos' | 'casos' | 'derechos'>('articulos');
+interface AprendeFinanzasScreenProps {
+  initialTab?: AprendeSubTab;
+  onTabChange?: (tab: AprendeSubTab) => void;
+}
+
+export const AprendeFinanzasScreen: React.FC<AprendeFinanzasScreenProps> = ({
+  initialTab = 'articulos',
+  onTabChange,
+}) => {
+  const [activeMainTab, setActiveMainTab] = useState<AprendeSubTab>(initialTab);
   const [selectedCategory, setSelectedCategory] = useState<string>('TODOS');
+
+  React.useEffect(() => {
+    if (initialTab && initialTab !== activeMainTab) {
+      setActiveMainTab(initialTab);
+    }
+  }, [initialTab]);
   const [selectedArticle, setSelectedArticle] = useState<EducationalArticle | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [practicalCaseAnswers, setPracticalCaseAnswers] = useState<Record<string, string>>({});
@@ -48,46 +62,7 @@ export const AprendeFinanzasScreen: React.FC = () => {
       {/* Article Reader Modal */}
       <ArticleModal article={selectedArticle} onClose={() => setSelectedArticle(null)} />
 
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-2">
-          <span className="text-[12px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">
-            Educación Financiera
-          </span>
-        </div>
-        <h1 className="text-[26px] sm:text-[32px] font-extrabold text-[#0F172A] tracking-tight mt-1">
-          Aprende sobre tus finanzas
-        </h1>
-        <p className="text-[14px] text-slate-500">
-          Guías prácticas, explicaciones sin rodeos y herramientas para tomar mejores decisiones.
-        </p>
-      </div>
-
-      {/* Main Tabs Navigation */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-slate-200 scrollbar-none">
-        {[
-          { id: 'articulos', label: '📖 Guías y Artículos' },
-          { id: 'videos', label: '🎥 Videos oficiales SBS' },
-          { id: 'diccionario', label: '📚 Diccionario financiero' },
-          { id: 'mitos', label: '🔍 Mitos y verdades' },
-          { id: 'casos', label: '💡 Casos prácticos' },
-          { id: 'derechos', label: '🛡️ Derechos del usuario' },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveMainTab(tab.id as typeof activeMainTab)}
-            className={`px-4 py-2.5 text-[13.5px] font-bold border-b-2 transition-all whitespace-nowrap cursor-pointer ${
-              activeMainTab === tab.id
-                ? 'border-emerald-600 text-emerald-700'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* TAB 1: ARTÍCULOS LEFI-STYLE */}
+      {/* TAB 1: ARTÍCULOS EDUCATIVOS ALDÍA */}
       {activeMainTab === 'articulos' && (
         <div className="flex flex-col gap-6">
           {/* Search and Category Filters */}
@@ -313,7 +288,7 @@ export const AprendeFinanzasScreen: React.FC = () => {
                   </div>
                   <div>
                     <span className="text-[11.5px] font-bold text-slate-400 uppercase">
-                      Caso de {pc.character}
+                      {pc.character ? `Caso de ${pc.character}` : `Caso práctico #${idx + 1}`}
                     </span>
                     <h3 className="text-[17px] font-bold text-slate-900">
                       {pc.title}

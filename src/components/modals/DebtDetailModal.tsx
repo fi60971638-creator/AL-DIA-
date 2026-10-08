@@ -176,30 +176,20 @@ export const DebtDetailModal: React.FC = () => {
           </div>
 
           {/* Actions */}
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
             <button
-              onClick={handleDelete}
-              className="text-rose-600 hover:text-rose-700 text-[13px] font-medium flex items-center gap-1 p-2 rounded-lg hover:bg-rose-50 transition-colors"
+              onClick={closeDebtDetailModal}
+              className="px-4 py-2.5 rounded-xl text-[14px] font-medium text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[16px]">delete</span>
-              <span>Eliminar deuda</span>
+              Cerrar
             </button>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={closeDebtDetailModal}
-                className="px-4 py-2.5 rounded-xl text-[14px] font-medium text-slate-600 hover:bg-slate-100 transition-colors"
-              >
-                Cerrar
-              </button>
-              <button
-                onClick={handlePay}
-                className="px-5 py-2.5 rounded-xl text-[14px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow transition-all flex items-center gap-2 cursor-pointer active:scale-[0.99]"
-              >
-                <span className="material-symbols-outlined text-[18px]">payments</span>
-                <span>Registrar pago</span>
-              </button>
-            </div>
+            <button
+              onClick={handlePay}
+              className="px-5 py-2.5 rounded-xl text-[14px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow transition-all flex items-center gap-2 cursor-pointer active:scale-[0.99]"
+            >
+              <span className="material-symbols-outlined text-[18px]">payments</span>
+              <span>Registrar pago</span>
+            </button>
           </div>
         </div>
       </div>

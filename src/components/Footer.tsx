@@ -31,12 +31,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </div>
             </div>
 
-            <p className="text-slate-800 font-bold text-[14px]">
-              “Entiende tus deudas. Organiza tus pagos. Avanza tranquilo.”
+            <p className="text-slate-800 font-extrabold text-[15px]">
+              “Organiza tus pagos. Evita atrasos.”
             </p>
 
             <p className="text-[12.5px] text-slate-500 leading-relaxed">
-              Plataforma moderna de educación financiera, gestión de deudas y progreso personal. Diseñada para personas que buscan claridad y tranquilidad en sus finanzas.
+              Plataforma moderna de finanzas personales, gestión de obligaciones y tranquilidad en pagos. Diseñada para personas que buscan claridad, orden y control.
             </p>
           </div>
 
@@ -50,19 +50,49 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 onClick={() => onNavigate('inicio')}
                 className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
               >
-                Dashboard
+                Inicio
               </button>
               <button
-                onClick={() => onNavigate('deudas')}
+                onClick={() => onNavigate('orientacion')}
                 className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
               >
-                Mis deudas
+                Orientación
               </button>
               <button
-                onClick={() => onNavigate('pagos')}
+                onClick={() => onNavigate('aprende_articulos')}
                 className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
               >
-                Próximos pagos
+                Guías y Artículos
+              </button>
+              <button
+                onClick={() => onNavigate('aprende_videos')}
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
+              >
+                Videos SBS
+              </button>
+              <button
+                onClick={() => onNavigate('aprende_diccionario')}
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
+              >
+                Diccionario financiero
+              </button>
+              <button
+                onClick={() => onNavigate('aprende_mitos')}
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
+              >
+                Mitos y verdades
+              </button>
+              <button
+                onClick={() => onNavigate('aprende_casos')}
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
+              >
+                Casos prácticos
+              </button>
+              <button
+                onClick={() => onNavigate('aprende_derechos')}
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
+              >
+                Derechos del usuario
               </button>
               <button
                 onClick={() => onNavigate('presupuesto')}
@@ -81,12 +111,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
               >
                 Salud financiera
-              </button>
-              <button
-                onClick={() => onNavigate('aprende')}
-                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
-              >
-                Educación financiera
               </button>
               <button
                 onClick={() => onNavigate('perfil')}

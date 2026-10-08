@@ -22,8 +22,8 @@ export const PerfilScreen: React.FC = () => {
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     updateUser({
-      name: name.trim() || 'Carlos',
-      email: email.trim() || 'carlos@email.com',
+      name: name.trim(),
+      email: email.trim(),
       monthlyIncome: parseFloat(income) || 5500,
       monthlyExpenses: parseFloat(expenses) || 3150,
       primaryGoal,
@@ -32,7 +32,7 @@ export const PerfilScreen: React.FC = () => {
 
   const handleDownloadReport = () => {
     const reportData = {
-      usuario: user.name,
+      usuario: user.name || 'Usuario',
       fechaReporte: new Date().toLocaleDateString('es-PE'),
       deudaTotal: totalDebt,
       deudas: debts.map((d) => ({
@@ -58,7 +58,9 @@ export const PerfilScreen: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `reporte-financiero-aldia-${user.name.toLowerCase()}.json`;
+    a.download = user.name?.trim()
+      ? `reporte-financiero-aldia-${user.name.trim().toLowerCase()}.json`
+      : 'reporte-financiero-aldia.json';
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -84,19 +86,23 @@ export const PerfilScreen: React.FC = () => {
       <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#0F3B82] to-emerald-600 text-white font-extrabold text-[24px] flex items-center justify-center shadow-sm">
-            {user.name.charAt(0).toUpperCase()}
+            {user.name?.trim() ? (
+              user.name.trim().charAt(0).toUpperCase()
+            ) : (
+              <span className="material-symbols-outlined text-[28px]">person</span>
+            )}
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-[20px] font-bold text-slate-900">
-                {user.name}
+                {user.name?.trim() || 'Mi cuenta'}
               </h2>
               <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">
                 Plan Personal AlDía
               </span>
             </div>
             <p className="text-[13px] text-slate-500 mt-0.5">
-              {user.email} · Objetivo: {user.primaryGoal}
+              {user.email ? `${user.email} · ` : ''}Objetivo: {user.primaryGoal}
             </p>
           </div>
         </div>
@@ -220,7 +226,7 @@ export const PerfilScreen: React.FC = () => {
             Datos de demostración
           </h4>
           <p className="text-[13px] text-slate-500 mt-0.5 max-w-lg leading-relaxed">
-            Si deseas reiniciar los valores predeterminados (Carlos, S/ 18,450 en deudas, 78/100 de salud financiera), puedes restablecerlos en cualquier momento.
+            Si deseas reiniciar los valores predeterminados (S/ 18,450 en deudas, 78/100 de salud financiera), puedes restablecerlos en cualquier momento.
           </p>
         </div>
 

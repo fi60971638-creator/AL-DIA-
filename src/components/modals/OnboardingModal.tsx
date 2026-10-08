@@ -8,7 +8,7 @@ export const OnboardingModal: React.FC = () => {
   const [selectedGoal, setSelectedGoal] = useState(user.primaryGoal || 'Salir de deudas');
   const [approxDebt, setApproxDebt] = useState('18450');
   const [monthlyCapacity, setMonthlyCapacity] = useState('2350');
-  const [userName, setUserName] = useState(user.name || 'Carlos');
+  const [userName, setUserName] = useState(user.name || '');
 
   if (!isOnboardingOpen) return null;
 
@@ -22,7 +22,7 @@ export const OnboardingModal: React.FC = () => {
 
   const handleFinish = () => {
     updateUser({
-      name: userName.trim() || 'Carlos',
+      name: userName.trim(),
       primaryGoal: selectedGoal,
       hasSeenOnboarding: true,
     });
@@ -265,7 +265,7 @@ export const OnboardingModal: React.FC = () => {
                   Tu plan financiero está listo
                 </h3>
                 <p className="text-[14px] text-slate-600 mt-1">
-                  Hemos preparado tu centro de control personalizado para {userName}.
+                  Hemos preparado tu centro de control personalizado{userName.trim() ? ` para ${userName.trim()}` : ''}.
                 </p>
               </div>
 

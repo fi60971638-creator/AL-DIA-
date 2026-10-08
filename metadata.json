@@ -1,6 +1,6 @@
 {
   "name": "AlDía",
-  "description": "Entiende tus deudas. Organiza tus pagos. Avanza tranquilo. Plataforma moderna de gestión financiera personal, control de pagos y educación crediticia.",
+  "description": "Organiza tus pagos. Evita atrasos. Plataforma moderna para organizar deudas, consultar fechas de vencimiento y recibir orientación financiera.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

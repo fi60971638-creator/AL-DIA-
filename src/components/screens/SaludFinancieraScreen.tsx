@@ -90,7 +90,7 @@ export const SaludFinancieraScreen: React.FC<SaludFinancieraScreenProps> = ({ on
               <span>{statusText}</span>
             </div>
             <h2 className="text-[20px] sm:text-[22px] font-extrabold text-slate-900 leading-snug">
-              Buen estado crediticio para {user.name}
+              Buen estado crediticio{user.name?.trim() ? ` para ${user.name.trim()}` : ''}
             </h2>
             <p className="text-[13.5px] text-slate-500 max-w-md mt-1 leading-relaxed">
               Mantienes un balance positivo entre tus ingresos de S/ {user.monthlyIncome.toLocaleString('es-PE')} y tus cuotas mensuales. Siguiendo las recomendaciones podrías subir a 88+ puntos.

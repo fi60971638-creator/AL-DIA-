@@ -17,7 +17,6 @@ export const Header: React.FC<HeaderProps> = ({
     user,
     alerts,
     markAlertRead,
-    openRegisterPaymentModal,
   } = useFinance();
 
   const [isAlertsOpen, setIsAlertsOpen] = useState(false);
@@ -25,17 +24,25 @@ export const Header: React.FC<HeaderProps> = ({
   const unreadAlertsCount = alerts.filter((a) => !a.isRead).length;
 
   const tabTitles: Record<TabType, { title: string; subtitle: string }> = {
-    inicio: { title: 'Centro de Control', subtitle: 'Resumen financiero general' },
-    deudas: { title: 'Mis deudas', subtitle: 'Obligaciones y amortizaciones' },
-    pagos: { title: 'Gestión de pagos', subtitle: 'Vencimientos e historial' },
+    inicio: { title: 'Inicio', subtitle: 'Organiza tus pagos. Evita atrasos.' },
+    deudas: { title: 'Mis deudas', subtitle: 'Obligaciones, saldos y tasas' },
+    calendario: { title: 'Calendario de pagos', subtitle: 'Fechas de vencimiento y amortizaciones' },
+    pagos: { title: 'Calendario de pagos', subtitle: 'Fechas de vencimiento y amortizaciones' },
+    orientacion: { title: 'Orientación financiera', subtitle: 'Guías, derechos y soluciones prácticas' },
+    aprende: { title: 'Aprende finanzas', subtitle: 'Educación sencilla para avanzar tranquilo' },
+    aprende_articulos: { title: 'Guías y Artículos', subtitle: 'Lecturas prácticas sobre finanzas y control de deudas' },
+    aprende_videos: { title: 'Videos SBS', subtitle: 'Material audiovisual educativo de la SBS' },
+    aprende_diccionario: { title: 'Diccionario Financiero', subtitle: 'Términos bancarios explicados de forma clara' },
+    aprende_mitos: { title: 'Mitos y Verdades', subtitle: 'Desmitifica cobranzas, intereses y centrales de riesgo' },
+    aprende_casos: { title: 'Casos Prácticos', subtitle: 'Aprende resolviendo situaciones financieras reales' },
+    aprende_derechos: { title: 'Derechos del Usuario', subtitle: 'Protección al consumidor financiero y normativas' },
     presupuesto: { title: 'Mi presupuesto', subtitle: 'Ingresos, gastos y disponibles' },
-    objetivos: { title: 'Mis objetivos', subtitle: 'Metas financieras' },
+    objetivos: { title: 'Mis objetivos', subtitle: 'Metas de ahorro y tranquilidad' },
     salud: { title: 'Salud financiera', subtitle: 'Diagnóstico y puntuación' },
-    aprende: { title: 'Aprende sobre finanzas', subtitle: 'Guías, videos y herramientas' },
-    perfil: { title: 'Mi perfil', subtitle: 'Configuración de cuenta' },
+    perfil: { title: 'Mi perfil', subtitle: 'Configuración y metas personales' },
   };
 
-  const currentInfo = tabTitles[currentTab] || { title: 'AlDía', subtitle: '' };
+  const currentInfo = tabTitles[currentTab] || { title: 'AlDía', subtitle: 'Organiza tus pagos. Evita atrasos.' };
 
   return (
     <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 py-3.5 transition-all">
@@ -62,13 +69,13 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right Side: Quick Action + Notification Bell + User Avatar */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Quick Pay CTA (hidden on very small phones) */}
+          {/* Quick Learn CTA (hidden on very small phones) */}
           <button
-            onClick={() => openRegisterPaymentModal()}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[12.5px] font-bold transition-all cursor-pointer"
+            onClick={() => onNavigate('aprende')}
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-[12.5px] font-bold transition-all cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[17px]">add_circle</span>
-            <span>Registrar pago</span>
+            <span className="material-symbols-outlined text-[17px] text-emerald-600">school</span>
+            <span>Aprender</span>
           </button>
 
           {/* Notification Bell with Dropdown */}
@@ -135,8 +142,8 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
 
                   <div className="pt-2 border-t border-slate-100 text-center">
-                    <span className="text-[11px] text-slate-400">
-                      Entiende tus deudas. Organiza tus pagos. Avanza tranquilo.
+                    <span className="text-[11.5px] font-medium text-slate-500">
+                      Organiza tus pagos. Evita atrasos.
                     </span>
                   </div>
                 </div>
@@ -150,11 +157,17 @@ export const Header: React.FC<HeaderProps> = ({
             className="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 transition-colors cursor-pointer group"
           >
             <div className="w-8 h-8 rounded-lg bg-[#0F3B82] text-white font-extrabold flex items-center justify-center text-[12px] shadow-2xs">
-              {user.name.charAt(0).toUpperCase()}
+              {user.name?.trim() ? (
+                user.name.trim().charAt(0).toUpperCase()
+              ) : (
+                <span className="material-symbols-outlined text-[18px]">person</span>
+              )}
             </div>
-            <span className="text-[13px] font-bold text-slate-900 hidden sm:block group-hover:text-emerald-700">
-              {user.name}
-            </span>
+            {user.name?.trim() && (
+              <span className="text-[13px] font-bold text-slate-900 hidden sm:block group-hover:text-emerald-700">
+                {user.name.trim()}
+              </span>
+            )}
           </button>
         </div>
       </div>

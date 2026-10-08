@@ -9,7 +9,6 @@ export const MisDeudasScreen: React.FC = () => {
     totalInitialDebt,
     totalPaidDebt,
     debtProgressPercentage,
-    openAddDebtModal,
     openRegisterPaymentModal,
     openDebtDetailModal,
   } = useFinance();
@@ -50,15 +49,6 @@ export const MisDeudasScreen: React.FC = () => {
             Visualiza saldos, tasas y programa tus pagos para liquidar cada obligación.
           </p>
         </div>
-
-        {/* Botón Principal: + Agregar deuda */}
-        <button
-          onClick={openAddDebtModal}
-          className="px-5 py-3 rounded-2xl bg-[#0F3B82] hover:bg-[#0A295C] text-white font-bold text-[14px] shadow-sm hover:shadow transition-all flex items-center gap-2 self-start sm:self-auto cursor-pointer active:scale-[0.99]"
-        >
-          <span className="material-symbols-outlined text-[20px]">add</span>
-          <span>+ Agregar deuda</span>
-        </button>
       </div>
 
       {/* 2. Resumen Superior */}
@@ -177,7 +167,7 @@ export const MisDeudasScreen: React.FC = () => {
             No se encontraron deudas con este filtro
           </h3>
           <p className="text-[13px] text-slate-500 max-w-sm">
-            Puedes cambiar de filtro o agregar una nueva deuda con el botón superior.
+            Puedes cambiar de filtro para visualizar tus obligaciones financieras.
           </p>
         </div>
       ) : (

@@ -10,8 +10,8 @@ import {
 } from '../types';
 
 export const INITIAL_USER: UserProfile = {
-  name: 'Carlos',
-  email: 'carlos.mendoza@email.com',
+  name: '',
+  email: '',
   monthlyIncome: 5500,
   monthlyExpenses: 3150,
   primaryGoal: 'Salir de deudas',

@@ -493,15 +493,15 @@ export const PRACTICAL_CASES: PracticalCase[] = [
   },
   {
     id: 'caso-2',
-    character: 'Carlos',
-    title: 'Carlos recibe llamadas relacionadas con una deuda vencida.',
+    character: '',
+    title: 'Llamadas fuera de horario por una deuda vencida',
     situation:
-      'Carlos tiene una cuota atrasada hace 25 días. Recibe llamadas constantes a las 11:00 p.m. y el gestor de cobranza le dice que llamará a sus familiares y a su centro laboral si no deposita hoy a una cuenta Yape personal.',
-    question: '¿Qué debería conocer Carlos antes de tomar una decisión?',
+      'Existe una cuota atrasada hace 25 días. Se reciben llamadas constantes a las 11:00 p.m. y el gestor de cobranza indica que llamará a familiares y al centro laboral si no se deposita hoy a una cuenta Yape personal.',
+    question: '¿Qué deberías conocer antes de tomar una decisión?',
     options: [
       {
         id: 'opt-2a',
-        text: 'Depositar inmediatamente al número personal del gestor para que no llamen a su trabajo.',
+        text: 'Depositar inmediatamente al número personal del gestor para que no llamen a familiares o al trabajo.',
         isRecommended: false,
         feedback:
           'Nunca realices pagos a cuentas o billeteras personales de gestores. Ese abono no amortiza tu crédito y es una modalidad de estafa habitual.',
@@ -511,11 +511,11 @@ export const PRACTICAL_CASES: PracticalCase[] = [
         text: 'Conocer que la ley prohíbe llamadas de cobranza nocturnas, contacto con terceros no obligados y pagos fuera de canales bancarios oficiales.',
         isRecommended: true,
         feedback:
-          '¡Correcto! Carlos debe exigir el desglose formal de su deuda, pagar únicamente en las cuentas recaudadoras oficiales del banco y reportar los métodos prohibidos ante INDECOPI.',
+          '¡Correcto! Se debe exigir el desglose formal de la deuda, pagar únicamente en las cuentas recaudadoras oficiales del banco y reportar los métodos prohibidos ante INDECOPI.',
       },
       {
         id: 'opt-2c',
-        text: 'Apagar su teléfono y cambiar de número para evitar cualquier contacto para siempre.',
+        text: 'Apagar el teléfono y cambiar de número para evitar cualquier contacto para siempre.',
         isRecommended: false,
         feedback:
           'Aunque los métodos del gestor sean indebidos, la deuda real con el banco continúa vigente. Lo adecuado es canalizar la regularización directamente con la entidad oficial.',

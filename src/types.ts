@@ -1,11 +1,27 @@
+export type AprendeSubTab =
+  | 'articulos'
+  | 'videos'
+  | 'diccionario'
+  | 'mitos'
+  | 'casos'
+  | 'derechos';
+
 export type TabType =
   | 'inicio'
   | 'deudas'
+  | 'calendario'
+  | 'orientacion'
+  | 'aprende'
+  | 'aprende_articulos'
+  | 'aprende_videos'
+  | 'aprende_diccionario'
+  | 'aprende_mitos'
+  | 'aprende_casos'
+  | 'aprende_derechos'
   | 'pagos'
   | 'presupuesto'
   | 'objetivos'
   | 'salud'
-  | 'aprende'
   | 'perfil';
 
 export type DebtType =

@@ -57,9 +57,6 @@ interface FinanceContextType {
   openRegisterPaymentModal: (debtId?: string) => void;
   closeRegisterPaymentModal: () => void;
 
-  isAddDebtOpen: boolean;
-  openAddDebtModal: () => void;
-  closeAddDebtModal: () => void;
 
   isAddGoalOpen: boolean;
   openAddGoalModal: () => void;
@@ -81,7 +78,6 @@ interface FinanceContextType {
     paymentMethod: Payment['paymentMethod'];
     note?: string;
   }) => void;
-  addDebt: (debtData: Omit<Debt, 'id' | 'paidPercentage' | 'daysLeft'>) => void;
   updateDebt: (id: string, updates: Partial<Debt>) => void;
   deleteDebt: (id: string) => void;
   addGoal: (goalData: Omit<FinancialGoal, 'id' | 'percentage'>) => void;
@@ -110,7 +106,17 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [user, setUser] = useState<UserProfile>(() => {
     try {
       const stored = localStorage.getItem(LOCAL_STORAGE_KEYS.USER);
-      return stored ? JSON.parse(stored) : INITIAL_USER;
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.name === 'Carlos') {
+          parsed.name = '';
+        }
+        if (parsed.email === 'carlos.mendoza@email.com' || parsed.email === 'carlos@email.com') {
+          parsed.email = '';
+        }
+        return parsed;
+      }
+      return INITIAL_USER;
     } catch {
       return INITIAL_USER;
     }
@@ -164,7 +170,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Modal states
   const [isRegisterPaymentOpen, setIsRegisterPaymentOpen] = useState(false);
   const [preselectedDebtIdForPayment, setPreselectedDebtIdForPayment] = useState<string | undefined>(undefined);
-  const [isAddDebtOpen, setIsAddDebtOpen] = useState(false);
   const [isAddGoalOpen, setIsAddGoalOpen] = useState(false);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [selectedDebtForDetail, setSelectedDebtForDetail] = useState<Debt | null>(null);
@@ -298,8 +303,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setPreselectedDebtIdForPayment(undefined);
   };
 
-  const openAddDebtModal = () => setIsAddDebtOpen(true);
-  const closeAddDebtModal = () => setIsAddDebtOpen(false);
 
   const openAddGoalModal = () => setIsAddGoalOpen(true);
   const closeAddGoalModal = () => setIsAddGoalOpen(false);
@@ -394,23 +397,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     closeRegisterPaymentModal();
   };
 
-  const addDebt = (debtData: Omit<Debt, 'id' | 'paidPercentage' | 'daysLeft'>) => {
-    const paidPct =
-      debtData.initialAmount > 0
-        ? Number((((debtData.initialAmount - debtData.currentBalance) / debtData.initialAmount) * 100).toFixed(1))
-        : 0;
-
-    const newDebt: Debt = {
-      ...debtData,
-      id: `debt-${Date.now()}`,
-      paidPercentage: paidPct,
-      daysLeft: Math.max(1, debtData.dueDay - new Date().getDate()),
-    };
-
-    setDebts((prev) => [...prev, newDebt]);
-    showToast('¡Deuda agregada!', `Se agregó ${newDebt.name} a tu plan de pagos.`, 'success');
-    closeAddDebtModal();
-  };
 
   const updateDebt = (id: string, updates: Partial<Debt>) => {
     setDebts((prev) =>
@@ -506,7 +492,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.removeItem(LOCAL_STORAGE_KEYS.BUDGET);
     localStorage.removeItem(LOCAL_STORAGE_KEYS.ALERTS);
 
-    showToast('Datos demo restablecidos', 'Se restablecieron los datos iniciales de Carlos.', 'info');
+    showToast('Datos demo restablecidos', 'Se restablecieron los datos iniciales.', 'info');
   };
 
   return (
@@ -532,9 +518,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         preselectedDebtIdForPayment,
         openRegisterPaymentModal,
         closeRegisterPaymentModal,
-        isAddDebtOpen,
-        openAddDebtModal,
-        closeAddDebtModal,
         isAddGoalOpen,
         openAddGoalModal,
         closeAddGoalModal,
@@ -545,7 +528,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         openDebtDetailModal,
         closeDebtDetailModal,
         registerPayment,
-        addDebt,
         updateDebt,
         deleteDebt,
         addGoal,

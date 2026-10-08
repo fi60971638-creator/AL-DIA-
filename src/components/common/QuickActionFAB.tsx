@@ -7,7 +7,7 @@ interface QuickActionFABProps {
 }
 
 export const QuickActionFAB: React.FC<QuickActionFABProps> = ({ onNavigate }) => {
-  const { openRegisterPaymentModal, openAddDebtModal, openAddGoalModal } = useFinance();
+  const { openAddGoalModal } = useFinance();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen((prev) => !prev);
@@ -31,23 +31,13 @@ export const QuickActionFAB: React.FC<QuickActionFABProps> = ({ onNavigate }) =>
       {isOpen && (
         <div className="flex flex-col gap-2.5 mb-3 z-40 animate-in fade-in slide-in-from-bottom-3 duration-200">
           <button
-            onClick={() => handleAction(() => openRegisterPaymentModal())}
+            onClick={() => handleAction(() => onNavigate('aprende'))}
             className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white text-slate-800 shadow-lg border border-slate-200 text-[13px] font-bold hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer group"
           >
             <span className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
-              <span className="material-symbols-outlined text-[18px]">payments</span>
+              <span className="material-symbols-outlined text-[18px]">school</span>
             </span>
-            <span>Registrar pago</span>
-          </button>
-
-          <button
-            onClick={() => handleAction(openAddDebtModal)}
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white text-slate-800 shadow-lg border border-slate-200 text-[13px] font-bold hover:bg-blue-50 hover:text-[#0F3B82] transition-all cursor-pointer group"
-          >
-            <span className="w-8 h-8 rounded-full bg-blue-100 text-[#0F3B82] flex items-center justify-center">
-              <span className="material-symbols-outlined text-[18px]">add_card</span>
-            </span>
-            <span>Agregar deuda</span>
+            <span>Aprender finanzas</span>
           </button>
 
           <button
