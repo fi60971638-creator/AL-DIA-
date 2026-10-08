@@ -1,6 +1,6 @@
 {
   "name": "AlDía",
-  "description": "Orientación para tus créditos, pagos y cobranzas. Entiende tu situación financiera y conoce qué puedes hacer.",
+  "description": "Entiende tus deudas. Organiza tus pagos. Avanza tranquilo. Plataforma moderna de gestión financiera personal, control de pagos y educación crediticia.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

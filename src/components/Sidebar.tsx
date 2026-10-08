@@ -1,6 +1,6 @@
 import React from 'react';
-import { APP_NAME, APP_SUBTITLE, APP_LOGO_URL } from '../data/initialData';
 import { TabType } from '../types';
+import { useFinance } from '../context/FinanceContext';
 
 interface SidebarProps {
   currentTab: TabType;
@@ -8,78 +8,114 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onNavigate }) => {
-  const navItems: { id: TabType; label: string; icon: string; emoji?: string }[] = [
-    { id: 'inicio', label: 'Inicio', icon: 'home' },
-    { id: 'situaciones', label: 'Situaciones', icon: 'category' },
-    { id: 'videos', label: 'Videos', icon: 'smart_display', emoji: '🎥' },
-    { id: 'aprende', label: 'Aprende', icon: 'school', emoji: '📚' },
-    { id: 'casos', label: 'Casos prácticos', icon: 'psychology', emoji: '💡' },
-    { id: 'preguntas', label: 'Preguntas frecuentes', icon: 'help_outline', emoji: '❓' },
-    { id: 'asesoramiento', label: 'Orientación personalizada', icon: 'support_agent', emoji: '👤' },
-    { id: 'derechos', label: 'Mis derechos', icon: 'shield', emoji: '🛡️' },
-    { id: 'fuentes', label: 'Fuentes oficiales', icon: 'verified', emoji: '🔗' },
+  const { debts, healthScore, user } = useFinance();
+
+  const navItems: { id: TabType; label: string; icon: string; badge?: string }[] = [
+    { id: 'inicio', label: 'Inicio', icon: 'dashboard' },
+    { id: 'deudas', label: 'Mis deudas', icon: 'credit_card', badge: debts.length.toString() },
+    { id: 'pagos', label: 'Próximos pagos', icon: 'calendar_month' },
+    { id: 'presupuesto', label: 'Mi presupuesto', icon: 'pie_chart' },
+    { id: 'objetivos', label: 'Mis objetivos', icon: 'flag' },
+    { id: 'salud', label: 'Salud financiera', icon: 'verified', badge: `${healthScore.totalScore}` },
+    { id: 'aprende', label: 'Aprende', icon: 'school' },
+    { id: 'perfil', label: 'Mi perfil', icon: 'person' },
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 shrink-0 bg-white border-r border-[#E5E7EB] min-h-screen sticky top-0 p-5 justify-between z-30">
-      <div className="flex flex-col gap-5">
-        {/* Brand Logo & Title */}
+    <aside className="hidden lg:flex flex-col w-64 shrink-0 bg-white border-r border-slate-200 min-h-screen sticky top-0 p-5 justify-between z-30 shadow-[2px_0_12px_rgba(0,0,0,0.02)]">
+      <div className="flex flex-col gap-6">
+        {/* Brand Logo & Slogan */}
         <button
           onClick={() => onNavigate('inicio')}
-          className="flex items-center gap-3 text-left hover:opacity-90 transition-opacity cursor-pointer px-1"
+          className="flex items-center gap-3 text-left hover:opacity-90 transition-opacity cursor-pointer px-1 group"
         >
           <img
-            src={APP_LOGO_URL}
-            alt={`Logo ${APP_NAME}`}
-            className="h-8 w-auto object-contain flex-shrink-0"
+            src="/logo-aldia.svg"
+            alt="Logo AlDía"
+            className="h-10 w-auto object-contain flex-shrink-0 group-hover:scale-105 transition-transform"
           />
           <div className="flex flex-col">
-            <span className="text-[18px] font-bold text-[#0F3D56] tracking-tight leading-tight">
-              {APP_NAME}
-            </span>
-            <span className="text-[11px] text-[#6B7280] font-medium leading-tight">
-              {APP_SUBTITLE}
+            <div className="flex items-center text-[20px] font-extrabold tracking-tight leading-tight">
+              <span className="text-[#0F3B82]">Al</span>
+              <span className="text-emerald-600 ml-0.5">Día</span>
+            </div>
+            <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase leading-tight mt-0.5">
+              Fintech Personal
             </span>
           </div>
         </button>
 
-        {/* Navigation Menu Links */}
+        {/* Quick Slogan Badge */}
+        <div className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200/80 text-[11px] text-slate-600 leading-snug">
+          “Entiende tus deudas. Organiza tus pagos. Avanza tranquilo.”
+        </div>
+
+        {/* Navigation Menu */}
         <nav className="flex flex-col gap-1">
+          <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-slate-400 px-3 mb-1">
+            Menú Principal
+          </span>
           {navItems.map((item) => {
             const isActive = currentTab === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium transition-all cursor-pointer text-left ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13.5px] font-semibold transition-all cursor-pointer text-left ${
                   isActive
-                    ? 'bg-[#0F3D56] text-white font-semibold shadow-2xs'
-                    : 'text-[#25313C] hover:text-[#0F3D56] hover:bg-[#F7F8FA]'
+                    ? 'bg-[#0F3B82] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
-                {item.emoji ? (
-                  <span className="text-[15px] shrink-0">{item.emoji}</span>
-                ) : (
+                <div className="flex items-center gap-3">
                   <span
-                    className="material-symbols-outlined text-[19px] shrink-0"
+                    className="material-symbols-outlined text-[20px] shrink-0"
                     style={{
-                      color: isActive ? '#FFFFFF' : '#6B7280',
+                      color: isActive ? '#FFFFFF' : '#64748B',
                     }}
                   >
                     {item.icon}
                   </span>
+                  <span className="truncate">{item.label}</span>
+                </div>
+
+                {item.badge && (
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                      isActive
+                        ? 'bg-white/20 text-white'
+                        : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    {item.badge}
+                  </span>
                 )}
-                <span className="truncate">{item.label}</span>
               </button>
             );
           })}
         </nav>
       </div>
 
-      {/* Footer Tag */}
-      <div className="pt-4 border-t border-[#E5E7EB] text-[11px] text-[#6B7280] flex items-center gap-2">
-        <span className="material-symbols-outlined text-[15px] text-[#149B8A]">verified_user</span>
-        <span>Plataforma 100% informativa</span>
+      {/* User profile bottom chip */}
+      <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+        <button
+          onClick={() => onNavigate('perfil')}
+          className="flex items-center gap-2.5 text-left hover:opacity-80 transition-opacity cursor-pointer group"
+        >
+          <div className="w-9 h-9 rounded-xl bg-[#0F3B82] text-white font-bold flex items-center justify-center text-[13px] shadow-2xs">
+            {user.name.charAt(0).toUpperCase()}
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[13px] font-bold text-slate-900 truncate group-hover:text-emerald-700">
+              {user.name}
+            </span>
+            <span className="text-[11px] text-slate-400 truncate">
+              {user.primaryGoal}
+            </span>
+          </div>
+        </button>
+
+        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" title="Al día" />
       </div>
     </aside>
   );

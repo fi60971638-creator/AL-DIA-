@@ -99,7 +99,7 @@ export const SITUATIONS_DATA: SituationItem[] = [
     shortDesc: 'Conoce información y derechos relacionados con la cobranza.',
     subtitle: 'La cobranza debe respetar tus derechos, tu privacidad y los horarios establecidos por ley.',
     icon: 'phone_in_talk',
-    tagColor: '#0F3D56',
+    tagColor: '#0F3B82',
     meaning:
       'La gestión de cobranza es el proceso que realizan las entidades o empresas autorizadas para requerir el pago de una obligación vencida. Este proceso está estrictamente regulado por normas que protegen tu dignidad y privacidad.',
     whatCanYouDo: [
@@ -130,7 +130,7 @@ export const SITUATIONS_DATA: SituationItem[] = [
     shortDesc: 'Aprende sobre cuotas, intereses, tasas y otros conceptos.',
     subtitle: 'Conoce de manera sencilla los términos financieros más comunes al solicitar o pagar un préstamo.',
     icon: 'description',
-    tagColor: '#149B8A',
+    tagColor: '#00B49F',
     meaning:
       'Un crédito es un contrato financiero que incluye varios conceptos además del dinero prestado: tasa de interés, comisiones, seguros, cronograma y penalidades por mora.',
     whatCanYouDo: [
@@ -188,7 +188,7 @@ export const SITUATIONS_DATA: SituationItem[] = [
     shortDesc: 'Aprende por qué tu comportamiento de pago es importante.',
     subtitle: 'Tu comportamiento de pago influye en las condiciones y tasas que recibirás al solicitar nuevos créditos.',
     icon: 'shield',
-    tagColor: '#149B8A',
+    tagColor: '#00B49F',
     meaning:
       'El historial crediticio refleja tu comportamiento y puntualidad en el cumplimiento de créditos y servicios. Las entidades lo consultan en la Central de Riesgos de la SBS para evaluar futuras solicitudes.',
     whatCanYouDo: [

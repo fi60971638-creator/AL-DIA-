@@ -2,28 +2,28 @@
 
 @layer base {
   :root {
-    --color-primary: #0F3D56;
-    --color-secondary: #149B8A;
-    --color-bg: #F7F8FA;
+    --color-primary: #0F3B82;
+    --color-secondary: #00B49F;
+    --color-bg: #F0F4F9;
     --color-card: #FFFFFF;
-    --color-text-primary: #25313C;
-    --color-text-secondary: #6B7280;
-    --color-border: #E5E7EB;
+    --color-text-primary: #1A2B42;
+    --color-text-secondary: #5E6E82;
+    --color-border: #E2E8F0;
 
     --color-status-overdue: #D64545;
     --color-status-upcoming: #D99A24;
-    --color-status-paid: #2563EB;
-    --color-status-ontime: #149B8A;
+    --color-status-paid: #0F3B82;
+    --color-status-ontime: #00B49F;
   }
 
   * {
-    border-color: #E5E7EB;
+    border-color: #E2E8F0;
   }
 
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #F7F8FA;
-    color: #25313C;
+    background-color: #F0F4F9;
+    color: #1A2B42;
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
@@ -41,7 +41,7 @@
     'FILL' 0,
     'wght' 400,
     'GRAD' 0,
-    'opsz' 20;
+    'opsz' 24;
   display: inline-block;
   vertical-align: middle;
   line-height: 1;

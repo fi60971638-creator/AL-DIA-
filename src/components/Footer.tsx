@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  APP_NAME,
-  APP_SUBTITLE,
-  OFFICIAL_SOURCES_DATA,
-  DISCLAIMER_NOTE,
-} from '../data/initialData';
 import { TabType } from '../types';
+import { OFFICIAL_SOURCES_DATA } from '../data/initialData';
 
 interface FooterProps {
   onNavigate: (tab: TabType) => void;
@@ -13,119 +8,144 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="bg-white border-t border-[#E5E7EB] mt-16 pb-24 lg:pb-12 pt-10 text-[13px] text-[#6B7280]">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col gap-8">
-        {/* Top Info */}
+    <footer className="bg-white border-t border-slate-200 mt-20 pb-28 lg:pb-12 pt-12 text-[13px] text-slate-500">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col gap-10">
+        {/* Top Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Col 1: Brand & Subtitle */}
-          <div className="flex flex-col gap-2.5">
-            <div className="flex items-center gap-2">
-              <span className="text-[18px] font-bold text-[#0F3D56] tracking-tight">
-                {APP_NAME}
-              </span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-[#149B8A] font-bold uppercase tracking-wider">
-                {APP_SUBTITLE}
-              </span>
+          {/* Col 1: Brand & Slogan */}
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2.5">
+              <img
+                src="/logo-aldia.svg"
+                alt="Logo AlDía"
+                className="h-10 w-auto object-contain shrink-0"
+              />
+              <div className="flex flex-col">
+                <div className="flex items-center text-[20px] font-extrabold tracking-tight leading-tight">
+                  <span className="text-[#0F3B82]">Al</span>
+                  <span className="text-emerald-600 ml-0.5">Día</span>
+                </div>
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                  Finanzas & Pagos Personales
+                </span>
+              </div>
             </div>
-            <p className="text-[#25313C] font-semibold text-[14px]">
-              Orientación general sobre créditos, pagos y cobranzas.
+
+            <p className="text-slate-800 font-bold text-[14px]">
+              “Entiende tus deudas. Organiza tus pagos. Avanza tranquilo.”
             </p>
-            <p className="text-[12px] text-[#6B7280] leading-relaxed">
-              Educación financiera sencilla para comprender tus obligaciones y conocer qué puedes hacer ante diferentes situaciones.
+
+            <p className="text-[12.5px] text-slate-500 leading-relaxed">
+              Plataforma moderna de educación financiera, gestión de deudas y progreso personal. Diseñada para personas que buscan claridad y tranquilidad en sus finanzas.
             </p>
           </div>
 
-          {/* Col 2: Navigation */}
+          {/* Col 2: Navigation Links */}
           <div className="flex flex-col gap-2">
-            <span className="text-[12px] font-bold text-[#0F3D56] uppercase tracking-wider">
-              Navegación
+            <span className="text-[12px] font-bold text-[#0F3B82] uppercase tracking-wider">
+              Plataforma
             </span>
-            <div className="grid grid-cols-2 gap-1.5 text-[13px]">
+            <div className="grid grid-cols-2 gap-2 text-[13px]">
               <button
                 onClick={() => onNavigate('inicio')}
-                className="text-left text-[#6B7280] hover:text-[#0F3D56] transition-colors cursor-pointer"
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
               >
-                Inicio
+                Dashboard
               </button>
               <button
-                onClick={() => onNavigate('situaciones')}
-                className="text-left text-[#6B7280] hover:text-[#0F3D56] transition-colors cursor-pointer"
+                onClick={() => onNavigate('deudas')}
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
               >
-                Situaciones
+                Mis deudas
               </button>
               <button
-                onClick={() => onNavigate('videos')}
-                className="text-left text-[#6B7280] hover:text-[#0F3D56] transition-colors cursor-pointer"
+                onClick={() => onNavigate('pagos')}
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
               >
-                Videos SBS
+                Próximos pagos
+              </button>
+              <button
+                onClick={() => onNavigate('presupuesto')}
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
+              >
+                Mi presupuesto
+              </button>
+              <button
+                onClick={() => onNavigate('objetivos')}
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
+              >
+                Mis objetivos
+              </button>
+              <button
+                onClick={() => onNavigate('salud')}
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
+              >
+                Salud financiera
               </button>
               <button
                 onClick={() => onNavigate('aprende')}
-                className="text-left text-[#6B7280] hover:text-[#0F3D56] transition-colors cursor-pointer"
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
               >
-                Aprende
+                Educación financiera
               </button>
               <button
-                onClick={() => onNavigate('casos')}
-                className="text-left text-[#6B7280] hover:text-[#0F3D56] transition-colors cursor-pointer"
+                onClick={() => onNavigate('perfil')}
+                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
               >
-                Casos prácticos
-              </button>
-              <button
-                onClick={() => onNavigate('preguntas')}
-                className="text-left text-[#6B7280] hover:text-[#0F3D56] transition-colors cursor-pointer"
-              >
-                Preguntas frecuentes
-              </button>
-              <button
-                onClick={() => onNavigate('derechos')}
-                className="text-left text-[#6B7280] hover:text-[#0F3D56] transition-colors cursor-pointer"
-              >
-                Mis derechos
-              </button>
-              <button
-                onClick={() => onNavigate('fuentes')}
-                className="text-left text-[#6B7280] hover:text-[#0F3D56] transition-colors cursor-pointer"
-              >
-                Fuentes oficiales
+                Mi perfil
               </button>
             </div>
           </div>
 
-          {/* Col 3: Legal Notice */}
+          {/* Col 3: Official References */}
           <div className="flex flex-col gap-2">
-            <span className="text-[12px] font-bold text-[#0F3D56] uppercase tracking-wider">
-              Aviso legal y de orientación
+            <span className="text-[12px] font-bold text-[#0F3B82] uppercase tracking-wider">
+              Marco y Fuentes Oficiales
             </span>
-            <div className="p-3.5 rounded-xl bg-[#F7F8FA] border border-[#E5E7EB] flex flex-col gap-1.5 text-[11px] leading-relaxed">
-              <p className="text-[#6B7280]">
-                {DISCLAIMER_NOTE}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Official Sources Reference Links */}
-        <div className="pt-6 border-t border-[#E5E7EB] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] font-bold text-[#0F3D56]">Fuentes oficiales:</span>
-            <div className="flex items-center gap-3 text-[12px]">
-              {OFFICIAL_SOURCES_DATA.map((s) => (
+            <p className="text-[12px] text-slate-500 leading-snug">
+              Nuestras recomendaciones y estándares se apegan a la normativa de protección al consumidor financiero de:
+            </p>
+            <div className="flex flex-col gap-1.5 mt-1 text-[12.5px]">
+              {OFFICIAL_SOURCES_DATA.map((src) => (
                 <a
-                  key={s.id}
-                  href={s.url}
+                  key={src.id}
+                  href={src.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold text-[#0F3D56] hover:text-[#149B8A] transition-colors"
+                  className="text-slate-700 hover:text-emerald-700 font-semibold flex items-center justify-between group"
                 >
-                  {s.name}
+                  <span>{src.name} — {src.fullName}</span>
+                  <span className="material-symbols-outlined text-[14px] text-slate-400 group-hover:text-emerald-700">
+                    open_in_new
+                  </span>
                 </a>
               ))}
             </div>
           </div>
+        </div>
 
-          <div className="text-[12px] text-[#6B7280]">
-            © {new Date().getFullYear()} {APP_NAME} · {APP_SUBTITLE}
+        {/* Disclaimer Note */}
+        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-[12px] text-slate-500 leading-relaxed text-center sm:text-left">
+          <strong>Aviso de transparencia:</strong> AlDía es una herramienta tecnológica independiente de educación, organización y gestión financiera personal. No es un banco, no otorga créditos, no realiza cobranzas judiciales ni extrajudiciales, no capta depósitos del público y no solicita credenciales bancarias.
+        </div>
+
+        {/* Bottom copyright */}
+        <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-slate-400">
+          <span>© {new Date().getFullYear()} AlDía. Todos los derechos reservados.</span>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => onNavigate('aprende')}
+              className="hover:text-slate-600 transition-colors"
+            >
+              Educación Financiera
+            </button>
+            <span>·</span>
+            <button
+              onClick={() => onNavigate('perfil')}
+              className="hover:text-slate-600 transition-colors"
+            >
+              Privacidad y Seguridad
+            </button>
           </div>
         </div>
       </div>

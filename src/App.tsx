@@ -1,29 +1,34 @@
 import React, { useState } from 'react';
-import { TabType, SituationId } from './types';
+import { TabType } from './types';
+import { FinanceProvider, useFinance } from './context/FinanceContext';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { BottomNav } from './components/BottomNav';
 import { Footer } from './components/Footer';
-import { InicioScreen } from './components/screens/InicioScreen';
-import { SituacionesScreen } from './components/screens/SituacionesScreen';
-import { VideosScreen } from './components/screens/VideosScreen';
-import { AprendeScreen } from './components/screens/AprendeScreen';
-import { CasosPracticosScreen } from './components/screens/CasosPracticosScreen';
-import { PreguntasFrecuentesScreen } from './components/screens/PreguntasFrecuentesScreen';
-import { AsesoramientoScreen } from './components/screens/AsesoramientoScreen';
-import { DerechosScreen } from './components/screens/DerechosScreen';
-import { FuentesOficialesScreen } from './components/screens/FuentesOficialesScreen';
-import {
-  APP_NAME,
-  APP_SUBTITLE,
-  APP_LOGO_URL,
-  OFFICIAL_SOURCES_DATA,
-} from './data/initialData';
 
-export default function App() {
+// Screens
+import { DashboardScreen } from './components/screens/DashboardScreen';
+import { MisDeudasScreen } from './components/screens/MisDeudasScreen';
+import { PagosScreen } from './components/screens/PagosScreen';
+import { PresupuestoScreen } from './components/screens/PresupuestoScreen';
+import { ObjetivosScreen } from './components/screens/ObjetivosScreen';
+import { SaludFinancieraScreen } from './components/screens/SaludFinancieraScreen';
+import { AprendeFinanzasScreen } from './components/screens/AprendeFinanzasScreen';
+import { PerfilScreen } from './components/screens/PerfilScreen';
+
+// Modals and Utilities
+import { RegisterPaymentModal } from './components/modals/RegisterPaymentModal';
+import { AddDebtModal } from './components/modals/AddDebtModal';
+import { AddGoalModal } from './components/modals/AddGoalModal';
+import { DebtDetailModal } from './components/modals/DebtDetailModal';
+import { OnboardingModal } from './components/modals/OnboardingModal';
+import { ToastNotification } from './components/common/ToastNotification';
+import { QuickActionFAB } from './components/common/QuickActionFAB';
+
+function AppContent() {
   const [currentTab, setCurrentTab] = useState<TabType>('inicio');
-  const [selectedSituationId, setSelectedSituationId] = useState<SituationId>('no-puedo-pagar');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, debts, healthScore } = useFinance();
 
   const handleNavigate = (tab: TabType) => {
     setCurrentTab(tab);
@@ -31,33 +36,25 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSelectSituation = (id: SituationId) => {
-    setSelectedSituationId(id);
-    setCurrentTab('situaciones');
-    setIsMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const navItems: { id: TabType; label: string; icon: string; emoji?: string }[] = [
-    { id: 'inicio', label: 'Inicio', icon: 'home' },
-    { id: 'situaciones', label: 'Situaciones', icon: 'category' },
-    { id: 'videos', label: 'Videos', icon: 'smart_display', emoji: '🎥' },
-    { id: 'aprende', label: 'Aprende', icon: 'school', emoji: '📚' },
-    { id: 'casos', label: 'Casos prácticos', icon: 'psychology', emoji: '💡' },
-    { id: 'preguntas', label: 'Preguntas frecuentes', icon: 'help_outline', emoji: '❓' },
-    { id: 'asesoramiento', label: 'Orientación personalizada', icon: 'support_agent', emoji: '👤' },
-    { id: 'derechos', label: 'Mis derechos', icon: 'shield', emoji: '🛡️' },
-    { id: 'fuentes', label: 'Fuentes oficiales', icon: 'verified', emoji: '🔗' },
+  const navItems: { id: TabType; label: string; icon: string; badge?: string }[] = [
+    { id: 'inicio', label: 'Inicio', icon: 'dashboard' },
+    { id: 'deudas', label: 'Mis deudas', icon: 'credit_card', badge: debts.length.toString() },
+    { id: 'pagos', label: 'Próximos pagos', icon: 'calendar_month' },
+    { id: 'presupuesto', label: 'Mi presupuesto', icon: 'pie_chart' },
+    { id: 'objetivos', label: 'Mis objetivos', icon: 'flag' },
+    { id: 'salud', label: 'Salud financiera', icon: 'verified', badge: `${healthScore.totalScore}` },
+    { id: 'aprende', label: 'Aprende', icon: 'school' },
+    { id: 'perfil', label: 'Mi perfil', icon: 'person' },
   ];
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA] text-[#25313C] flex font-sans antialiased selection:bg-teal-100">
-      {/* 1. Desktop Sidebar Navigation (Left column, compact) */}
+    <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] flex font-sans antialiased selection:bg-emerald-100 selection:text-emerald-900">
+      {/* 1. Desktop Sidebar Navigation */}
       <Sidebar currentTab={currentTab} onNavigate={handleNavigate} />
 
       {/* 2. Mobile Left Drawer Sheet */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex">
+        <div className="fixed inset-0 z-50 lg:hidden flex animate-in fade-in duration-200">
           {/* Backdrop */}
           <div
             onClick={() => setIsMobileMenuOpen(false)}
@@ -65,32 +62,38 @@ export default function App() {
           />
 
           {/* Drawer Content */}
-          <div className="relative w-4/5 max-w-xs bg-white min-h-screen p-5 flex flex-col justify-between shadow-2xl z-50 border-r border-[#E5E7EB] overflow-y-auto">
+          <div className="relative w-4/5 max-w-xs bg-white min-h-screen p-5 flex flex-col justify-between shadow-2xl z-50 border-r border-slate-200 overflow-y-auto">
             <div className="flex flex-col gap-5">
               {/* Drawer Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB]">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <div className="flex items-center gap-2.5">
-                  <img src={APP_LOGO_URL} alt={APP_NAME} className="h-7 w-auto object-contain" />
+                  <img src="/logo-aldia.svg" alt="Logo AlDía" className="h-9 w-auto object-contain shrink-0" />
                   <div className="flex flex-col">
-                    <span className="text-[17px] font-bold text-[#0F3D56] leading-none">
-                      {APP_NAME}
-                    </span>
-                    <span className="text-[10px] text-[#6B7280] font-medium leading-none mt-0.5">
-                      {APP_SUBTITLE}
+                    <div className="flex items-center text-[19px] font-extrabold tracking-tight leading-none">
+                      <span className="text-[#0F3B82]">Al</span>
+                      <span className="text-emerald-600 ml-0.5">Día</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 font-semibold uppercase leading-none mt-1">
+                      Finanzas Personales
                     </span>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:bg-[#F7F8FA] cursor-pointer"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[20px]">close</span>
                 </button>
               </div>
 
+              {/* Slogan */}
+              <p className="text-[11.5px] text-slate-500 italic px-1">
+                “Entiende tus deudas. Organiza tus pagos. Avanza tranquilo.”
+              </p>
+
               {/* Navigation Links */}
               <div className="flex flex-col gap-1">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] px-2 mb-1">
+                <span className="text-[10.5px] font-bold uppercase tracking-wider text-slate-400 px-2 mb-1">
                   Menú Principal
                 </span>
                 {navItems.map((item) => {
@@ -99,49 +102,48 @@ export default function App() {
                     <button
                       key={item.id}
                       onClick={() => handleNavigate(item.id)}
-                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all text-left cursor-pointer ${
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13.5px] font-semibold transition-all text-left cursor-pointer ${
                         isActive
-                          ? 'bg-[#0F3D56] text-white font-semibold shadow-2xs'
-                          : 'text-[#25313C] hover:bg-[#F7F8FA]'
+                          ? 'bg-[#0F3B82] text-white shadow-2xs'
+                          : 'text-slate-700 hover:bg-slate-50'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        {item.emoji ? (
-                          <span className="text-[15px]">{item.emoji}</span>
-                        ) : (
-                          <span
-                            className="material-symbols-outlined text-[20px]"
-                            style={{ color: isActive ? '#FFFFFF' : '#6B7280' }}
-                          >
-                            {item.icon}
-                          </span>
-                        )}
+                        <span
+                          className="material-symbols-outlined text-[20px]"
+                          style={{ color: isActive ? '#FFFFFF' : '#64748B' }}
+                        >
+                          {item.icon}
+                        </span>
                         <span>{item.label}</span>
                       </div>
-                      <span className="material-symbols-outlined text-[16px] opacity-60">
-                        chevron_right
-                      </span>
+                      {item.badge && (
+                        <span
+                          className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                            isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                          }`}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Drawer Bottom Sources */}
-            <div className="pt-4 border-t border-[#E5E7EB] flex flex-col gap-2">
-              <span className="text-[11px] font-bold text-[#0F3D56]">Fuentes oficiales</span>
-              <div className="grid grid-cols-3 gap-1.5 text-center text-[11px]">
-                {OFFICIAL_SOURCES_DATA.map((s) => (
-                  <a
-                    key={s.id}
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-1.5 rounded-lg bg-[#F7F8FA] border border-[#E5E7EB] font-bold text-[#0F3D56]"
-                  >
-                    {s.name}
-                  </a>
-                ))}
+            {/* Drawer Bottom User Info */}
+            <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#0F3B82] text-white font-extrabold flex items-center justify-center text-[14px]">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-[13px] font-bold text-slate-900 truncate">
+                  {user.name}
+                </span>
+                <span className="text-[11px] text-emerald-700 font-semibold truncate">
+                  Salud: {healthScore.totalScore}/100
+                </span>
               </div>
             </div>
           </div>
@@ -156,40 +158,41 @@ export default function App() {
           onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
         />
 
-        <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 pt-6 sm:pt-8 pb-12">
-          {currentTab === 'inicio' && (
-            <InicioScreen
-              onNavigate={handleNavigate}
-              onSelectSituation={handleSelectSituation}
-            />
-          )}
-
-          {currentTab === 'situaciones' && (
-            <SituacionesScreen
-              selectedSituationId={selectedSituationId}
-              onSelectSituation={(id) => setSelectedSituationId(id)}
-            />
-          )}
-
-          {currentTab === 'videos' && <VideosScreen />}
-
-          {currentTab === 'aprende' && <AprendeScreen />}
-
-          {currentTab === 'casos' && <CasosPracticosScreen />}
-
-          {currentTab === 'preguntas' && <PreguntasFrecuentesScreen />}
-
-          {currentTab === 'asesoramiento' && <AsesoramientoScreen />}
-
-          {currentTab === 'derechos' && <DerechosScreen />}
-
-          {currentTab === 'fuentes' && <FuentesOficialesScreen />}
+        <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 pt-6 sm:pt-8 pb-16">
+          {currentTab === 'inicio' && <DashboardScreen onNavigate={handleNavigate} />}
+          {currentTab === 'deudas' && <MisDeudasScreen />}
+          {currentTab === 'pagos' && <PagosScreen />}
+          {currentTab === 'presupuesto' && <PresupuestoScreen />}
+          {currentTab === 'objetivos' && <ObjetivosScreen />}
+          {currentTab === 'salud' && <SaludFinancieraScreen onNavigate={handleNavigate} />}
+          {currentTab === 'aprende' && <AprendeFinanzasScreen />}
+          {currentTab === 'perfil' && <PerfilScreen />}
         </main>
 
         <Footer onNavigate={handleNavigate} />
 
+        {/* 4. Mobile Bottom Bar Navigation */}
         <BottomNav currentTab={currentTab} onNavigate={handleNavigate} />
+
+        {/* 5. Floating Action Button (FAB) */}
+        <QuickActionFAB onNavigate={handleNavigate} />
+
+        {/* 6. Reactive Modals and Toast */}
+        <RegisterPaymentModal />
+        <AddDebtModal />
+        <AddGoalModal />
+        <DebtDetailModal />
+        <OnboardingModal />
+        <ToastNotification />
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <FinanceProvider>
+      <AppContent />
+    </FinanceProvider>
   );
 }
