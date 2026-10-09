@@ -267,24 +267,14 @@ export const INITIAL_ALERTS: AlertNotification[] = [
     targetTab: 'pagos',
   },
   {
-    id: 'alt-2',
-    type: 'progreso',
-    title: '💡 Buen progreso',
-    message: '¡Has reducido tu deuda total en 8.5% respecto al mes anterior! Vas en la dirección correcta.',
-    timeAgo: 'Ayer',
-    isRead: false,
-    actionText: 'Ver progreso',
-    targetTab: 'inicio',
-  },
-  {
     id: 'alt-3',
     type: 'atencion',
-    title: '⚠️ Atención de presupuesto',
-    message: 'Tu próxima cuota de S/ 1,200 (BBVA) representa el 51% de tu disponible del mes.',
+    title: '⚠️ Recordatorio de cuota',
+    message: 'Tu próxima cuota de S/ 1,200 (BBVA) está programada para este mes.',
     timeAgo: 'Hace 2 días',
     isRead: false,
-    actionText: 'Revisar presupuesto',
-    targetTab: 'presupuesto',
+    actionText: 'Ver detalles',
+    targetTab: 'pagos',
   },
 ];
 

@@ -19,14 +19,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onNavigate }) => {
     { id: 'aprende_mitos', label: 'Mitos y verdades', icon: 'fact_check' },
     { id: 'aprende_casos', label: 'Casos prácticos', icon: 'tips_and_updates' },
     { id: 'aprende_derechos', label: 'Derechos del usuario', icon: 'verified_user' },
+    { id: 'categorias_crediticias', label: 'Categorías crediticias', icon: 'speed' },
     { id: 'orientacion', label: 'Orientación', icon: 'lightbulb' },
   ];
 
-  const secondaryTools: { id: TabType; label: string; icon: string }[] = [
-    { id: 'presupuesto', label: 'Presupuesto', icon: 'pie_chart' },
-    { id: 'objetivos', label: 'Mis objetivos', icon: 'flag' },
-    { id: 'salud', label: 'Salud financiera', icon: 'verified' },
-  ];
+
 
   return (
     <aside className="hidden lg:flex flex-col w-64 shrink-0 bg-[#0B1A35] border-r border-[#172E54] fixed left-0 top-0 h-screen h-[100dvh] p-5 justify-between z-30 shadow-[4px_0_24px_rgba(0,0,0,0.15)] text-slate-100">
@@ -97,35 +94,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onNavigate }) => {
             );
           })}
         </nav>
-
-        {/* Herramientas Complementarias */}
-        <div className="flex flex-col gap-1 pt-3 border-t border-white/10">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 mb-1">
-            Herramientas
-          </span>
-          {secondaryTools.map((tool) => {
-            const isActive = currentTab === tool.id;
-            return (
-              <button
-                key={tool.id}
-                onClick={() => onNavigate(tool.id)}
-                className={`w-full flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-[12.5px] font-semibold transition-all cursor-pointer text-left ${
-                  isActive
-                    ? 'bg-[#153B75] text-white font-bold border-l-4 border-emerald-400'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
-                }`}
-              >
-                <span
-                  className="material-symbols-outlined text-[18px]"
-                  style={{ color: isActive ? '#00D2A8' : '#64748B' }}
-                >
-                  {tool.icon}
-                </span>
-                <span className="truncate">{tool.label}</span>
-              </button>
-            );
-          })}
-        </div>
       </div>
 
       {/* Mini badge informativo de AlDía (Fijo en la parte inferior) */}

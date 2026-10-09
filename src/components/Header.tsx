@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TabType } from '../types';
-import { useFinance } from '../context/FinanceContext';
 
 interface HeaderProps {
   currentTab: TabType;
@@ -13,15 +12,6 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigate,
   onOpenMobileMenu,
 }) => {
-  const {
-    user,
-    alerts,
-    markAlertRead,
-  } = useFinance();
-
-  const [isAlertsOpen, setIsAlertsOpen] = useState(false);
-
-  const unreadAlertsCount = alerts.filter((a) => !a.isRead).length;
 
   const tabTitles: Record<TabType, { title: string; subtitle: string }> = {
     inicio: { title: 'Inicio', subtitle: 'Organiza tus pagos. Evita atrasos.' },
@@ -36,6 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
     aprende_mitos: { title: 'Mitos y Verdades', subtitle: 'Desmitifica cobranzas, intereses y centrales de riesgo' },
     aprende_casos: { title: 'Casos Prácticos', subtitle: 'Aprende resolviendo situaciones financieras reales' },
     aprende_derechos: { title: 'Derechos del Usuario', subtitle: 'Protección al consumidor financiero y normativas' },
+    categorias_crediticias: { title: 'Categorías crediticias', subtitle: 'Clasificación de riesgo de deudores según la SBS' },
     presupuesto: { title: 'Mi presupuesto', subtitle: 'Ingresos, gastos y disponibles' },
     objetivos: { title: 'Mis objetivos', subtitle: 'Metas de ahorro y tranquilidad' },
     salud: { title: 'Salud financiera', subtitle: 'Diagnóstico y puntuación' },
@@ -67,109 +58,6 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Right Side: Quick Action + Notification Bell + User Avatar */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Quick Learn CTA (hidden on very small phones) */}
-          <button
-            onClick={() => onNavigate('aprende')}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-[12.5px] font-bold transition-all cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-[17px] text-emerald-600">school</span>
-            <span>Aprender</span>
-          </button>
-
-          {/* Notification Bell with Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setIsAlertsOpen(!isAlertsOpen)}
-              className="w-10 h-10 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 flex items-center justify-center transition-all relative cursor-pointer"
-              title="Notificaciones"
-            >
-              <span className="material-symbols-outlined text-[20px]">notifications</span>
-              {unreadAlertsCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-emerald-600 text-white text-[9.5px] font-extrabold flex items-center justify-center animate-pulse">
-                  {unreadAlertsCount}
-                </span>
-              )}
-            </button>
-
-            {/* Alerts Dropdown Panel */}
-            {isAlertsOpen && (
-              <>
-                <div
-                  onClick={() => setIsAlertsOpen(false)}
-                  className="fixed inset-0 z-40 bg-transparent"
-                />
-                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-200 p-4 z-50 flex flex-col gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[14px] font-bold text-slate-900">Notificaciones</span>
-                      <span className="text-[11px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
-                        {alerts.length}
-                      </span>
-                    </div>
-                    <span className="text-[11.5px] text-slate-400">AlDía Alertas</span>
-                  </div>
-
-                  <div className="flex flex-col gap-2 max-h-72 overflow-y-auto">
-                    {alerts.map((alert) => (
-                      <div
-                        key={alert.id}
-                        onClick={() => {
-                          markAlertRead(alert.id);
-                          if (alert.targetTab) onNavigate(alert.targetTab);
-                          setIsAlertsOpen(false);
-                        }}
-                        className={`p-3 rounded-xl border transition-all cursor-pointer text-left ${
-                          alert.isRead
-                            ? 'bg-white border-slate-100 text-slate-500'
-                            : 'bg-emerald-50/50 border-emerald-100 text-slate-800'
-                        } hover:bg-slate-50`}
-                      >
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-[12.5px] font-bold text-slate-900">
-                            {alert.title}
-                          </span>
-                          <span className="text-[10px] text-slate-400">
-                            {alert.timeAgo}
-                          </span>
-                        </div>
-                        <p className="text-[12px] leading-snug line-clamp-2">
-                          {alert.message}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="pt-2 border-t border-slate-100 text-center">
-                    <span className="text-[11.5px] font-medium text-slate-500">
-                      Organiza tus pagos. Evita atrasos.
-                    </span>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* User Avatar Chip */}
-          <button
-            onClick={() => onNavigate('perfil')}
-            className="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 transition-colors cursor-pointer group"
-          >
-            <div className="w-8 h-8 rounded-lg bg-[#0F3B82] text-white font-extrabold flex items-center justify-center text-[12px] shadow-2xs">
-              {user.name?.trim() ? (
-                user.name.trim().charAt(0).toUpperCase()
-              ) : (
-                <span className="material-symbols-outlined text-[18px]">person</span>
-              )}
-            </div>
-            {user.name?.trim() && (
-              <span className="text-[13px] font-bold text-slate-900 hidden sm:block group-hover:text-emerald-700">
-                {user.name.trim()}
-              </span>
-            )}
-          </button>
-        </div>
       </div>
     </header>
   );

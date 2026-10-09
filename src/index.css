@@ -73,3 +73,83 @@
 .dark-sidebar-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.35);
 }
+
+/* Animations for AlDía presentation screen */
+@keyframes aldiaFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes aldiaFloatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg);
+  }
+}
+
+@keyframes aldiaFloatAlt {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(-1.5deg);
+  }
+}
+
+@keyframes aldiaGlow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes aldiaRingSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-aldia-float {
+  animation: aldiaFloat 5s ease-in-out infinite;
+}
+
+.animate-aldia-float-slow {
+  animation: aldiaFloatSlow 6.5s ease-in-out infinite;
+}
+
+.animate-aldia-float-alt {
+  animation: aldiaFloatAlt 7s ease-in-out infinite;
+}
+
+.animate-aldia-glow {
+  animation: aldiaGlow 4s ease-in-out infinite;
+}
+
+.animate-aldia-spin-slow {
+  animation: aldiaRingSpin 24s linear infinite;
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-aldia-float,
+  .animate-aldia-float-slow,
+  .animate-aldia-float-alt,
+  .animate-aldia-glow,
+  .animate-aldia-spin-slow {
+    animation: none !important;
+  }
+}
+

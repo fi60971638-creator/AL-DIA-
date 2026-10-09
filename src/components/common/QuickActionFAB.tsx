@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useFinance } from '../../context/FinanceContext';
 import { TabType } from '../../types';
 
 interface QuickActionFABProps {
@@ -7,7 +6,7 @@ interface QuickActionFABProps {
 }
 
 export const QuickActionFAB: React.FC<QuickActionFABProps> = ({ onNavigate }) => {
-  const { openAddGoalModal } = useFinance();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen((prev) => !prev);
@@ -31,7 +30,7 @@ export const QuickActionFAB: React.FC<QuickActionFABProps> = ({ onNavigate }) =>
       {isOpen && (
         <div className="flex flex-col gap-2.5 mb-3 z-40 animate-in fade-in slide-in-from-bottom-3 duration-200">
           <button
-            onClick={() => handleAction(() => onNavigate('aprende'))}
+            onClick={() => handleAction(() => onNavigate('aprende_articulos'))}
             className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white text-slate-800 shadow-lg border border-slate-200 text-[13px] font-bold hover:bg-emerald-50 hover:text-emerald-700 transition-all cursor-pointer group"
           >
             <span className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
@@ -41,23 +40,13 @@ export const QuickActionFAB: React.FC<QuickActionFABProps> = ({ onNavigate }) =>
           </button>
 
           <button
-            onClick={() => handleAction(() => onNavigate('presupuesto'))}
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white text-slate-800 shadow-lg border border-slate-200 text-[13px] font-bold hover:bg-amber-50 hover:text-amber-700 transition-all cursor-pointer group"
+            onClick={() => handleAction(() => onNavigate('orientacion'))}
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white text-slate-800 shadow-lg border border-slate-200 text-[13px] font-bold hover:bg-blue-50 hover:text-[#0F3B82] transition-all cursor-pointer group"
           >
-            <span className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
-              <span className="material-symbols-outlined text-[18px]">receipt_long</span>
+            <span className="w-8 h-8 rounded-full bg-blue-100 text-[#0F3B82] flex items-center justify-center">
+              <span className="material-symbols-outlined text-[18px]">lightbulb</span>
             </span>
-            <span>Registrar gasto</span>
-          </button>
-
-          <button
-            onClick={() => handleAction(openAddGoalModal)}
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white text-slate-800 shadow-lg border border-slate-200 text-[13px] font-bold hover:bg-purple-50 hover:text-purple-700 transition-all cursor-pointer group"
-          >
-            <span className="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center">
-              <span className="material-symbols-outlined text-[18px]">flag</span>
-            </span>
-            <span>Crear objetivo</span>
+            <span>Buscar orientación</span>
           </button>
         </div>
       )}

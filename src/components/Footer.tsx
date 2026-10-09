@@ -95,23 +95,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 Derechos del usuario
               </button>
               <button
-                onClick={() => onNavigate('presupuesto')}
+                onClick={() => onNavigate('categorias_crediticias')}
                 className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
               >
-                Mi presupuesto
+                Categorías crediticias
               </button>
-              <button
-                onClick={() => onNavigate('objetivos')}
-                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
-              >
-                Mis objetivos
-              </button>
-              <button
-                onClick={() => onNavigate('salud')}
-                className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"
-              >
-                Salud financiera
-              </button>
+
               <button
                 onClick={() => onNavigate('perfil')}
                 className="text-left text-slate-600 hover:text-emerald-700 transition-colors cursor-pointer"

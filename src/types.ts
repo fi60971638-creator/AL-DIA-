@@ -18,6 +18,7 @@ export type TabType =
   | 'aprende_mitos'
   | 'aprende_casos'
   | 'aprende_derechos'
+  | 'categorias_crediticias'
   | 'pagos'
   | 'presupuesto'
   | 'objetivos'

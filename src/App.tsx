@@ -15,6 +15,7 @@ import { ObjetivosScreen } from './components/screens/ObjetivosScreen';
 import { SaludFinancieraScreen } from './components/screens/SaludFinancieraScreen';
 import { AprendeFinanzasScreen } from './components/screens/AprendeFinanzasScreen';
 import { OrientacionScreen } from './components/screens/OrientacionScreen';
+import { CategoriasCrediticiasScreen } from './components/screens/CategoriasCrediticiasScreen';
 import { PerfilScreen } from './components/screens/PerfilScreen';
 
 // Modals and Utilities
@@ -23,7 +24,6 @@ import { AddGoalModal } from './components/modals/AddGoalModal';
 import { DebtDetailModal } from './components/modals/DebtDetailModal';
 import { OnboardingModal } from './components/modals/OnboardingModal';
 import { ToastNotification } from './components/common/ToastNotification';
-import { QuickActionFAB } from './components/common/QuickActionFAB';
 
 function AppContent() {
   const [currentTab, setCurrentTab] = useState<TabType>('inicio');
@@ -53,14 +53,11 @@ function AppContent() {
     { id: 'aprende_mitos', label: 'Mitos y verdades', icon: 'fact_check' },
     { id: 'aprende_casos', label: 'Casos prácticos', icon: 'tips_and_updates' },
     { id: 'aprende_derechos', label: 'Derechos del usuario', icon: 'verified_user' },
+    { id: 'categorias_crediticias', label: 'Categorías crediticias', icon: 'speed' },
     { id: 'orientacion', label: 'Orientación', icon: 'lightbulb' },
   ];
 
-  const drawerToolItems: { id: TabType; label: string; icon: string }[] = [
-    { id: 'presupuesto', label: 'Mi presupuesto', icon: 'pie_chart' },
-    { id: 'objetivos', label: 'Mis objetivos', icon: 'flag' },
-    { id: 'salud', label: 'Salud financiera', icon: 'verified' },
-  ];
+
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] flex font-sans antialiased selection:bg-emerald-100 selection:text-emerald-900">
@@ -138,37 +135,6 @@ function AppContent() {
                   );
                 })}
               </div>
-
-              {/* Herramientas */}
-              <div className="pt-2 mt-1 border-t border-white/10 flex flex-col gap-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 mb-0.5">
-                  Herramientas
-                </span>
-                {drawerToolItems.map((item) => {
-                  const isActive = currentTab === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => handleNavigate(item.id)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[12px] font-medium transition-all text-left cursor-pointer ${
-                        isActive
-                          ? 'bg-[#153B75] text-white font-bold border-l-4 border-emerald-400'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span
-                          className="material-symbols-outlined text-[18px]"
-                          style={{ color: isActive ? '#00D2A8' : '#64748B' }}
-                        >
-                          {item.icon}
-                        </span>
-                        <span className="truncate">{item.label}</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
             </div>
 
             {/* Drawer Bottom User Info */}
@@ -208,6 +174,7 @@ function AppContent() {
           {currentTab === 'deudas' && <MisDeudasScreen />}
           {(currentTab === 'calendario' || currentTab === 'pagos') && <PagosScreen />}
           {currentTab === 'orientacion' && <OrientacionScreen onNavigate={handleNavigate} />}
+          {currentTab === 'categorias_crediticias' && <CategoriasCrediticiasScreen />}
           {(currentTab === 'aprende' || currentTab.startsWith('aprende_')) && (
             <AprendeFinanzasScreen
               initialTab={aprendeSubTab}
@@ -228,10 +195,7 @@ function AppContent() {
         {/* 4. Mobile Bottom Bar Navigation */}
         <BottomNav currentTab={currentTab} onNavigate={handleNavigate} />
 
-        {/* 5. Floating Action Button (FAB) */}
-        <QuickActionFAB onNavigate={handleNavigate} />
-
-        {/* 6. Reactive Modals and Toast */}
+        {/* 5. Reactive Modals and Toast */}
         <RegisterPaymentModal />
         <AddGoalModal />
         <DebtDetailModal />
