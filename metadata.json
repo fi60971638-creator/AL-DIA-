@@ -1,6 +1,8 @@
 {
   "name": "AlDía",
-  "description": "Organiza tus pagos. Evita atrasos. Plataforma moderna para organizar deudas, consultar fechas de vencimiento y recibir orientación financiera.",
+  "description": "Plataforma educativa y de orientación sobre cobranzas, créditos y derechos del usuario financiero en el Perú (SBS e Indecopi).",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

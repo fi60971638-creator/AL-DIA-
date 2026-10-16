@@ -1,88 +1,64 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%" fill="none">
   <defs>
-    <!-- Outer Ring Gradient: Deep Navy to Vibrant Teal -->
-    <linearGradient id="ringGrad" x1="15%" y1="85%" x2="85%" y2="15%">
-      <stop offset="0%" stop-color="#0F3B82" />
-      <stop offset="30%" stop-color="#125199" />
-      <stop offset="65%" stop-color="#009A88" />
-      <stop offset="100%" stop-color="#00C49F" />
+    <!-- Brand Gradient: Deep Teal Navy to Electric Cyan Blue -->
+    <linearGradient id="aldiaBrandGrad" x1="10%" y1="90%" x2="90%" y2="10%">
+      <stop offset="0%" stop-color="#0A425C" />
+      <stop offset="25%" stop-color="#085474" />
+      <stop offset="60%" stop-color="#007EAF" />
+      <stop offset="100%" stop-color="#00A3E0" />
     </linearGradient>
-
-    <!-- Deep Blue Monogram Gradient -->
-    <linearGradient id="blueDGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0F3B82" />
-      <stop offset="100%" stop-color="#1B5CB3" />
-    </linearGradient>
-
-    <!-- Vibrant Teal / Green Growth Arrow Gradient -->
-    <linearGradient id="tealArrowGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#008F7E" />
-      <stop offset="50%" stop-color="#00B49F" />
-      <stop offset="100%" stop-color="#00D2A8" />
-    </linearGradient>
-
-    <!-- Wing / Feather Swooshes Gradient -->
-    <linearGradient id="wingGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#009688" />
-      <stop offset="100%" stop-color="#00C9A7" />
-    </linearGradient>
-
-    <!-- Soft Ambient Shadow -->
-    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0F3B82" flood-opacity="0.12" />
-    </filter>
   </defs>
 
-  <!-- Group for entire logo centered -->
-  <g id="aldia-logo-mark" filter="url(#softShadow)">
-    <!-- 1. Outer Ring Circle -->
-    <circle cx="250" cy="245" r="215" fill="none" stroke="url(#ringGrad)" stroke-width="17" />
+  <!-- Speech Bubble Outer Contour with Tail and Gap for Arrow -->
+  <path
+    d="M 124 55 A 64 64 0 0 1 159 105 A 64 64 0 0 1 82 168 L 56 182 L 64 153 A 64 64 0 0 1 31 105 A 64 64 0 0 1 92 41"
+    stroke="url(#aldiaBrandGrad)"
+    stroke-width="11"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 
-    <!-- 2. Inner Circular Contour -->
-    <path d="M 185 305 A 132 132 0 1 1 370 210" fill="none" stroke="url(#ringGrad)" stroke-width="12" stroke-linecap="round" />
+  <!-- Top-left curved grid line inside the bubble -->
+  <path
+    d="M 43 78 A 54 54 0 0 1 80 47"
+    stroke="url(#aldiaBrandGrad)"
+    stroke-width="10"
+    stroke-linecap="round"
+  />
 
-    <!-- 3. Central Stylized "D" in Deep Navy Blue -->
-    <!-- Left vertical bar of D -->
-    <path d="M 205 160 L 255 160 C 275 160 295 170 305 190 L 305 190 C 295 205 275 210 255 210 L 235 210 L 235 295 L 205 295 Z" fill="url(#blueDGrad)" />
-    
-    <!-- Outer bowl arch of D -->
-    <path d="M 235 295 L 265 295 C 315 295 350 255 350 205 C 350 175 335 150 310 135" fill="none" stroke="url(#blueDGrad)" stroke-width="26" stroke-linecap="round" />
+  <!-- Lower-right diagonal/radial grid line -->
+  <path
+    d="M 96 122 L 132 148"
+    stroke="url(#aldiaBrandGrad)"
+    stroke-width="10"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 
-    <!-- 4. Dynamic Ascending Zig-Zag Growth Graph Line (Teal) -->
-    <path d="M 175 240 L 210 200 L 235 230 L 275 135" fill="none" stroke="url(#tealArrowGrad)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Ascending Financial Chart Line -->
+  <path
+    d="M 33 126 L 68 92 L 96 122 L 150 64"
+    stroke="url(#aldiaBrandGrad)"
+    stroke-width="11"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 
-    <!-- Arrowhead at the top of trend line -->
-    <polygon points="275,108 296,155 252,145" fill="url(#tealArrowGrad)" />
+  <!-- Arrow Head (Outline matching the stroke style) -->
+  <path
+    d="M 140 37 L 174 34 L 171 68 L 157 54 L 140 37 Z"
+    stroke="url(#aldiaBrandGrad)"
+    stroke-width="10"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
 
-    <!-- 5. Approved Checkmark Nestled Inside (Estar Al Día) -->
-    <path d="M 225 235 L 245 260 L 285 205" fill="none" stroke="url(#tealArrowGrad)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" />
-
-    <!-- 6. Three Dynamic Wing / Ascending Streaks on Upper Right -->
-    <!-- Streak 1 (Inner) -->
-    <path d="M 330 250 Q 365 215 375 165 Q 360 190 330 215 Z" fill="url(#wingGrad)" />
-    <!-- Streak 2 (Middle, longest) -->
-    <path d="M 345 235 Q 390 190 405 125 Q 385 160 345 195 Z" fill="url(#wingGrad)" />
-    <!-- Streak 3 (Outer) -->
-    <path d="M 365 215 Q 405 170 415 110 Q 395 145 360 180 Z" fill="url(#wingGrad)" />
-
-    <!-- 7. Bottom Right Foot of the D (Stylized diagonal terminal) -->
-    <path d="M 325 240 L 365 300 L 340 300 L 310 255 Z" fill="url(#blueDGrad)" />
-
-    <!-- 8. Typography: "AL DÍA" -->
-    <!-- "AL " in Bold Navy Blue -->
-    <text x="160" y="385" font-family="'Inter', -apple-system, system-ui, sans-serif" font-size="64" font-weight="900" fill="#0F3B82" letter-spacing="2">
-      AL
-    </text>
-
-    <!-- "DÍA" in Vibrant Teal -->
-    <text x="268" y="385" font-family="'Inter', -apple-system, system-ui, sans-serif" font-size="64" font-weight="900" fill="#00B49F" letter-spacing="2">
-      DÍA
-    </text>
-
-    <!-- Small Upward Arrow over the 'I' (replacing the accent mark) -->
-    <g transform="translate(325, 320)">
-      <line x1="2" y1="20" x2="16" y2="6" stroke="#00B49F" stroke-width="5" stroke-linecap="round" />
-      <polygon points="16,4 7,8 14,15" fill="#00B49F" />
-    </g>
-  </g>
+  <!-- Center Orange Focal Dot inside Arrow Head -->
+  <circle
+    cx="160"
+    cy="47"
+    r="5.5"
+    fill="#F97316"
+  />
 </svg>

@@ -1,38 +1,55 @@
 @import "tailwindcss";
 
+@theme {
+  --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
 @layer base {
   :root {
-    --color-primary: #0F3B82;
-    --color-secondary: #00B49F;
-    --color-bg: #F0F4F9;
+    --color-primary: #0B3B60;
+    --color-accent: #00A3E0;
+    --color-accent-orange: #F97316;
+    --color-bg-root: #F8FAFC;
+    --color-bg-page: #FFFFFF;
     --color-card: #FFFFFF;
-    --color-text-primary: #1A2B42;
-    --color-text-secondary: #5E6E82;
+    --color-text-primary: #0B3B60;
+    --color-text-secondary: #526E88;
     --color-border: #E2E8F0;
-
-    --color-status-overdue: #D64545;
-    --color-status-upcoming: #D99A24;
-    --color-status-paid: #0F3B82;
-    --color-status-ontime: #00B49F;
-  }
-
-  * {
-    border-color: #E2E8F0;
   }
 
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: #F0F4F9;
-    color: #1A2B42;
+    background-color: #F8FAFC;
+    color: #0F172A;
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
   input, select, textarea, button {
     font-family: inherit;
   }
+}
+
+.font-heading {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.font-sans {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.financial-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 /* Material symbols adjustments for crisp fintech linear look */
@@ -148,8 +165,25 @@
   .animate-aldia-float-slow,
   .animate-aldia-float-alt,
   .animate-aldia-glow,
-  .animate-aldia-spin-slow {
+  .animate-aldia-spin-slow,
+  .fade-in {
     animation: none !important;
   }
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
 

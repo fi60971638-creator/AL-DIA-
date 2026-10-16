@@ -1,0 +1,6 @@
+{
+  "summary":  "Plan integral de refactorización y limpieza técnica para AlDía:\n- Eliminación completa de código residual de deudas, metas, presupuestos, modales obsoletos y contexto financiero.\n- Limpieza de dependencias en package.json, remoción de .env.example y actualización de metadata.json.\n- Migración y ordenamiento de tipos estrictamente educativos en types.ts y separación de artículos en data/articles.ts.\n- Eliminación de clases animate-in, fade-in rotas y adopción de transiciones y animaciones CSS nativas fluidas.\n- Verificación exhaustiva de compilación TypeScript y Vite.",
+  "updatedAt":  "2026-10-11T15:35:37.632837239Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

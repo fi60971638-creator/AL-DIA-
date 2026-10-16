@@ -242,353 +242,499 @@ export const SITUATIONS_DATA: SituationItem[] = [
   },
 ];
 
-// 8 Videos Reales de la SBS
+// 8 Videos Reales de la SBS y Educación Financiera organizados por temas
 export const VIDEOS_DATA: VideoItem[] = [
   {
     id: 'video-1',
-    titulo: 'Cumple tus metas. Infórmate, compara y decide',
-    categoria: 'Créditos',
+    titulo: 'Cumple tus metas: Infórmate, compara y decide',
+    categoria: 'Créditos y tasas de interés',
     duracion: '2:15 min',
-    fuente: 'SBS',
+    fuente: 'Superintendencia de Banca, Seguros y AFP (SBS)',
     url: 'https://www.youtube.com/watch?v=3hgH7E51IFw',
-    isFeatured: false,
-    descripcion: 'Aprende a comparar alternativas de crédito antes de contratar una obligación financiera.',
+    isFeatured: true,
+    descripcion: 'Aprende a comparar alternativas de crédito antes de contratar una obligación financiera evaluando la TCEA.',
+    keyTakeaways: [
+      'Comparar la TCEA entre tres entidades distintas.',
+      'Solicitar y leer la Hoja Resumen antes de firmar.',
+      'Evaluar si el plazo no multiplica excesivamente los intereses totales.',
+    ],
   },
   {
     id: 'video-2',
     titulo: 'Usa tu tarjeta de crédito adecuadamente',
-    categoria: 'Créditos',
+    categoria: 'Créditos y tasas de interés',
     duracion: '2:40 min',
-    fuente: 'SBS',
+    fuente: 'Superintendencia de Banca, Seguros y AFP (SBS)',
     url: 'https://www.youtube.com/watch?v=4U75eIlS_4I',
     isFeatured: true,
-    descripcion: 'Recomendaciones clave para entender fechas de corte, pago mínimo y evitar sobreendeudarte.',
+    descripcion: 'Recomendaciones clave para entender fechas de corte, pago del mes y evitar la trampa del pago mínimo.',
+    keyTakeaways: [
+      'Diferenciar fecha de corte y fecha límite de pago.',
+      'Evitar pagar solo el mínimo para no perpetuar la deuda.',
+      'Aprovechar hasta 50 días de financiamiento pagando el total del mes.',
+    ],
   },
   {
     id: 'video-3',
-    titulo: 'Historial crediticio y Central de Riesgos',
-    categoria: 'Historial',
+    titulo: 'Historial crediticio y Central de Riesgos SBS',
+    categoria: 'Historial crediticio',
     duracion: '2:20 min',
-    fuente: 'SBS',
+    fuente: 'Superintendencia de Banca, Seguros y AFP (SBS)',
     url: 'https://www.youtube.com/watch?v=wWKkxtuvDcQ',
     isFeatured: true,
-    descripcion: 'Cómo funciona la Central de Riesgos de la SBS y cómo se clasifica tu comportamiento de pago.',
+    descripcion: 'Cómo funciona la Central de Riesgos de la SBS y cómo se clasifica tu comportamiento de pago del 0 al 4.',
+    keyTakeaways: [
+      'Todos los que tienen un crédito formal figuran en la SBS.',
+      'La categoría 0 (Normal) abre puertas a mejores condiciones y tasas.',
+      'Un atraso de más de 8 días cambia tu calificación a CPP.',
+    ],
   },
   {
     id: 'video-4',
     titulo: '¿Se pueden borrar las deudas de mi historial crediticio?',
-    categoria: 'Historial',
+    categoria: 'Historial crediticio',
     duracion: '3:10 min',
-    fuente: 'SBS',
+    fuente: 'Superintendencia de Banca, Seguros y AFP (SBS)',
     url: 'https://www.youtube.com/watch?v=DOBcO9zvypo',
     isFeatured: false,
-    descripcion: 'Conoce los mitos sobre la "limpieza de historial" y los plazos reales de actualización según ley.',
+    descripcion: 'Conoce los mitos sobre la supuesta limpieza de historial y los plazos reales de actualización según ley.',
+    keyTakeaways: [
+      'Nadie puede borrar deudas ni alterar la SBS por dinero.',
+      'La única vía legítima es regularizar la obligación pendiente.',
+      'Exige tu Constancia de No Adeudo gratuita tras liquidar la deuda.',
+    ],
   },
   {
     id: 'video-5',
-    titulo: 'Consejos sobre créditos',
-    categoria: 'Créditos',
-    duracion: '2:05 min',
-    fuente: 'SBS',
-    url: 'https://www.youtube.com/watch?v=lMCwP1C-n6s',
-    isFeatured: true,
-    descripcion: 'Recomendaciones esenciales antes de solicitar préstamos personales y créditos de consumo.',
+    titulo: 'Comisiones prohibidas en el sistema financiero',
+    categoria: 'Derechos del usuario',
+    duracion: '2:30 min',
+    fuente: 'Superintendencia de Banca, Seguros y AFP (SBS)',
+    url: 'https://www.youtube.com/watch?v=joimdne9A_E',
+    isFeatured: false,
+    descripcion: 'Conoce los cobros y comisiones que las entidades financieras NO pueden aplicarte por normativa de la SBS.',
+    keyTakeaways: [
+      'Prohibido cobrar comisiones sin servicio efectivo prestado.',
+      'Prohibido cobrar penalidades por pago anticipado a capital.',
+      'Prohibido cobrar por recepción de pagos en ventanilla.',
+    ],
   },
   {
     id: 'video-6',
-    titulo: 'Comisiones prohibidas en el sistema financiero',
-    categoria: 'Derechos',
-    duracion: '2:30 min',
-    fuente: 'SBS',
-    url: 'https://www.youtube.com/watch?v=joimdne9A_E',
-    isFeatured: false,
-    descripcion: 'Conoce los cobros y comisiones que las entidades financieras NO pueden aplicarte por ley.',
+    titulo: 'Presupuesto familiar paso a paso',
+    categoria: 'Educación financiera',
+    duracion: '3:45 min',
+    fuente: 'Superintendencia de Banca, Seguros y AFP (SBS)',
+    url: 'https://www.youtube.com/watch?v=DyaJTqrM_78',
+    isFeatured: true,
+    descripcion: 'Guía práctica para armar tu presupuesto mensual, identificar gastos hormiga y fijar metas de ahorro.',
+    keyTakeaways: [
+      'Identificar ingresos netos fijos y variables.',
+      'Separar necesidades básicas de gastos prescindibles.',
+      'Asignar una partida obligatoria para imprevistos.',
+    ],
   },
   {
     id: 'video-7',
-    titulo: '¿Cómo usar adecuadamente una tarjeta de crédito?',
-    categoria: 'Pagos',
-    duracion: '3:05 min',
-    fuente: 'SBS',
-    url: 'https://youtu.be/baUXtx9ozyc',
+    titulo: 'Atención de reclamos y Libro de Reclamaciones',
+    categoria: 'Reclamos y consultas',
+    duracion: '3:15 min',
+    fuente: 'Superintendencia de Banca, Seguros y AFP (SBS)',
+    url: 'https://www.youtube.com/watch?v=lMCwP1C-n6s',
     isFeatured: false,
-    descripcion: 'Diferencia entre compras al contado (directas) y compras en cuotas para optimizar tus finanzas.',
+    descripcion: 'Procedimiento formal para presentar un reclamo ante entidades financieras y plazos legales de respuesta.',
+    keyTakeaways: [
+      'Plazo legal máximo de respuesta: 15 días hábiles.',
+      'Exigir siempre tu código o copia de la hoja de reclamación.',
+      'Canales de apelación ante INDECOPI y la SBS.',
+    ],
   },
   {
     id: 'video-8',
-    titulo: 'Presupuesto familiar paso a paso',
-    categoria: 'Finanzas personales',
-    duracion: '3:45 min',
-    fuente: 'SBS',
-    url: 'https://www.youtube.com/watch?v=DyaJTqrM_78',
+    titulo: 'Prevención de fraudes financieros y phishing',
+    categoria: 'Prevención del fraude financiero',
+    duracion: '2:50 min',
+    fuente: 'Superintendencia de Banca, Seguros y AFP (SBS)',
+    url: 'https://youtu.be/baUXtx9ozyc',
     isFeatured: false,
-    descripcion: 'Guía práctica para armar tu presupuesto mensual, identificar gastos hormiga y fijar metas de ahorro.',
+    descripcion: 'Medidas de seguridad para proteger tus claves secretas, tokens digitales y evitar estafas telefónicas.',
+    keyTakeaways: [
+      'Nunca compartir claves de 4 o 6 dígitos por teléfono o SMS.',
+      'Los bancos nunca piden códigos token para anular compras.',
+      'Verificar siempre la URL oficial antes de ingresar credenciales.',
+    ],
   },
 ];
 
-// Diccionario Financiero: Palabras que debes conocer
+// Diccionario Financiero: Palabras indispensables
 export const FINANCIAL_TERMS: FinancialTerm[] = [
+  {
+    id: 'credito',
+    term: 'Crédito',
+    definition:
+      'Operación financiera en la que una entidad autorizada entrega una suma de dinero o financiamiento con el compromiso de que sea devuelto en cuotas acordadas más intereses.',
+    example: 'Un préstamo personal de S/ 4,000 para equipamiento de trabajo o una tarjeta de crédito.',
+    importance: 'Permite financiar proyectos o emergencias, pero compromete ingresos futuros.',
+    source: 'SBS - Glosario de Términos Financieros',
+  },
+  {
+    id: 'tasa-interes',
+    term: 'Tasa de interés',
+    definition:
+      'Porcentaje que representa el costo que cobra la entidad financiera por prestarte el dinero durante un periodo de tiempo determinado (habitualmente expresado en TEA anual).',
+    example: 'Si un crédito tiene una TEA del 18%, ese porcentaje se aplica sobre el saldo deudor del capital prestado.',
+    importance: 'Determina qué tan caro o económico resulta el préstamo a lo largo del tiempo.',
+    source: 'Superintendencia de Banca, Seguros y AFP (SBS)',
+  },
+  {
+    id: 'cuota',
+    term: 'Cuota',
+    definition:
+      'Monto periódico (habitualmente mensual) que el deudor se compromete a pagar a la entidad. Está compuesta por amortización del capital, intereses compensatorios y seguros obligatorios.',
+    example: 'En una cuota mensual de S/ 380: S/ 250 van a capital, S/ 115 a intereses y S/ 15 al seguro de desgravamen.',
+    importance: 'Debe encajar holgadamente en tu presupuesto mensual sin superar tu capacidad de pago.',
+    source: 'SBS - Reglamento de Gestión de Conducta de Mercado',
+  },
+  {
+    id: 'capital',
+    term: 'Capital',
+    definition:
+      'El monto exacto de dinero que la entidad financiera te prestó originalmente, excluyendo intereses futuros, comisiones o seguros.',
+    example: 'Si te prestaron S/ 5,000 y has devuelto S/ 2,000 de capital, tu saldo insoluto de capital es de S/ 3,000.',
+    importance: 'Los intereses de cada mes se calculan únicamente sobre el saldo de capital pendiente.',
+    source: 'SBS - Definiciones Operativas de Crédito',
+  },
+  {
+    id: 'interes-moratorio',
+    term: 'Interés moratorio',
+    definition:
+      'Recargo adicional que la entidad financiera aplica únicamente cuando una cuota no es pagada en la fecha pactada en el cronograma. Se aplica por cada día de atraso.',
+    example: 'Si tu cuota venció el día 10 y pagas el 20, te cobrarán intereses moratorios calculados sobre los 10 días de demora.',
+    importance: 'Eleva el costo de la obligación e incrementa la deuda mientras más tiempo transcurra.',
+    source: 'Código Civil del Perú y normativa SBS',
+  },
+  {
+    id: 'plazo',
+    term: 'Plazo',
+    definition:
+      'El periodo de tiempo acordado entre el cliente y la entidad financiera para devolver la totalidad del préstamo (por ejemplo 12, 24 o 36 meses).',
+    example: 'Elegir un plazo de 36 meses reduce la cuota mensual, pero eleva los intereses totales frente a un plazo de 18 meses.',
+    importance: 'A mayor plazo, mayor es el número de veces que se liquidan intereses y seguros sobre el saldo.',
+    source: 'SBS - Guía para la Contratación de Créditos',
+  },
+  {
+    id: 'garantia',
+    term: 'Garantía',
+    definition:
+      'Bien mueble, inmueble o aval personal que el deudor entrega o compromete para respaldar el cumplimiento del pago del crédito ante la entidad.',
+    example: 'En un crédito hipotecario, la vivienda adquirida queda hipotecada como garantía del crédito.',
+    importance: 'Permite acceder a montos más elevados o tasas menores, pero compromete el bien en caso de incumplimiento.',
+    source: 'Ley N° 26702 - Ley General del Sistema Financiero',
+  },
+  {
+    id: 'historial-crediticio',
+    term: 'Historial crediticio',
+    definition:
+      'Registro oficial y confidencial que recopila el comportamiento de pago de una persona en todos los créditos y servicios contratados en el sistema formal.',
+    example: 'Haber pagado puntualmente todas tus cuotas en los últimos dos años otorga un récord crediticio favorable.',
+    importance: 'Es evaluado por todas las entidades antes de aprobarte un crédito, alquiler o incremento de línea.',
+    source: 'Central de Riesgos SBS',
+  },
+  {
+    id: 'central-de-riesgos',
+    term: 'Central de Riesgos',
+    definition:
+      'Base de datos administrada por la SBS donde todas las empresas del sistema financiero reportan mensualmente el estado de los créditos de sus clientes.',
+    example: 'La SBS actualiza el último día hábil de cada mes la información de deudas de bancos, cajas y financieras.',
+    importance: 'Permite al ciudadano consultar su estado de deudas de forma gratuita y oficial con su DNI.',
+    source: 'Superintendencia de Banca, Seguros y AFP (SBS)',
+  },
+  {
+    id: 'reprogramacion',
+    term: 'Reprogramación',
+    definition:
+      'Modificación de las condiciones originales del crédito (habitualmente ampliando el plazo o reduciendo la cuota) acordada antes de que el cliente caiga en morosidad grave.',
+    example: 'Si tus ingresos bajan, solicitas reprogramar tu préstamo de 12 a 24 meses para que la cuota baje a una cifra alcanzable.',
+    importance: 'Permite mantener la calificación crediticia Normal sin caer en categoría de morosidad.',
+    source: 'SBS - Circular de Reprogramaciones Crediticias',
+  },
+  {
+    id: 'refinanciacion',
+    term: 'Refinanciación',
+    definition:
+      'Operación mediante la cual se reestructura una deuda que ya presenta atrasos importantes o deterioro en la capacidad de pago del deudor, consolidando saldos e intereses.',
+    example: 'Firmar un nuevo contrato para pagar una deuda con 60 días de atraso en un plazo más amplio y con nuevo cronograma.',
+    importance: 'Detiene las acciones de cobranza judicial, aunque reporta una categoría especial en la Central de Riesgos.',
+    source: 'Resolución SBS N° 11356-2008',
+  },
+  {
+    id: 'sobreendeudamiento',
+    term: 'Sobreendeudamiento',
+    definition:
+      'Situación financiera crítica en la cual el total acumulado de las cuotas mensuales de deudas supera la capacidad real de pago del deudor.',
+    example: 'Percibir S/ 2,200 netos al mes pero tener que pagar S/ 1,800 sumando cuotas de préstamos y tarjetas.',
+    importance: 'Genera insolvencia y obliga a reestructurar o consolidar deudas con urgencia.',
+    source: 'SBS - Circular de Riesgo de Sobreendeudamiento',
+  },
+  {
+    id: 'capacidad-de-pago',
+    term: 'Capacidad de pago',
+    definition:
+      'Monto máximo mensual que una persona puede destinar al pago de deudas después de haber cubierto todos sus gastos básicos indispensables.',
+    example: 'Si ganas S/ 2,500 y tus gastos esenciales (alquiler, comida, servicios, salud) son S/ 1,700, tu capacidad máxima es S/ 800.',
+    importance: 'Es el límite prudente que jamás debe sobrepasarse al solicitar un nuevo financiamiento.',
+    source: 'Educación Financiera AlDía',
+  },
+  {
+    id: 'calificacion-crediticia',
+    term: 'Calificación crediticia',
+    definition:
+      'Categoría de riesgo asignada por la SBS a cada deudor (del 0 al 4: Normal, CPP, Deficiente, Dudoso, Pérdida) en función del cumplimiento y días de atraso.',
+    example: 'Estar calificado en categoría "0 - Normal" significa que pagas tus cuotas puntualmente o con menos de 8 días de demora.',
+    importance: 'Condiciona el acceso a créditos futuros y las tasas de interés que te aplicarán las entidades.',
+    source: 'SBS - Reglamento de Clasificación del Deudor',
+  },
   {
     id: 'tcea',
     term: 'TCEA (Tasa de Costo Efectivo Anual)',
     definition:
-      'Es la tasa que resume el costo total anual de un crédito, incluyendo la tasa de interés compensatoria (TEA), comisiones y gastos (como el seguro de desgravamen).',
-    example:
-      'Si un banco te ofrece una TEA del 20% pero la TCEA es del 32%, el 32% es el costo real que pagarás al año sumando todos los cargos.',
-    importance:
-      'Es el indicador fundamental para comparar qué crédito es más barato entre distintas entidades financieras.',
-  },
-  {
-    id: 'mora',
-    term: 'MORA / Interés Moratorio',
-    definition:
-      'Es el recargo adicional que aplica la entidad financiera cuando una cuota no es pagada en la fecha de vencimiento acordada en el cronograma.',
-    example:
-      'Si tu cuota venció el día 5 y pagas el día 15, la entidad te cobrará intereses moratorios por los 10 días de atraso.',
-    importance:
-      'Los recargos por mora incrementan el valor de la deuda y generan un reporte negativo en la Central de Riesgos.',
-  },
-  {
-    id: 'interes',
-    term: 'INTERÉS COMPENSATORIO',
-    definition:
-      'Es el precio o contraprestación que cobra la entidad financiera por prestarte dinero durante un periodo determinado.',
-    example:
-      'Si solicitas un préstamo de S/ 1,000 a 12 meses, la suma de los intereses compensatorios representa la ganancia de la entidad por prestarte ese dinero.',
-    importance:
-      'Determina la proporción de tu cuota que se destina al costo del servicio antes de amortizar el saldo del capital prestado.',
-  },
-  {
-    id: 'cuota',
-    term: 'CUOTA',
-    definition:
-      'Es el monto periódico (generalmente mensual) que te comprometes a pagar a la entidad financiera. Se compone de amortización de capital, interés y seguros asociados.',
-    example:
-      'En una cuota de S/ 350, por ejemplo, S/ 220 pueden ser amortización a capital, S/ 110 de intereses y S/ 20 de seguro de desgravamen.',
-    importance:
-      'Debes verificar que el valor de la cuota mensual encaje cómodamente en tu presupuesto mensual sin superar tu capacidad de pago.',
-  },
-  {
-    id: 'credito',
-    term: 'CRÉDITO',
-    definition:
-      'Operación financiera en la que una entidad pone a disposición del cliente una cantidad de dinero con el compromiso de que sea devuelto en un plazo determinado con intereses y cargos.',
-    example:
-      'Un préstamo personal, una tarjeta de crédito, un crédito vehicular o un préstamo hipotecario.',
-    importance:
-      'Es una herramienta para cumplir metas o afrontar inversiones, pero debe asumirse con responsabilidad para evitar sobreendeudamiento.',
-  },
-  {
-    id: 'historial',
-    term: 'HISTORIAL CREDITICIO',
-    definition:
-      'Registro oficial que refleja el comportamiento de una persona respecto al cumplimiento puntual o atrasado de sus créditos y servicios.',
-    example:
-      'En la SBS, una persona puntual tiene calificación "Normal" (0). Con atrasos pasa a "Problemas Potenciales" (1), "Deficiente" (2), "Dudoso" (3) o "Pérdida" (4).',
-    importance:
-      'Un buen historial te abre las puertas a mejores tasas de interés, mayores montos y acceso formal a créditos y alquileres.',
-  },
-  {
-    id: 'capacidad',
-    term: 'CAPACIDAD DE PAGO',
-    definition:
-      'Es la cantidad máxima de dinero que una persona puede destinar al pago mensual de deudas después de cubrir todos sus gastos básicos indispensables (alimentación, vivienda, servicios, salud, educación).',
-    example:
-      'Si tus ingresos son S/ 2,000 y tus gastos básicos indispensables son S/ 1,400, tu capacidad máxima de pago para cuotas es de S/ 600.',
-    importance:
-      'Conocer tu capacidad de pago real previene que asumas cuotas que luego no puedas cubrir cuando surja un imprevisto.',
-  },
-  {
-    id: 'sobreendeudamiento',
-    term: 'SOBREENDEUDAMIENTO',
-    definition:
-      'Situación financiera crítica en la que el total acumulado de las cuotas de pago supera la capacidad económica mensual del deudor, impidiendo cumplir las obligaciones.',
-    example:
-      'Una persona que percibe S/ 2,500 pero tiene cuotas de tarjetas y préstamos que suman S/ 2,000 al mes, dejándole solo S/ 500 para vivir.',
-    importance:
-      'El sobreendeudamiento genera estrés financiero, morosidad y deterioro del historial. Requiere reordenar obligaciones o consolidar deudas a tiempo.',
+      'Indicador integral que resume el costo total anual de un crédito: reúne la tasa compensatoria (TEA), comisiones operativas y seguros obligatorios.',
+    example: 'Si un crédito tiene TEA de 22% pero TCEA de 34%, el 34% es el porcentaje real que pagarás sumando todos los cargos.',
+    importance: 'Es la única tasa válida para comparar cuál crédito es verdaderamente más económico.',
+    source: 'Ley N° 29571 - Código de Protección al Consumidor',
   },
 ];
 
-// Mitos y Verdades
+// Mitos y Verdades Interactivos
 export const MYTHS_AND_TRUTHS: MythTruthItem[] = [
   {
     id: 'mito-1',
-    myth: 'Si no puedo pagar, es mejor ignorar la deuda y no contestar llamadas.',
-    truth: 'Ignorar una obligación no soluciona la situación y empeora los costos.',
+    myth: 'Pagar puntualmente una cuota me exonera de todos los intereses pactados en el cronograma.',
+    truth: 'Pagar puntualmente solo te exonera de los intereses moratorios, no de los intereses compensatorios.',
     explanation:
-      'El atraso continuará generando intereses moratorios y comisiones, y deteriorará tu calificación crediticia en la Central de Riesgos de la SBS. Es recomendable informarse y comunicarse formalmente con la entidad para buscar una reprogramación.',
+      'Los intereses compensatorios son el costo regular pactado por usar el dinero prestado mes a mes. Al pagar puntualmente evitas recargos por mora y mantienes tu récord intacto, pero la cuota normal incluye la porción de interés correspondiente al periodo.',
+    example: 'En una cuota de S/ 400, pagar a tiempo evita los S/ 30 de interés moratorio, pero S/ 90 siguen siendo intereses compensatorios del crédito.',
+    source: 'Código Civil y normativa SBS',
+    topic: 'Pagar puntualmente',
   },
   {
     id: 'mito-2',
-    myth: 'Todo método de cobranza está permitido porque existe una deuda vencida.',
-    truth: 'Existen reglas, límites legales y horarios estrictos para las cobranzas.',
+    myth: 'La entidad que ofrece la TEA más baja siempre tiene el crédito más barato.',
+    truth: 'La TEA no incluye seguros ni comisiones; la única tasa que define el costo total es la TCEA.',
     explanation:
-      'La ley prohíbe comunicarse con terceros ajenos a la deuda (jefes, vecinos o compañeros), amenazar con medidas no amparadas legalmente o realizar llamadas fuera de los horarios permitidos (lunes a viernes de 7:00 a.m. a 8:00 p.m. y sábados de 8:00 a.m. a 2:00 p.m.).',
+      'Una entidad puede ofrecer una TEA atractiva del 15%, pero al sumar seguros de desgravamen elevados y comisiones administrativas, su TCEA puede llegar al 32%, resultando más cara que otra con TEA del 18% y seguros económicos.',
+    example: 'Compara siempre la TCEA en la Hoja Resumen oficial antes de tomar una decisión de financiamiento.',
+    source: 'Ley N° 29571 (Código del Consumidor)',
+    topic: 'Tasas de interés',
   },
   {
     id: 'mito-3',
-    myth: 'Solo debo fijarme en el valor de la cuota mensual para saber si un crédito me conviene.',
-    truth: 'Es indispensable conocer el costo total real a través de la TCEA.',
+    myth: 'Existen tramitadores o empresas que pueden "borrar deudas" o limpiar mi historial crediticio por dinero.',
+    truth: 'Nadie puede borrar deudas ni alterar la Central de Riesgos de la SBS a cambio de dinero.',
     explanation:
-      'Una cuota aparentemente baja pero extendida a muchos años puede hacer que termines pagando dos o tres veces el monto prestado debido a los intereses y seguros acumulados.',
+      'Cualquier anuncio en redes que ofrezca "limpiar tu reporte SBS" o "borrarte de Infocorp" por un pago es una estafa. La Central de Riesgos es una base de datos pública y la única vía legal de regularizar tu récord es pagar la deuda y solicitar tu Constancia de No Adeudo.',
+    example: 'Desconfía de mensajes que te pidan depósitos a cuentas personales prometiendo cambiar tu calificación crediticia.',
+    source: 'Superintendencia de Banca, Seguros y AFP (SBS)',
+    topic: 'Historial crediticio',
   },
   {
     id: 'mito-4',
-    myth: 'Existen empresas que pueden "borrar mis deudas" del sistema financiero por dinero.',
-    truth: 'Nadie puede borrar deudas ni alterar la Central de Riesgos de la SBS a cambio de dinero.',
+    myth: 'Si quiero cancelar o amortizar mi crédito antes del plazo pactado, el banco puede cobrarme una penalidad.',
+    truth: 'Por ley, el pago anticipado es un derecho irrenunciable y libre de cualquier penalidad o comisión.',
     explanation:
-      'Cualquier persona o empresa que ofrezca "limpiar tu historial crediticio" está cometiendo una estafa. La única forma legítima de actualizar tu historial es pagar o regularizar la obligación pendiente con la entidad financiera.',
+      'La Ley de Protección al Consumidor en el Perú y las resoluciones de la SBS establecen que todo usuario puede realizar pagos anticipados totales o parciales sin ningún recargo, deduciendo los intereses futuros proporcionales.',
+    example: 'Si tienes un dinero extra y amortizas S/ 2,000 a capital, el banco debe reducir tus intereses futuros y entregarte un cronograma nuevo gratis.',
+    source: 'Ley N° 29571, Art. 85 y SBS',
+    topic: 'Cancelación de créditos',
   },
   {
     id: 'mito-5',
-    myth: 'Pagar el monto mínimo de mi tarjeta de crédito me ayuda a salir de la deuda.',
-    truth: 'El pago mínimo solo cubre intereses, comisiones y una fracción mínima del capital.',
+    myth: 'Presentar un reclamo formal en el Libro de Reclamaciones me perjudicará o manchará mi relación con el banco.',
+    truth: 'Reclamar es un derecho garantizado por ley y las entidades tienen prohibido tomar represalias.',
     explanation:
-      'Pagar solo el mínimo prolonga la deuda durante años e incrementa sustancialmente el total pagado en intereses. Se recomienda pagar siempre el "Monto Total del Mes" o una cantidad significativamente mayor al mínimo.',
+      'El Libro de Reclamaciones es una herramienta obligatoria supervisada por INDECOPI y la SBS. Las entidades tienen un plazo legal máximo de 15 días hábiles para dar respuesta fundamentada. No afecta en absoluto tu calificación crediticia.',
+    example: 'Si te cobraron una comisión indebida, asentar tu reclamo formalmente es el conducto legal para exigir la devolución del cobro.',
+    source: 'INDECOPI - Sistema de Reclamaciones',
+    topic: 'Reclamos financieros',
   },
   {
     id: 'mito-6',
-    myth: 'Si realizo un abono anticipado, el banco puede cobrarme una penalidad por prepago.',
-    truth: 'Por ley, el pago anticipado es un derecho libre de comisiones y penalidades.',
+    myth: 'Pagar únicamente el monto mínimo de mi tarjeta de crédito cada mes me ayuda a salir de deudas.',
+    truth: 'El pago mínimo solo cubre intereses, comisiones y una fracción ínfima del capital, multiplicando la deuda.',
     explanation:
-      'La normativa de la SBS establece que los clientes tienen derecho a prepagar sus créditos en cualquier momento sin penalidad alguna, pudiendo elegir entre reducir el plazo o reducir la cuota mensual.',
+      'Pagar solo el mínimo prolonga la deuda durante años e incrementa drásticamente los intereses totales pagados. La recomendación es pagar siempre el "Pago del Mes" (total facturado) o un monto sustancialmente superior al mínimo.',
+    example: 'En una deuda de tarjeta de S/ 3,000, pagar solo el mínimo puede demorar más de 7 años en liquidarse pagando más del doble en intereses.',
+    source: 'SBS - Portal de Educación Financiera',
+    topic: 'Uso responsable de tarjetas',
   },
 ];
 
-// Casos Prácticos Interactivos: ¿Qué harías tú?
+// Casos Prácticos Cotidianos Reales (5 Casos Específicos Requeridos)
 export const PRACTICAL_CASES: PracticalCase[] = [
   {
     id: 'caso-1',
-    character: 'María',
-    title: 'María tiene una cuota próxima a vencer y no cuenta con todo el dinero.',
+    character: 'Carlos',
+    title: 'Comparar dos préstamos con diferentes tasas (TCEA vs TEA)',
     situation:
-      'A María le faltan 5 días para que venza su cuota de S/ 400 en una caja municipal. Debido a un gasto de salud imprevisto, solo dispone de S/ 150 y no podrá juntar el total en la fecha pactada.',
-    question: '¿Qué debería hacer María?',
+      'Carlos necesita solicitar un préstamo personal de S/ 5,000 a 18 meses. El Banco A le ofrece una TEA de 18% con una cuota mensual de S/ 355. La Caja B le ofrece una TEA de 22% pero con una cuota mensual de S/ 340 debido a menores seguros y comisiones.',
+    question: '¿Qué dato fundamental debe comparar Carlos antes de decidir cuál crédito es más conveniente?',
     options: [
       {
         id: 'opt-1a',
-        text: 'Esperar a que venza la fecha y no contestar las llamadas hasta que consiga todo el dinero dentro de un mes.',
+        text: 'Elegir el Banco A inmediatamente porque su TEA (18%) es cuatro puntos porcentuales menor que la de la Caja B.',
         isRecommended: false,
         feedback:
-          'No es recomendable. Dejar vencer la cuota sin aviso acumulará intereses moratorios diarios y afectará su calificación crediticia en la Central de Riesgos.',
+          'Error común: la TEA solo mide los intereses del dinero. Si el seguro de desgravamen o las comisiones son altas, el costo total puede ser mayor.',
       },
       {
         id: 'opt-1b',
-        text: 'Comunicarse con la entidad antes del vencimiento, explicar su situación temporal y solicitar alternativas como prórroga o reprogramación.',
+        text: 'Solicitar la Hoja Resumen oficial de ambas entidades y comparar la TCEA (Tasa de Costo Efectivo Anual) que incluye todos los cobros.',
         isRecommended: true,
         feedback:
-          '¡Correcto! Comunicarse antes del vencimiento permite a la entidad evaluar alternativas formales antes de que caiga en morosidad, manteniendo un trato formal y preservando su historial.',
+          '¡Correcto! La TCEA es el único indicador homologado que suma intereses, seguros y comisiones. La opción con menor TCEA es la que le ahorrará dinero real.',
       },
       {
         id: 'opt-1c',
-        text: 'Pedir un préstamo informal inmediato a personas desconocidas en la calle para pagar la cuota hoy mismo.',
+        text: 'Fijarse únicamente en el color de la publicidad y aceptar el desembolso que se apruebe más rápido.',
         isRecommended: false,
         feedback:
-          'Muy peligroso. Los préstamos informales tienen tasas abusivas y métodos de cobro extorsivos, generando un sobreendeudamiento mucho más grave.',
+          'Inadecuado: la rapidez en el desembolso no compensa pagar cientos de soles extra en intereses a lo largo de 18 meses.',
       },
     ],
     educationalTakeaway:
-      'Ante una dificultad temporal, la anticipación es clave: acudir a la entidad financiera antes del vencimiento abre posibilidades de refinanciamiento formal.',
+      'Compara siempre la TCEA antes de firmar cualquier crédito. Una TEA baja puede verse encarecida por seguros y comisiones adicionales.',
   },
   {
     id: 'caso-2',
-    character: '',
-    title: 'Llamadas fuera de horario por una deuda vencida',
+    character: 'Elena',
+    title: 'Cliente descubre un cobro que no reconoce en su estado de cuenta',
     situation:
-      'Existe una cuota atrasada hace 25 días. Se reciben llamadas constantes a las 11:00 p.m. y el gestor de cobranza indica que llamará a familiares y al centro laboral si no se deposita hoy a una cuenta Yape personal.',
-    question: '¿Qué deberías conocer antes de tomar una decisión?',
+      'Elena revisa su estado de cuenta mensual y encuentra un cargo recurrente de S/ 45 denominado "Membresía Premium Asistencia" que ella asegura nunca haber contratado ni firmado.',
+    question: '¿Cuál es la acción correcta que debe realizar Elena?',
     options: [
       {
         id: 'opt-2a',
-        text: 'Depositar inmediatamente al número personal del gestor para que no llamen a familiares o al trabajo.',
+        text: 'Dejar de pagar la totalidad de su cuota mensual en señal de protesta hasta que el banco elimine el cobro.',
         isRecommended: false,
         feedback:
-          'Nunca realices pagos a cuentas o billeteras personales de gestores. Ese abono no amortiza tu crédito y es una modalidad de estafa habitual.',
+          'No lo hagas: dejar de pagar la cuota completa generará intereses moratorios diarios y un reporte negativo en la Central de Riesgos de la SBS.',
       },
       {
         id: 'opt-2b',
-        text: 'Conocer que la ley prohíbe llamadas de cobranza nocturnas, contacto con terceros no obligados y pagos fuera de canales bancarios oficiales.',
+        text: 'Comunicarse de inmediato con el banco, registrar un reclamo formal en el Libro de Reclamaciones solicitando la póliza o audio de contratación, y exigir la anulación y extorno del cobro.',
         isRecommended: true,
         feedback:
-          '¡Correcto! Se debe exigir el desglose formal de la deuda, pagar únicamente en las cuentas recaudadoras oficiales del banco y reportar los métodos prohibidos ante INDECOPI.',
+          '¡Excelente decisión! La entidad tiene la carga de la prueba para demostrar que Elena aceptó el servicio expresamente. Si no existe consentimiento firmado o grabado, deben extornar el dinero en un plazo máximo de 15 días hábiles.',
       },
       {
         id: 'opt-2c',
-        text: 'Apagar el teléfono y cambiar de número para evitar cualquier contacto para siempre.',
+        text: 'Aceptar el cargo y resignarse porque los contratos bancarios suelen incluir servicios obligatorios automáticos.',
         isRecommended: false,
         feedback:
-          'Aunque los métodos del gestor sean indebidos, la deuda real con el banco continúa vigente. Lo adecuado es canalizar la regularización directamente con la entidad oficial.',
+          'Falso: por normativa de la SBS, ningún seguro o asistencia accesoria puede ser condicionado o cargado sin el consentimiento previo, expreso e informado del usuario.',
       },
     ],
     educationalTakeaway:
-      'Tienes derecho a una cobranza digna y legal. Todos los pagos deben realizarse exclusivamente en los canales oficiales de la entidad titular.',
+      'Revisa tu estado de cuenta cada mes. Ante un cobro no reconocido, reclama formalmente exigiendo el sustento de contratación y el extorno correspondiente.',
   },
   {
     id: 'caso-3',
-    character: 'Pedro',
-    title: 'Pedro quiere solicitar otro crédito pero ya tiene varias obligaciones activas.',
+    character: 'Miguel',
+    title: 'Llamada sospechosa solicitando claves y tokens bancarios',
     situation:
-      'Pedro percibe S/ 2,400 al mes. Actualmente paga S/ 950 entre una tarjeta de crédito y un préstamo de consumo. Le ofrecieron un nuevo préstamo en efectivo de S/ 5,000 con cuota mensual de S/ 380.',
-    question: '¿Qué debería evaluar Pedro primero?',
+      'Miguel recibe una llamada de una persona que se identifica como funcionario de seguridad de su banco. Le alerta que "se ha detectado una compra no autorizada de S/ 1,800 en una tienda online" y le pide que le dicte el código de 6 dígitos que le acaba de llegar por mensaje de texto para "anular la compra de inmediato".',
+    question: '¿Qué debe hacer Miguel frente a esta situación?',
     options: [
       {
         id: 'opt-3a',
-        text: 'Calcular su capacidad de pago total: sus deudas ya representan casi el 40% de su sueldo y asumir otra cuota lo pondría en riesgo de sobreendeudamiento.',
-        isRecommended: true,
+        text: 'Dictar rápidamente el código de 6 dígitos para que el operador pueda cancelar la supuesta compra fraudulenta.',
+        isRecommended: false,
         feedback:
-          '¡Correcto! Pedro debe evaluar que sumar otra cuota elevaría su carga a S/ 1,330 mensuales (más del 55% de sus ingresos), dejándolo sin margen ante cualquier imprevisto.',
+          '¡Peligro crítico de fraude! El código que llegó a su teléfono no era para anular nada: era el token dinámico de autorización para transferir su dinero o validar un crédito.',
       },
       {
         id: 'opt-3b',
-        text: 'Aceptar el dinero de inmediato ya que el banco ya se lo aprobó automáticamente en su app.',
-        isRecommended: false,
+        text: 'Cortar la llamada de inmediato, no compartir ningún código ni clave, y comunicarse él mismo con los canales oficiales de su banco para verificar sus movimientos.',
+        isRecommended: true,
         feedback:
-          'Que un crédito esté preaprobado no significa que sea conveniente para tu presupuesto personal. Es tu responsabilidad evaluar tu capacidad de pago.',
+          '¡Correcto! Los bancos NUNCA solicitan claves secretas, contraseñas ni códigos de verificación SMS o token por teléfono. Cortar y llamar a los números oficiales del reverso de la tarjeta previene el robo de fondos.',
       },
       {
         id: 'opt-3c',
-        text: 'Aceptar el crédito y usar el dinero para pagar las cuotas mínimas de sus otras tarjetas durante los próximos meses.',
+        text: 'Darle una clave falsa al operador para comprobar si es una estafa o una llamada real.',
         isRecommended: false,
         feedback:
-          'Usar un crédito de consumo para pagar cuotas de otros créditos sin una consolidación formal genera una bola de nieve de intereses multiplicados.',
+          'No interactúes con estafadores. Cortar la comunicación y bloquear el número es la medida más segura y efectiva.',
       },
     ],
     educationalTakeaway:
-      'No comprometas más del 30% al 40% de tus ingresos en deudas. Si tienes varias obligaciones, prioriza consolidarlas a menor tasa en vez de sumar más cuotas.',
+      'Tus claves y tokens son 100% personales e intransferibles. Ninguna entidad legítima te llamará para pedirte códigos para cancelar compras.',
   },
   {
     id: 'caso-4',
-    character: 'Lucía',
-    title: 'Lucía no entiende por qué terminará pagando mucho más dinero del que recibió.',
+    character: 'Rosa',
+    title: 'Consumidor no comprende una comisión o membresía en su tarjeta',
     situation:
-      'Lucía solicitó un préstamo de S/ 3,000 a 24 meses. Al revisar la suma total de sus 24 cuotas, calcula que devolverá S/ 4,680. Ella pensaba que solo pagaría un interés pequeño del 10%.',
-    question: '¿Qué debería revisar Lucía para comprender el costo total?',
+      'Rosa recibe su estado de cuenta con un cobro de S/ 180 por "Comisión de Membresía Anual". Ella utiliza su tarjeta regularmente pero no sabía que se cobraba ese cargo ni cómo evitarlo.',
+    question: '¿Qué derecho tiene Rosa respecto a las comisiones de su tarjeta de crédito?',
     options: [
       {
         id: 'opt-4a',
-        text: 'Revisar la Hoja Resumen y la TCEA, donde se desglosan la tasa de interés compensatoria anual, el plazo, comisiones y el seguro de desgravamen.',
+        text: 'Saber que la SBS obliga a todos los bancos a ofrecer al menos una tarjeta de crédito sin comisión de membresía, y consultar si cumple las condiciones de consumo para la exoneración de su tarjeta actual.',
         isRecommended: true,
         feedback:
-          '¡Correcto! La TCEA y la Hoja Resumen muestran todos los costos sumados a lo largo de los 24 meses. A mayor plazo, mayor es la acumulación de intereses totales.',
+          '¡Correcto! Por ley, todas las entidades emisoras deben contar con una tarjeta libre de membresía. Asimismo, para las demás tarjetas, las entidades fijan condiciones transparentes de consumo mensual mínimo para exonerar la comisión.',
       },
       {
         id: 'opt-4b',
-        text: 'Asumir que el banco cometió un error y dejar de pagar las cuotas pactadas sin consultar.',
+        text: 'Asumir que todas las tarjetas de crédito del Perú cobran membresía obligatoria sin excepción ni forma de evitarlo.',
         isRecommended: false,
         feedback:
-          'El cálculo de cuotas responde al contrato firmado y a la tasa pactada. Dejar de pagar generará morosidad y afectará su historial crediticio.',
+          'Falso: la regulación de la SBS garantiza la existencia de tarjetas sin membresía en todas las entidades del sistema financiero.',
       },
       {
         id: 'opt-4c',
-        text: 'Fijarse únicamente en la tasa nominal que vio en la publicidad sin leer el contrato.',
+        text: 'Cancelar la tarjeta sin pagar el saldo de los consumos del mes para que el banco no cobre la comisión.',
         isRecommended: false,
         feedback:
-          'La publicidad suele mostrar tasas referenciales (TEA) sin comisiones ni seguros. La tasa real que determina lo que pagarás es la TCEA.',
+          'Inadecuado: los consumos regulares siguen siendo una obligación exigible. Para cancelar una tarjeta debes liquidar tus consumos previos y solicitar la constancia de cancelación.',
       },
     ],
     educationalTakeaway:
-      'Antes de firmar un crédito, solicita y revisa siempre la Hoja Resumen y el cronograma. Compara la TCEA entre entidades para elegir la más económica.',
+      'Consulta las condiciones de exoneración de membresía de tu tarjeta o solicita la tarjeta básica sin membresía garantizada por normativa de la SBS.',
+  },
+  {
+    id: 'caso-5',
+    character: 'Javier',
+    title: 'Cliente desea presentar un reclamo formal ante una entidad financiera',
+    situation:
+      'Javier presentó un reclamo verbal en ventanilla hace 25 días por un cobro duplicado y el asesor le dijo "que espere tranquilo que ya saldrá". Al no tener respuesta ni código de seguimiento, Javier desea formalizar su reclamo ante las instancias correspondientes.',
+    question: '¿Cuál es la ruta formal recomendada para que el reclamo de Javier sea atendido según ley?',
+    options: [
+      {
+        id: 'opt-5a',
+        text: 'Registrar su reclamo por escrito en el Libro de Reclamaciones (físico o virtual) de la entidad exigiendo su copia con número de registro, y si no responden en 15 días hábiles, elevar el caso a Reclama Virtual de INDECOPI o la SBS.',
+        isRecommended: true,
+        feedback:
+          '¡Excelente procedimiento! El reclamo formal activa el plazo de ley de 15 días hábiles. Con el número de reclamo, si la entidad incumple el plazo o la respuesta es desfavorable sin sustento, Javier puede acudir a INDECOPI o a la SBS.',
+      },
+      {
+        id: 'opt-5b',
+        text: 'Publicar mensajes de molestia en redes sociales sin asentar ningún reclamo formal ante la entidad.',
+        isRecommended: false,
+        feedback:
+          'Inadecuado: las publicaciones en redes no generan obligación legal de respuesta ni plazos obligatorios de resolución.',
+      },
+      {
+        id: 'opt-5c',
+        text: 'Contratar un abogado particular para iniciar un juicio civil por el monto duplicado antes de usar el Libro de Reclamaciones.',
+        isRecommended: false,
+        feedback:
+          'Innecesario y costoso: los canales del Libro de Reclamaciones, INDECOPI y la SBS son gratuitos, rápidos y vinculantes para el consumidor financiero.',
+      },
+    ],
+    educationalTakeaway:
+      'Usa siempre el Libro de Reclamaciones y guarda tu código de registro. La ley te ampara con un plazo de 15 días hábiles y acceso a INDECOPI y SBS.',
   },
 ];
 
@@ -712,80 +858,97 @@ export const OFFICIAL_SOURCES_DATA: OfficialSourceItem[] = [
   },
 ];
 
-// Temas de la sección Mis Derechos
+// 6 Apartados Estructurados de Derechos del Usuario
 export const RIGHTS_TOPICS: RightTopic[] = [
   {
-    id: 'derecho-informacion',
-    title: 'Derecho a la información clara y veraz sobre tu crédito',
-    icon: 'info',
+    id: 'derecho-informacion-transparente',
+    title: 'Información transparente sobre productos financieros',
+    icon: 'description',
     summary:
-      'Las entidades financieras tienen la obligación legal de brindarte información detallada, comprensible y transparente antes de que firmes cualquier contrato.',
+      'Tienes derecho a recibir información clara, veraz y oportuna antes, durante y después de contratar cualquier producto o crédito.',
     points: [
-      'Recibir la Hoja Resumen y el cronograma de pagos detallado con la TCEA antes del desembolso.',
-      'Conocer con exactitud qué comisiones, gastos y seguros te serán cobrados y por qué concepto.',
-      'Recibir mensualmente tu estado de cuenta con los abonos, saldos y desglose de cuotas.',
-      'Ser informado con al menos 45 días de anticipación de cualquier modificación unilateral de condiciones o comisiones.',
+      'Entrega obligatoria de la Hoja Resumen y cronograma detallado previo a la firma del contrato.',
+      'Redacción clara en español simple, sin cláusulas abusivas ni letra chica ilegible.',
+      'Envío mensual gratuito del estado de cuenta por medios electrónicos o físicos pactados.',
+      'Notificación obligatoria con 45 días de anticipación de cualquier cambio en tasas, comisiones o tarifas.',
     ],
-    officialSourceText: 'SBS - Reglamento de Gestión de Conducta de Mercado',
+    officialSourceText: 'SBS - Reglamento de Gestión de Conducta de Mercado (Resolución SBS N° 3274-2017)',
     officialSourceUrl: 'https://www.sbs.gob.pe',
   },
   {
-    id: 'derecho-pago-anticipado',
-    title: 'Derecho irrenunciable al pago anticipado sin penalidades',
-    icon: 'savings',
+    id: 'derecho-tasas-comisiones',
+    title: 'Tasas, comisiones y condiciones',
+    icon: 'payments',
     summary:
-      'Puedes liquidar o amortizar tu deuda antes del plazo pactado sin que la entidad te cobre comisiones, penalidades ni recargos adicionales.',
+      'Las entidades financieras solo pueden cobrar comisiones que correspondan a servicios reales y demostrables efectivamente prestados al usuario.',
     points: [
-      'Realizar pagos anticipados a capital en cualquier momento del crédito.',
-      'Elegir libremente si deseas reducir el número de cuotas (plazo) o el monto de la cuota mensual.',
-      'Exigir que se descuenten los intereses compensatorios, comisiones y seguros de los periodos futuros.',
-      'Recibir un nuevo cronograma de pagos actualizado de manera inmediata y sin costo.',
+      'Prohibición expresa de comisiones no sustentadas en servicios efectivos o prestados en beneficio propio de la entidad.',
+      'Derecho irrenunciable al pago anticipado total o parcial a capital sin comisiones ni penalidades.',
+      'Tope a las tasas de interés compensatorias y moratorias fijado por el Banco Central de Reserva del Perú (BCRP).',
+      'Obligación de ofrecer al menos una tarjeta de crédito sin comisión de membresía anual.',
     ],
-    officialSourceText: 'SBS - Ley Complementaria de Protección al Consumidor en Servicios Financieros',
-    officialSourceUrl: 'https://www.sbs.gob.pe',
+    officialSourceText: 'Ley N° 31143 (Ley que protege de la usura) y normativa SBS',
+    officialSourceUrl: 'https://www.bcrp.gob.pe',
   },
   {
-    id: 'derecho-cobranza-digna',
-    title: 'Derecho a una cobranza digna y límites legales',
-    icon: 'gavel',
+    id: 'derecho-consultas-reclamos',
+    title: 'Atención de consultas y reclamos',
+    icon: 'rate_review',
     summary:
-      'La gestión de cobranza no puede vulnerar tu dignidad, privacidad ni tranquilidad familiar o laboral.',
+      'Derecho a canales formales de atención ágil y a una respuesta fundamentada ante cualquier disconformidad con un producto financiero.',
     points: [
-      'Horarios permitidos: Lunes a viernes de 7:00 a.m. a 8:00 p.m. y sábados de 8:00 a.m. a 2:00 p.m. Prohibido domingos y feriados.',
-      'Prohibido llamar a tus empleadores, familiares, vecinos o terceras personas ajenas a la deuda.',
-      'Prohibido utilizar carteles, avisos públicos o vestimentas que expongan tu condición de deudor.',
-      'Prohibido amenazar con medidas no autorizadas o exigir transferencias a cuentas personales de gestores.',
+      'Acceso irrestricto y gratuito al Libro de Reclamaciones físico y virtual en agencias y canales digitales.',
+      'Plazo legal máximo improrrogable de 15 días hábiles para recibir respuesta escrita o digital.',
+      'Entrega obligatoria del código único de seguimiento de tu reclamo al momento de presentarlo.',
+      'Derecho a elevar el reclamo ante Reclama Virtual de INDECOPI o al Departamento de Servicios al Ciudadano de la SBS.',
     ],
     officialSourceText: 'INDECOPI - Código de Protección y Defensa del Consumidor (Ley N° 29571)',
     officialSourceUrl: 'https://www.gob.pe/indecopi',
   },
   {
-    id: 'derecho-reclamo',
-    title: 'Derecho al reclamo formal y Libro de Reclamaciones',
-    icon: 'rate_review',
+    id: 'derecho-proteccion-datos',
+    title: 'Protección de datos personales',
+    icon: 'shield_person',
     summary:
-      'Si tienes una disconformidad con un cobro, un trato indebido o un error en tu cuenta, tienes derecho a una respuesta formal y motivada.',
+      'Tu información financiera, crediticia y de contacto está protegida por la ley y no puede ser comercializada ni vulnerada.',
     points: [
-      'Acceso irrestricto al Libro de Reclamaciones físico o virtual en todas las agencias y canales digitales.',
-      'Plazo legal máximo de 15 días hábiles para recibir una respuesta formal y fundamentada por parte de la entidad.',
-      'Derecho a acudir en segunda instancia a la plataforma Reclama Virtual de INDECOPI o al Departamento de Servicios al Ciudadano de la SBS.',
+      'Tus datos bancarios solo pueden ser tratados para las finalidades explícitamente autorizadas por ti.',
+      'Derecho a revocar tu consentimiento para llamadas comerciales y promociones en cualquier momento (Gracias... no insista de INDECOPI).',
+      'Prohibición de compartir tu información con empresas terceras sin autorización previa y escrita.',
+      'Derecho ARCO: Acceso, Rectificación, Cancelación y Oposición de tus datos en bancos y centrales de riesgo.',
     ],
-    officialSourceText: 'INDECOPI - Sistema de Reclamaciones y Protección al Consumidor',
-    officialSourceUrl: 'https://www.gob.pe/indecopi',
+    officialSourceText: 'Ley N° 29733 - Ley de Protección de Datos Personales del Perú',
+    officialSourceUrl: 'https://www.gob.pe/minjus',
   },
   {
-    id: 'derecho-contrato-constancia',
-    title: 'Derecho a copia de contratos y Constancia de No Adeudo',
-    icon: 'verified',
+    id: 'derecho-prevencion-fraudes',
+    title: 'Prevención de fraudes y seguridad financiera',
+    icon: 'lock',
     summary:
-      'Tienes derecho a conservar respaldo documental de todos los acuerdos y a acreditar la cancelación total de tus obligaciones.',
+      'Las entidades bancarias deben garantizar estándares de seguridad biométrica, tokenización y monitoreo de transacciones sospechosas.',
     points: [
-      'Recibir una copia física o digital idéntica de tu contrato, pagaré y hoja resumen debidamente suscrita.',
-      'Solicitar tu Constancia de No Adeudo de manera gratuita una vez cancelada la totalidad de la deuda.',
-      'Exigir que la entidad actualice su reporte mensual a la Central de Riesgos SBS reflejando la cancelación de la obligación.',
+      'Las entidades son responsables de implementar sistemas de autenticación reforzada para operaciones no presenciales.',
+      'Derecho a reportar y bloquear de inmediato tarjetas o canales digitales las 24 horas del día sin cobro alguno.',
+      'Procedimiento de investigación obligatorio ante consumos u operaciones no reconocidas.',
+      'Prohibición estricta de que el banco te solicite claves secretas o códigos token por vía telefónica o correo.',
     ],
-    officialSourceText: 'SBS - Circular de Atención al Usuario Financiero',
+    officialSourceText: 'SBS - Circular de Gestión de Seguridad de la Información y Ciberseguridad',
     officialSourceUrl: 'https://www.sbs.gob.pe',
+  },
+  {
+    id: 'derecho-canales-oficiales',
+    title: 'Canales oficiales de orientación y supervisión',
+    icon: 'support_agent',
+    summary:
+      'Acceso a organismos estatales públicos y gratuitos para orientación, denuncia y fiscalización de entidades financieras en el Perú.',
+    points: [
+      'Superintendencia de Banca, Seguros y AFP (SBS): Línea gratuita nacional 0-800-10840 y portal sbs.gob.pe.',
+      'INDECOPI - Protección al Consumidor: Teléfono 01 224-7777 (Lima) y 0-800-4-4040 (Regiones) y reclamos.gob.pe.',
+      'Reporte de Deudas SBS gratuito para consulta de calificación en la Central de Riesgos con DNI.',
+      'Defensoría del Cliente Financiero (DCF) como instancia alternativa gratuita de solución de controversias.',
+    ],
+    officialSourceText: 'Portal del Estado Peruano - Servicios al Ciudadano',
+    officialSourceUrl: 'https://www.gob.pe',
   },
 ];
 

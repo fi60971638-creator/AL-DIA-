@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 180" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Brand Gradient: Deep Teal Navy to Electric Cyan Blue -->
+    <linearGradient id="aldiaBrandGradFull" x1="10%" y1="90%" x2="90%" y2="10%">
+      <stop offset="0%" stop-color="#0A425C" />
+      <stop offset="25%" stop-color="#085474" />
+      <stop offset="60%" stop-color="#007EAF" />
+      <stop offset="100%" stop-color="#00A3E0" />
+    </linearGradient>
+  </defs>
+
+  <!-- ISOTYPE (Shifted to left: center at X=85, Y=90) -->
+  <g transform="translate(-10, -5)">
+    <!-- Speech Bubble Outer Contour with Tail and Gap for Arrow -->
+    <path
+      d="M 124 55 A 64 64 0 0 1 159 105 A 64 64 0 0 1 82 168 L 56 182 L 64 153 A 64 64 0 0 1 31 105 A 64 64 0 0 1 92 41"
+      stroke="url(#aldiaBrandGradFull)"
+      stroke-width="11"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <!-- Top-left curved grid line inside the bubble -->
+    <path
+      d="M 43 78 A 54 54 0 0 1 80 47"
+      stroke="url(#aldiaBrandGradFull)"
+      stroke-width="10"
+      stroke-linecap="round"
+    />
+
+    <!-- Lower-right diagonal/radial grid line -->
+    <path
+      d="M 96 122 L 132 148"
+      stroke="url(#aldiaBrandGradFull)"
+      stroke-width="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <!-- Ascending Financial Chart Line -->
+    <path
+      d="M 33 126 L 68 92 L 96 122 L 150 64"
+      stroke="url(#aldiaBrandGradFull)"
+      stroke-width="11"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <!-- Arrow Head (Outline matching the stroke style) -->
+    <path
+      d="M 140 37 L 174 34 L 171 68 L 157 54 L 140 37 Z"
+      stroke="url(#aldiaBrandGradFull)"
+      stroke-width="10"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      fill="none"
+    />
+
+    <!-- Center Orange Focal Dot inside Arrow Head -->
+    <circle
+      cx="160"
+      cy="47"
+      r="5.5"
+      fill="#F97316"
+    />
+  </g>
+
+  <!-- WORDMARK: "aldia" (all lowercase, deep navy, modern rounded geometric sans) -->
+  <text
+    x="195"
+    y="108"
+    font-family="'Poppins', 'Inter', -apple-system, sans-serif"
+    font-size="88"
+    font-weight="800"
+    letter-spacing="-0.03em"
+    fill="#0B3B60"
+  >aldia</text>
+
+  <!-- SLOGAN / TAGLINE: "Plataforma digital para el asesoramiento en cobranzas" -->
+  <text
+    x="197"
+    y="136"
+    font-family="'Inter', -apple-system, sans-serif"
+    font-size="17"
+    font-weight="400"
+    letter-spacing="-0.01em"
+    fill="#526E88"
+  >Plataforma digital para el asesoramiento en cobranzas</text>
+</svg>
