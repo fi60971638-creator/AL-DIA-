@@ -63,10 +63,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 Guías y Artículos
               </button>
               <button
-                onClick={() => onNavigate('aprende_videos')}
-                className="text-left text-slate-600 hover:text-[#007EAF] transition-colors cursor-pointer"
+                onClick={() => onNavigate('videos')}
+                className="text-left text-slate-600 hover:text-[#007EAF] transition-colors cursor-pointer flex items-center gap-1"
               >
-                Videos SBS
+                <span>Videos</span>
+                <span className="material-symbols-outlined text-[13px] text-[#00A3E0]">smart_display</span>
               </button>
               <button
                 onClick={() => onNavigate('aprende_diccionario')}
@@ -75,34 +76,30 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 Diccionario financiero
               </button>
               <button
-                onClick={() => onNavigate('aprende_mitos')}
-                className="text-left text-slate-600 hover:text-[#007EAF] transition-colors cursor-pointer"
-              >
-                Mitos y verdades
-              </button>
-              <button
-                onClick={() => onNavigate('aprende_casos')}
-                className="text-left text-slate-600 hover:text-[#007EAF] transition-colors cursor-pointer"
-              >
-                Casos prácticos
-              </button>
-              <button
                 onClick={() => onNavigate('aprende_derechos')}
                 className="text-left text-slate-600 hover:text-[#007EAF] transition-colors cursor-pointer"
               >
                 Derechos del usuario
               </button>
               <button
-                onClick={() => onNavigate('orientacion')}
-                className="text-left text-slate-600 hover:text-[#007EAF] transition-colors cursor-pointer"
-              >
-                Orientación
-              </button>
-              <button
                 onClick={() => onNavigate('categorias_crediticias')}
                 className="text-left text-slate-600 hover:text-[#007EAF] transition-colors cursor-pointer"
               >
                 Categorías crediticias
+              </button>
+              <button
+                onClick={() => onNavigate('market')}
+                className="text-left text-[#007EAF] font-semibold hover:text-[#0B3B60] transition-colors cursor-pointer flex items-center gap-1"
+              >
+                <span>AL DÍA Market</span>
+                <span className="material-symbols-outlined text-[13px]">storefront</span>
+              </button>
+              <button
+                onClick={() => onNavigate('play')}
+                className="text-left text-[#007EAF] font-semibold hover:text-[#0B3B60] transition-colors cursor-pointer flex items-center gap-1"
+              >
+                <span>AL DÍA Play (Juegos)</span>
+                <span className="material-symbols-outlined text-[13px]">sports_esports</span>
               </button>
             </div>
           </div>

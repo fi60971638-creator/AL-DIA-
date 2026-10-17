@@ -11,12 +11,11 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onNavigate }) 
 
   const learnItems: { id: TabType; label: string; icon: string; desc: string }[] = [
     { id: 'aprende_articulos', label: 'Guías y Artículos', icon: 'menu_book', desc: 'Presupuestos, deudas y ahorro' },
-    { id: 'aprende_videos', label: 'Videos oficiales SBS', icon: 'smart_display', desc: 'Material audiovisual educativo' },
     { id: 'aprende_diccionario', label: 'Diccionario financiero', icon: 'auto_stories', desc: 'Términos bancarios sencillos' },
-    { id: 'aprende_mitos', label: 'Mitos y verdades', icon: 'fact_check', desc: 'Desmitifica cobranzas y créditos' },
-    { id: 'aprende_casos', label: 'Casos prácticos', icon: 'tips_and_updates', desc: 'Situaciones reales explicadas' },
     { id: 'aprende_derechos', label: 'Derechos del usuario', icon: 'verified_user', desc: 'Normas SBS e Indecopi' },
     { id: 'categorias_crediticias', label: 'Categorías crediticias', icon: 'speed', desc: 'Niveles de riesgo según la SBS' },
+    { id: 'market', label: 'AL DÍA Market', icon: 'storefront', desc: 'Tienda: útiles, oficina y uso diario' },
+    { id: 'play', label: 'AL DÍA Play', icon: 'sports_esports', desc: 'Juegos interactivos y en línea' },
   ];
 
   const isAprendeActive =
@@ -26,7 +25,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onNavigate }) 
     <>
       {/* Mobile Learn Quick Drawer */}
       {showLearnMenu && (
-        <div className="fixed inset-0 z-50 lg:hidden flex flex-col justify-end">
+        <div className="fixed inset-0 z-50 md:hidden flex flex-col justify-end">
           <div
             onClick={() => setShowLearnMenu(false)}
             className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
@@ -90,8 +89,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onNavigate }) 
         </div>
       )}
 
-      {/* Mobile Bottom Bar */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 px-2 py-1.5 flex items-center justify-around shadow-[0_-4px_20px_rgba(11,59,96,0.08)]">
+      {/* Mobile Bottom Bar (visible ONLY on mobile screens < 768px, avoids duplicate nav on tablets) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 px-1 py-1.5 flex items-center justify-around shadow-[0_-4px_20px_rgba(11,59,96,0.08)]">
         {/* 1. Inicio */}
         <button
           onClick={() => onNavigate('inicio')}
@@ -100,7 +99,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onNavigate }) 
           }`}
         >
           <span
-            className="material-symbols-outlined text-[24px]"
+            className="material-symbols-outlined text-[22px]"
             style={{
               color: currentTab === 'inicio' ? '#007EAF' : '#64748B',
               fontVariationSettings: currentTab === 'inicio' ? "'FILL' 1" : "'FILL' 0",
@@ -111,26 +110,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onNavigate }) 
           <span className="text-[10px] tracking-tight">Inicio</span>
         </button>
 
-        {/* 2. Guías */}
-        <button
-          onClick={() => onNavigate('aprende_articulos')}
-          className={`flex-1 py-1 flex flex-col items-center justify-center gap-0.5 rounded-xl transition-all cursor-pointer ${
-            currentTab === 'aprende_articulos' ? 'text-[#0B3B60] font-bold' : 'text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <span
-            className="material-symbols-outlined text-[24px]"
-            style={{
-              color: currentTab === 'aprende_articulos' ? '#007EAF' : '#64748B',
-              fontVariationSettings: currentTab === 'aprende_articulos' ? "'FILL' 1" : "'FILL' 0",
-            }}
-          >
-            menu_book
-          </span>
-          <span className="text-[10px] tracking-tight">Guías</span>
-        </button>
-
-        {/* 3. Todas las opciones de Aprender */}
+        {/* 2. Temas / Aprender (Drawer) */}
         <button
           onClick={() => setShowLearnMenu(true)}
           className={`flex-1 py-1 flex flex-col items-center justify-center gap-0.5 rounded-xl transition-all cursor-pointer relative ${
@@ -139,7 +119,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onNavigate }) 
         >
           <div className="relative">
             <span
-              className="material-symbols-outlined text-[26px]"
+              className="material-symbols-outlined text-[22px]"
               style={{
                 color: isAprendeActive ? '#007EAF' : '#64748B',
                 fontVariationSettings: isAprendeActive ? "'FILL' 1" : "'FILL' 0",
@@ -147,49 +127,68 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onNavigate }) 
             >
               school
             </span>
-            <span className="absolute -top-1 -right-2.5 px-1 py-0.2 bg-[#F97316] text-white rounded-full text-[8.5px] font-black">
-              7
-            </span>
           </div>
-          <span className="text-[10px] tracking-tight">Temas</span>
+          <span className="text-[10px] tracking-tight">Aprende</span>
         </button>
 
-        {/* 4. Videos SBS */}
+        {/* 3. AL DÍA Market */}
         <button
-          onClick={() => onNavigate('aprende_videos')}
+          onClick={() => onNavigate('market')}
           className={`flex-1 py-1 flex flex-col items-center justify-center gap-0.5 rounded-xl transition-all cursor-pointer ${
-            currentTab === 'aprende_videos' ? 'text-[#0B3B60] font-bold' : 'text-slate-500 hover:text-slate-800'
+            currentTab === 'market' ? 'text-[#0B3B60] font-bold' : 'text-slate-500 hover:text-slate-800'
           }`}
         >
           <span
-            className="material-symbols-outlined text-[24px]"
+            className="material-symbols-outlined text-[22px]"
             style={{
-              color: currentTab === 'aprende_videos' ? '#007EAF' : '#64748B',
-              fontVariationSettings: currentTab === 'aprende_videos' ? "'FILL' 1" : "'FILL' 0",
+              color: currentTab === 'market' ? '#007EAF' : '#64748B',
+              fontVariationSettings: currentTab === 'market' ? "'FILL' 1" : "'FILL' 0",
+            }}
+          >
+            storefront
+          </span>
+          <span className="text-[10px] tracking-tight">Market</span>
+        </button>
+
+        {/* 4. AL DÍA Play */}
+        <button
+          onClick={() => onNavigate('play')}
+          className={`flex-1 py-1 flex flex-col items-center justify-center gap-0.5 rounded-xl transition-all cursor-pointer relative ${
+            currentTab === 'play' ? 'text-[#0B3B60] font-bold' : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <div className="relative">
+            <span
+              className="material-symbols-outlined text-[22px]"
+              style={{
+                color: currentTab === 'play' ? '#007EAF' : '#64748B',
+                fontVariationSettings: currentTab === 'play' ? "'FILL' 1" : "'FILL' 0",
+              }}
+            >
+              sports_esports
+            </span>
+            <span className="absolute -top-1 -right-1.5 w-2 h-2 rounded-full bg-[#00A3E0]" />
+          </div>
+          <span className="text-[10px] tracking-tight">Play</span>
+        </button>
+
+        {/* 5. Videos (reemplaza Orientación) */}
+        <button
+          onClick={() => onNavigate('videos')}
+          className={`flex-1 py-1 flex flex-col items-center justify-center gap-0.5 rounded-xl transition-all cursor-pointer ${
+            currentTab === 'videos' ? 'text-[#0B3B60] font-bold' : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <span
+            className="material-symbols-outlined text-[22px]"
+            style={{
+              color: currentTab === 'videos' ? '#007EAF' : '#64748B',
+              fontVariationSettings: currentTab === 'videos' ? "'FILL' 1" : "'FILL' 0",
             }}
           >
             smart_display
           </span>
-          <span className="text-[10px] tracking-tight">Videos SBS</span>
-        </button>
-
-        {/* 5. Orientación */}
-        <button
-          onClick={() => onNavigate('orientacion')}
-          className={`flex-1 py-1 flex flex-col items-center justify-center gap-0.5 rounded-xl transition-all cursor-pointer ${
-            currentTab === 'orientacion' ? 'text-[#0B3B60] font-bold' : 'text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <span
-            className="material-symbols-outlined text-[24px]"
-            style={{
-              color: currentTab === 'orientacion' ? '#007EAF' : '#64748B',
-              fontVariationSettings: currentTab === 'orientacion' ? "'FILL' 1" : "'FILL' 0",
-            }}
-          >
-            lightbulb
-          </span>
-          <span className="text-[10px] tracking-tight">Orientación</span>
+          <span className="text-[10px] tracking-tight">Videos</span>
         </button>
       </nav>
     </>

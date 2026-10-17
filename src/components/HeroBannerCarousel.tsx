@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { TabType } from '../types';
+import imgEstudiante from '../assets/images/aldia_banner_estudiante_1792268222609.jpg';
+import imgPagos from '../assets/images/aldia_banner_pagos_1792187859949.jpg';
+import imgOrientacion from '../assets/images/aldia_banner_orientacion_1792187860027.jpg';
 
 interface HeroBannerCarouselProps {
   onNavigate: (tab: TabType) => void;
@@ -7,17 +10,16 @@ interface HeroBannerCarouselProps {
 
 interface BannerSlide {
   id: number;
-  tag: string;
-  tagIcon: string;
+  brandTag: string;
+  tagPill?: string;
   title: string;
   description: string;
   buttonText: string;
   targetTab: TabType;
   imageSrc: string;
   imageAlt: string;
-  tagColor: string;
   bgGradient: string;
-  buttonClass: string;
+  theme: 'light-bank' | 'navy-bank';
 }
 
 export const HeroBannerCarousel: React.FC<HeroBannerCarouselProps> = ({ onNavigate }) => {
@@ -31,49 +33,46 @@ export const HeroBannerCarousel: React.FC<HeroBannerCarouselProps> = ({ onNaviga
   const slides: BannerSlide[] = [
     {
       id: 0,
-      tag: 'Educación Financiera · SBS e INDECOPI',
-      tagIcon: 'school',
-      title: 'Aprende a manejar tu crédito',
-      description: 'Conoce cómo evaluar tasas y cronogramas antes de solicitar un préstamo para tomar decisiones seguras.',
-      buttonText: 'Aprender ahora',
+      brandTag: 'AL DÍA',
+      tagPill: 'Educación Financiera Perú',
+      title: 'Tu bienestar financiero también es parte de tu futuro',
+      description: 'Aprende, orientate y toma mejores decisiones para tu vida financiera.',
+      buttonText: 'Explora ahora',
       targetTab: 'aprende_articulos',
-      imageSrc: '/src/assets/images/aldia_banner_credito_1792187860137.jpg',
-      imageAlt: 'Profesional revisando guías de educación crediticia',
-      tagColor: '#00A3E0',
-      bgGradient: 'from-[#0B3B60] via-[#09476B] to-[#0A425C]',
-      buttonClass: 'bg-[#00A3E0] hover:bg-[#0091C8] text-white shadow-md shadow-[#00A3E0]/30 border border-[#00A3E0]',
+      imageSrc: imgEstudiante,
+      imageAlt: 'Estudiante peruana sonriente con cuadernos en un día soleado en Lima',
+      bgGradient: 'from-[#CDE9FA] via-[#E1F3FD] to-[#BFE3FA]',
+      theme: 'light-bank',
     },
     {
       id: 1,
-      tag: 'Planificación Familiar y Presupuesto',
-      tagIcon: 'calendar_month',
-      title: 'Organiza tus pagos',
-      description: 'Planifica tus fechas de vencimiento, prioriza tus obligaciones mensuales y evita recargos innecesarios.',
-      buttonText: 'Ver consejos',
+      brandTag: 'AL DÍA',
+      tagPill: 'Organización & Presupuesto',
+      title: 'Organiza tus pagos y evita atrasos',
+      description: 'Planifica tus fechas y prioriza tus obligaciones mensuales con total tranquilidad.',
+      buttonText: 'Ver consejos prácticos',
       targetTab: 'aprende_articulos',
-      imageSrc: '/src/assets/images/aldia_banner_pagos_1792187859949.jpg',
-      imageAlt: 'Persona organizando su calendario de pagos en tablet',
-      tagColor: '#F97316',
-      bgGradient: 'from-[#0A425C] via-[#085474] to-[#0B3B60]',
-      buttonClass: 'bg-white hover:bg-slate-50 text-[#0B3B60] shadow-md shadow-black/15 border border-white',
+      imageSrc: imgPagos,
+      imageAlt: 'Persona organizando sus cuentas y presupuesto familiar',
+      bgGradient: 'from-[#C5E5F9] via-[#DEF0FC] to-[#B8DEF7]',
+      theme: 'light-bank',
     },
     {
       id: 2,
-      tag: 'Orientación y Derechos del Consumidor',
-      tagIcon: 'support_agent',
-      title: '¿Se te dificulta pagar?',
-      description: 'Descubre alternativas formales de reprogramación y conoce los límites legales que protegen tu tranquilidad.',
-      buttonText: 'Encuentra orientación',
-      targetTab: 'orientacion',
-      imageSrc: '/src/assets/images/aldia_banner_orientacion_1792187860027.jpg',
-      imageAlt: 'Asesora financiera orientando de manera empática a una usuaria',
-      tagColor: '#00A3E0',
-      bgGradient: 'from-[#083B56] via-[#0A4F70] to-[#0B3B60]',
-      buttonClass: 'bg-[#00A3E0] hover:bg-[#0091C8] text-white shadow-md shadow-[#00A3E0]/30 border border-[#00A3E0]',
+      brandTag: 'AL DÍA',
+      tagPill: 'Videos & Derechos',
+      title: '¿Se te dificulta pagar a tiempo?',
+      description: 'Conoce tus derechos como usuario, alternativas formales de reprogramación y videos explicativos.',
+      buttonText: 'Ver videos explicativos',
+      targetTab: 'videos',
+      imageSrc: imgOrientacion,
+      imageAlt: 'Asesoría y acompañamiento financiero transparente',
+      bgGradient: 'from-[#CBE8FA] via-[#E2F3FD] to-[#BBE1FA]',
+      theme: 'light-bank',
     },
   ];
 
-  // Detect accessibility motion preferences
+  // Accessibility motion check
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -87,7 +86,7 @@ export const HeroBannerCarousel: React.FC<HeroBannerCarouselProps> = ({ onNaviga
     }
   }, []);
 
-  // Autoplay functionality: switches every 6 seconds (between 5 and 7 seconds)
+  // Autoplay functionality: switches every 6.5s
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   }, [slides.length]);
@@ -104,7 +103,7 @@ export const HeroBannerCarousel: React.FC<HeroBannerCarouselProps> = ({ onNaviga
 
     autoPlayTimerRef.current = setInterval(() => {
       nextSlide();
-    }, 6000);
+    }, 6500);
 
     return () => {
       if (autoPlayTimerRef.current) clearInterval(autoPlayTimerRef.current);
@@ -132,15 +131,15 @@ export const HeroBannerCarousel: React.FC<HeroBannerCarouselProps> = ({ onNaviga
   return (
     <section
       aria-roledescription="carousel"
-      aria-label="Banners informativos principales de aldia"
-      className="relative w-full rounded-3xl overflow-hidden shadow-lg border border-slate-200/90 transition-all select-none group"
+      aria-label="Banner principal estilo Alfin Banco de AL DÍA"
+      className="relative w-full rounded-3xl overflow-hidden shadow-xl border border-sky-200/90 transition-all select-none group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Diapositivas en contenedor relativo */}
-      <div className="relative w-full min-h-[500px] sm:min-h-[460px] lg:min-h-[410px] flex items-center">
+      {/* Contenedor con altura amplia estilo banca digital moderna */}
+      <div className="relative w-full min-h-[520px] sm:min-h-[500px] lg:min-h-[480px] xl:min-h-[510px] flex items-stretch">
         {slides.map((slide, index) => {
           const isActive = index === currentSlide;
 
@@ -149,9 +148,9 @@ export const HeroBannerCarousel: React.FC<HeroBannerCarouselProps> = ({ onNaviga
               key={slide.id}
               role="group"
               aria-roledescription="slide"
-              aria-label={`Diapositiva ${index + 1} de ${slides.length}: ${slide.title}`}
+              aria-label={`Slide ${index + 1} de ${slides.length}: ${slide.title}`}
               aria-hidden={!isActive}
-              className={`absolute inset-0 w-full h-full transition-all duration-700 ease-out flex flex-col lg:flex-row items-center justify-between ${
+              className={`absolute inset-0 w-full h-full transition-all duration-700 ease-out flex flex-col lg:flex-row items-stretch justify-between ${
                 prefersReducedMotion ? 'duration-0' : ''
               } ${
                 isActive
@@ -159,145 +158,140 @@ export const HeroBannerCarousel: React.FC<HeroBannerCarouselProps> = ({ onNaviga
                   : 'opacity-0 z-0 scale-[0.98] pointer-events-none'
               }`}
             >
-              {/* Fondo del banner con degradado institucional AlDía */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${slide.bgGradient}`} />
+              {/* Fondo con degradado cielo luminoso de banca peruana moderna */}
+              <div className={`absolute inset-0 bg-gradient-to-r ${slide.bgGradient}`} />
 
-              {/* Textura sutil y halos luminosos estilo banca moderna */}
-              <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-[#00A3E0]/20 blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-24 right-1/4 w-88 h-88 rounded-full bg-[#007EAF]/25 blur-3xl pointer-events-none" />
-              <div
-                className="absolute inset-0 opacity-[0.04] pointer-events-none"
-                style={{
-                  backgroundImage: 'radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)',
-                  backgroundSize: '24px 24px',
-                }}
-              />
+              {/* Ondas decorativas fluidas en tonos celestes en la esquina inferior izquierda (estilo Alfin Banco) */}
+              <div className="absolute -bottom-10 -left-10 w-96 h-64 pointer-events-none z-10 opacity-70 hidden sm:block">
+                <svg viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                  <path
+                    d="M-50 180 C80 140, 160 220, 260 170 C340 130, 390 190, 450 160 L450 300 L-50 300 Z"
+                    fill="#9AD6F8"
+                    fillOpacity="0.45"
+                  />
+                  <path
+                    d="M-40 210 C90 170, 180 240, 290 195 C360 165, 410 210, 460 185 L460 300 L-40 300 Z"
+                    fill="#75C6F5"
+                    fillOpacity="0.55"
+                  />
+                  <path
+                    d="M-30 235 C100 200, 200 260, 310 220 C380 195, 420 230, 470 210 L470 300 L-30 300 Z"
+                    fill="#4DB3F1"
+                    fillOpacity="0.35"
+                  />
+                </svg>
+              </div>
 
-              {/* Columna Izquierda: Información Textual Clara y Acción */}
-              <div className="relative z-20 w-full lg:w-[54%] p-6 sm:p-9 lg:p-12 pb-4 lg:pb-12 flex flex-col justify-center items-start text-left">
-                {/* Badge temático */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/12 backdrop-blur-md border border-white/20 text-[11.5px] sm:text-[12.5px] font-heading font-semibold text-white mb-3 sm:mb-4 shadow-xs">
-                  <span
-                    className="material-symbols-outlined text-[16px]"
-                    style={{ color: slide.tagColor }}
-                  >
-                    {slide.tagIcon}
+              {/* Destello solar suave superior */}
+              <div className="absolute -top-24 -left-16 w-96 h-96 rounded-full bg-white/40 blur-3xl pointer-events-none" />
+
+              {/* ========================================================= */}
+              {/* COLUMNA IZQUIERDA: TEXTOS GRANDES Y BOTÓN ESTILO ALFIN    */}
+              {/* ========================================================= */}
+              <div className="relative z-20 w-full lg:w-[48%] xl:w-[46%] p-6 sm:p-10 lg:p-14 lg:pr-4 flex flex-col justify-center items-start text-left shrink-0">
+                {/* 1. Marca destacada en grande */}
+                <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                  <span className="text-[28px] sm:text-[34px] font-heading font-black tracking-tight text-[#0B3B60] leading-none">
+                    {slide.brandTag}
                   </span>
-                  <span className="tracking-wide">{slide.tag}</span>
+                  {slide.tagPill && (
+                    <span className="text-[11px] font-bold text-[#007EAF] bg-white/70 px-2.5 py-0.5 rounded-full border border-[#00A3E0]/30 shadow-2xs backdrop-blur-xs">
+                      {slide.tagPill}
+                    </span>
+                  )}
                 </div>
 
-                {/* Título Breve y Contundente */}
-                <h2 className="text-[26px] sm:text-[34px] lg:text-[40px] font-heading font-extrabold text-white tracking-tight leading-[1.15] mb-2 sm:mb-3">
+                {/* 2. Titular principal grande y con presencia visual */}
+                <h2 className="text-[28px] sm:text-[36px] lg:text-[42px] font-heading font-extrabold text-[#0B3B60] tracking-tight leading-[1.12] mb-3 sm:mb-4 max-w-md">
                   {slide.title}
                 </h2>
 
-                {/* Descripción concisa (máximo dos líneas) */}
-                <p className="text-[14px] sm:text-[16px] text-slate-100/90 font-sans font-normal leading-relaxed mb-6 sm:mb-7 max-w-xl line-clamp-2">
+                {/* 3. Subtítulo / línea de apoyo clara */}
+                <p className="text-[15px] sm:text-[16.5px] text-[#1E4E79] font-sans font-medium leading-relaxed mb-6 sm:mb-8 max-w-md">
                   {slide.description}
                 </p>
 
-                {/* Botón de Acción Principal y Enlace Directo */}
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                  <button
-                    onClick={() => onNavigate(slide.targetTab)}
-                    className={`group/btn px-7 sm:px-8 py-3.5 rounded-xl font-heading font-semibold text-[14.5px] sm:text-[15.5px] transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer active:scale-95 w-full sm:w-auto ${slide.buttonClass}`}
-                  >
-                    <span>{slide.buttonText}</span>
-                    <span className="material-symbols-outlined text-[19px] group-hover/btn:translate-x-1 transition-transform">
-                      arrow_forward
-                    </span>
-                  </button>
-
-                  {/* Sello de orientación 100% gratuita */}
-                  <span className="hidden sm:inline-flex items-center gap-1.5 text-[12.5px] font-sans font-medium text-slate-200 pl-2">
-                    <span className="w-2 h-2 rounded-full bg-[#00A3E0]" />
-                    <span>Orientación gratuita</span>
+                {/* 4. Botón principal redondeado «Explora ahora →» */}
+                <button
+                  onClick={() => onNavigate(slide.targetTab)}
+                  className="group/btn px-8 sm:px-9 py-3.5 rounded-full bg-[#007EAF] hover:bg-[#006994] active:scale-95 text-white font-heading font-bold text-[15px] sm:text-[16px] transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer shadow-md hover:shadow-lg hover:gap-3"
+                >
+                  <span>{slide.buttonText}</span>
+                  <span className="material-symbols-outlined text-[19px] group-hover/btn:translate-x-1 transition-transform">
+                    arrow_forward
                   </span>
-                </div>
+                </button>
               </div>
 
-              {/* Columna Derecha: Imagen Protagonista con Recorte y Efecto Bancario */}
-              <div className="relative z-10 w-full lg:w-[46%] h-[190px] sm:h-[230px] lg:h-full flex items-center justify-center p-4 sm:p-6 lg:p-8 pb-14 lg:pb-8">
-                <div className="relative w-full h-full max-h-[350px] rounded-2xl overflow-hidden border border-white/30 shadow-2xl group/img">
-                  <img
-                    src={slide.imageSrc}
-                    alt={slide.imageAlt}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover object-center transform group-hover/img:scale-105 transition-transform duration-700 ease-out"
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                  />
+              {/* ========================================================= */}
+              {/* COLUMNA DERECHA: IMAGEN GRANDE Y COMPLETA ESTILO ALFIN    */}
+              {/* ========================================================= */}
+              <div className="relative z-10 w-full lg:w-[52%] xl:w-[54%] h-[300px] sm:h-[380px] lg:h-auto min-h-full flex items-stretch justify-end overflow-hidden">
+                {/* Fotografía a toda altura, sin recuadro interno ni padding */}
+                <img
+                  src={slide.imageSrc}
+                  alt={slide.imageAlt}
+                  className="w-full h-full object-cover object-top sm:object-[center_top] lg:object-[center_25%] transform group-hover:scale-105 transition-transform duration-1000 ease-out"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                />
 
-                  {/* Degradado sobre la imagen para integración visual armónica */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B3B60]/80 via-transparent to-transparent lg:bg-gradient-to-r lg:from-[#0B3B60]/60 lg:via-transparent lg:to-transparent pointer-events-none" />
+                {/* Difuminado suave lateral izquierdo para fundir el cielo con el fondo celeste del texto */}
+                <div className="absolute inset-y-0 left-0 w-20 sm:w-32 bg-gradient-to-r from-[#CDE9FA] via-[#CDE9FA]/40 to-transparent pointer-events-none hidden lg:block" />
 
-                  {/* Pastilla flotante con insignia institucional oficial aldia */}
-                  <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200/90 flex items-center gap-2 shadow-lg">
-                    <img src="/logo-aldia.svg" alt="aldia" className="w-4 h-4 object-contain" />
-                    <span className="text-[11.5px] font-heading font-extrabold text-[#0B3B60] tracking-tight">
-                      aldia <span className="text-[#00A3E0]">educa</span>
-                    </span>
-                  </div>
-                </div>
+                {/* Difuminado inferior en móviles */}
+                <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#BFE3FA]/90 to-transparent pointer-events-none lg:hidden" />
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* ============================================================== */}
-      {/* CONTROLES DEL CARRUSEL: FLECHAS LATERALES E INDICADORES        */}
-      {/* ============================================================== */}
-
-      {/* Flecha Izquierda (Anterior) */}
+      {/* Flechas de navegación elegantes */}
       <button
         onClick={prevSlide}
-        aria-label="Ver diapositiva anterior"
-        className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white text-[#0B3B60] border border-slate-200 shadow-md backdrop-blur-md flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95"
+        aria-label="Ver slide anterior"
+        className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-[#0B3B60] border border-sky-200 shadow-md backdrop-blur-md flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95"
       >
         <span className="material-symbols-outlined text-[22px]">chevron_left</span>
       </button>
 
-      {/* Flecha Derecha (Siguiente) */}
       <button
         onClick={nextSlide}
-        aria-label="Ver siguiente diapositiva"
-        className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/90 hover:bg-white text-[#0B3B60] border border-slate-200 shadow-md backdrop-blur-md flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95"
+        aria-label="Ver slide siguiente"
+        className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-[#0B3B60] border border-sky-200 shadow-md backdrop-blur-md flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95"
       >
         <span className="material-symbols-outlined text-[22px]">chevron_right</span>
       </button>
 
-      {/* Barra Inferior de Navegación: Indicadores y Control de Pausa */}
-      <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/90 shadow-md">
-        {/* Indicadores de diapositiva */}
-        <div className="flex items-center gap-2">
+      {/* Puntos de paginación discretos en la parte inferior central */}
+      <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/25 backdrop-blur-md border border-white/20 shadow-xs">
+        <div className="flex items-center gap-1.5">
           {slides.map((s, idx) => {
             const isCurrent = idx === currentSlide;
             return (
               <button
                 key={s.id}
                 onClick={() => setCurrentSlide(idx)}
-                aria-label={`Ir a la diapositiva ${idx + 1}`}
+                aria-label={`Ir al slide ${idx + 1}`}
                 className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                   isCurrent
-                    ? 'w-7 sm:w-8 bg-[#00A3E0] shadow-[0_0_8px_rgba(0,163,224,0.5)]'
-                    : 'w-2 bg-slate-300 hover:bg-slate-400'
+                    ? 'w-7 bg-[#007EAF] shadow-[0_0_8px_rgba(0,126,175,0.7)]'
+                    : 'w-2 bg-white/60 hover:bg-white'
                 }`}
               />
             );
           })}
         </div>
 
-        {/* Separador vertical fino */}
-        <div className="w-[1px] h-3.5 bg-slate-300 mx-0.5" />
+        <div className="w-[1px] h-3 bg-white/30 mx-0.5" />
 
-        {/* Botón de Pausa / Reproducción */}
         <button
           onClick={() => setIsPaused((prev) => !prev)}
           aria-label={isPaused ? 'Reanudar carrusel automático' : 'Pausar carrusel automático'}
           title={isPaused ? 'Reanudar avance automático' : 'Pausar avance automático'}
-          className="w-5 h-5 rounded-full flex items-center justify-center text-slate-600 hover:text-[#0B3B60] transition-colors cursor-pointer"
+          className="w-4 h-4 rounded-full flex items-center justify-center text-white hover:text-sky-200 transition-colors cursor-pointer"
         >
-          <span className="material-symbols-outlined text-[16px]">
+          <span className="material-symbols-outlined text-[13px]">
             {isPaused ? 'play_arrow' : 'pause'}
           </span>
         </button>

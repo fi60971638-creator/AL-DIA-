@@ -1,19 +1,16 @@
 export type AprendeSubTab =
   | 'articulos'
-  | 'videos'
   | 'diccionario'
-  | 'mitos'
-  | 'casos'
   | 'derechos';
 
 export type TabType =
   | 'inicio'
+  | 'videos'
   | 'orientacion'
+  | 'market'
+  | 'play'
   | 'aprende_articulos'
-  | 'aprende_videos'
   | 'aprende_diccionario'
-  | 'aprende_mitos'
-  | 'aprende_casos'
   | 'aprende_derechos'
   | 'categorias_crediticias';
 

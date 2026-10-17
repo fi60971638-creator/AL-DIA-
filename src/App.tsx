@@ -9,6 +9,9 @@ import { DashboardScreen } from './components/screens/DashboardScreen';
 import { AprendeFinanzasScreen } from './components/screens/AprendeFinanzasScreen';
 import { OrientacionScreen } from './components/screens/OrientacionScreen';
 import { CategoriasCrediticiasScreen } from './components/screens/CategoriasCrediticiasScreen';
+import { MarketScreen } from './components/screens/MarketScreen';
+import { PlayScreen } from './components/screens/PlayScreen';
+import { VideosScreen } from './components/screens/VideosScreen';
 
 export default function App() {
   const { currentTab, navigate, aprendeSubTab } = useRoute();
@@ -23,9 +26,12 @@ export default function App() {
       <Header currentTab={currentTab} onNavigate={handleNavigate} />
 
       {/* 2. Contenido Principal */}
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-20 sm:pb-16">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-20 md:pb-14">
         {currentTab === 'inicio' && <DashboardScreen onNavigate={handleNavigate} />}
-        {currentTab === 'orientacion' && <OrientacionScreen onNavigate={handleNavigate} />}
+        {currentTab === 'videos' && <VideosScreen onNavigate={handleNavigate} />}
+        {currentTab === 'orientacion' && <VideosScreen onNavigate={handleNavigate} />}
+        {currentTab === 'market' && <MarketScreen onNavigate={handleNavigate} />}
+        {currentTab === 'play' && <PlayScreen onNavigate={handleNavigate} />}
         {currentTab === 'categorias_crediticias' && <CategoriasCrediticiasScreen />}
         {currentTab.startsWith('aprende_') && (
           <AprendeFinanzasScreen

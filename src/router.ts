@@ -3,25 +3,33 @@ import { TabType, AprendeSubTab } from './types';
 
 export const VALID_TABS: TabType[] = [
   'inicio',
+  'videos',
   'orientacion',
+  'market',
+  'play',
   'aprende_articulos',
-  'aprende_videos',
   'aprende_diccionario',
-  'aprende_mitos',
-  'aprende_casos',
   'aprende_derechos',
   'categorias_crediticias',
 ];
 
 const LEGACY_TAB_MAP: Record<string, TabType> = {
-  deudas: 'orientacion',
-  objetivos: 'orientacion',
-  salud: 'orientacion',
-  perfil: 'orientacion',
+  deudas: 'videos',
+  objetivos: 'videos',
+  salud: 'videos',
+  perfil: 'videos',
   calendario: 'inicio',
   pagos: 'inicio',
   presupuesto: 'aprende_articulos',
   aprende: 'aprende_articulos',
+  aprende_videos: 'videos',
+  videos_sbs: 'videos',
+  aprende_mitos: 'aprende_articulos',
+  aprende_casos: 'aprende_articulos',
+  recursos: 'market',
+  juegos: 'play',
+  trivia: 'play',
+  orientacion: 'videos',
 };
 
 function parseHash(hash: string): TabType {

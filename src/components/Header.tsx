@@ -83,7 +83,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
     }
   };
 
-  // 6 sub-items for "Aprende"
+  // Sub-items for "Aprende" (Guías, Diccionario, Derechos)
   const aprendeItems: { id: TabType; title: string; desc: string; icon: string }[] = [
     {
       id: 'aprende_articulos',
@@ -92,28 +92,10 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
       icon: 'menu_book',
     },
     {
-      id: 'aprende_videos',
-      title: 'Videos SBS',
-      desc: 'Material audiovisual educativo producido por la SBS.',
-      icon: 'smart_display',
-    },
-    {
       id: 'aprende_diccionario',
       title: 'Diccionario financiero',
       desc: 'Conceptos bancarios explicados de forma clara y sin tecnicismos.',
       icon: 'auto_stories',
-    },
-    {
-      id: 'aprende_mitos',
-      title: 'Mitos y verdades',
-      desc: 'Diferencia los mitos populares de la realidad legal en cobranzas.',
-      icon: 'fact_check',
-    },
-    {
-      id: 'aprende_casos',
-      title: 'Casos prácticos',
-      desc: 'Situaciones reales explicadas para tomar decisiones acertadas.',
-      icon: 'tips_and_updates',
     },
     {
       id: 'aprende_derechos',
@@ -124,8 +106,10 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
   ];
 
   const isAprendeActive = currentTab.startsWith('aprende_');
-  const isOrientacionActive = currentTab === 'orientacion';
+  const isVideosActive = currentTab === 'videos' || currentTab === 'aprende_videos' || currentTab === 'orientacion';
   const isCategoriasActive = currentTab === 'categorias_crediticias';
+  const isMarketActive = currentTab === 'market';
+  const isPlayActive = currentTab === 'play';
 
   return (
     <div className="sticky top-0 z-40 w-full">
@@ -230,9 +214,9 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
                 )}
               </button>
 
-              {/* Mega Desplegable Aprende en 2 Columnas */}
+              {/* Desplegable Aprende */}
               {activeDropdown === 'aprende' && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[560px] lg:w-[620px] bg-white rounded-2xl shadow-xl border border-slate-200/90 p-4 grid grid-cols-2 gap-2 z-50 fade-in">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[380px] sm:w-[420px] bg-white rounded-2xl shadow-xl border border-slate-200/90 p-3 flex flex-col gap-1.5 z-50 fade-in">
                   {aprendeItems.map((item) => {
                     const isItemActive = currentTab === item.id;
                     return (
@@ -280,99 +264,21 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
               )}
             </div>
 
-            {/* 2. Menú: Orientación */}
-            <div
-              className="relative h-full flex items-center"
-              onMouseEnter={() => setActiveDropdown('orientacion')}
-              onMouseLeave={() => setActiveDropdown(null)}
+            {/* 2. Menú: Videos (reemplaza Orientación) */}
+            <button
+              onClick={() => handleNavigate('videos')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13.5px] transition-all cursor-pointer font-sans select-none ${
+                isVideosActive
+                  ? 'text-[#0B3B60] font-bold bg-sky-50/70 shadow-2xs'
+                  : 'text-slate-700 hover:text-[#0B3B60] hover:bg-slate-50 font-medium'
+              }`}
             >
-              <button
-                onClick={() => handleNavigate('orientacion')}
-                aria-expanded={activeDropdown === 'orientacion'}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13.5px] transition-all cursor-pointer font-sans select-none ${
-                  isOrientacionActive || activeDropdown === 'orientacion'
-                    ? 'text-[#0B3B60] font-bold bg-sky-50/70 shadow-2xs'
-                    : 'text-slate-700 hover:text-[#0B3B60] hover:bg-slate-50 font-medium'
-                }`}
-              >
-                <span>Orientación</span>
-                <span
-                  className={`material-symbols-outlined text-[18px] transition-transform duration-200 ${
-                    activeDropdown === 'orientacion' ? 'rotate-180 text-[#00A3E0]' : 'text-slate-400'
-                  }`}
-                >
-                  expand_more
-                </span>
-                {isOrientacionActive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#00A3E0] ml-0.5 shrink-0" />
-                )}
-              </button>
-
-              {/* Desplegable Orientación */}
-              {activeDropdown === 'orientacion' && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-80 bg-white rounded-2xl shadow-xl border border-slate-200/90 p-3 flex flex-col gap-1.5 z-50 fade-in">
-                  <div className="px-3 py-1.5 border-b border-slate-100 flex items-center justify-between">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#007EAF]">
-                      Ruta de Asesoramiento
-                    </span>
-                    <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full">
-                      100% Gratuita
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={() => handleNavigate('orientacion')}
-                    className="flex items-start gap-2.5 p-2.5 rounded-xl hover:bg-slate-50 transition-colors text-left cursor-pointer group"
-                  >
-                    <span className="material-symbols-outlined text-[20px] text-[#00A3E0] mt-0.5">
-                      tips_and_updates
-                    </span>
-                    <div>
-                      <span className="text-[13px] font-heading font-bold text-[#0B3B60] block leading-snug group-hover:text-[#007EAF]">
-                        Situaciones y soluciones
-                      </span>
-                      <span className="text-[11px] text-slate-500 font-normal leading-tight block mt-0.5">
-                        Guía paso a paso si no puedes pagar o recibes llamadas de cobranza.
-                      </span>
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => handleNavigate('orientacion')}
-                    className="flex items-start gap-2.5 p-2.5 rounded-xl hover:bg-slate-50 transition-colors text-left cursor-pointer group"
-                  >
-                    <span className="material-symbols-outlined text-[20px] text-[#00A3E0] mt-0.5">
-                      help_outline
-                    </span>
-                    <div>
-                      <span className="text-[13px] font-heading font-bold text-[#0B3B60] block leading-snug group-hover:text-[#007EAF]">
-                        Preguntas frecuentes (FAQ)
-                      </span>
-                      <span className="text-[11px] text-slate-500 font-normal leading-tight block mt-0.5">
-                        Dudas sobre intereses moratorios, embargos y plazos de respuesta.
-                      </span>
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => handleNavigate('orientacion')}
-                    className="flex items-start gap-2.5 p-2.5 rounded-xl hover:bg-slate-50 transition-colors text-left cursor-pointer group"
-                  >
-                    <span className="material-symbols-outlined text-[20px] text-[#00A3E0] mt-0.5">
-                      gavel
-                    </span>
-                    <div>
-                      <span className="text-[13px] font-heading font-bold text-[#0B3B60] block leading-snug group-hover:text-[#007EAF]">
-                        Canales oficiales y reclamos
-                      </span>
-                      <span className="text-[11px] text-slate-500 font-normal leading-tight block mt-0.5">
-                        Enlaces oficiales a la SBS, INDECOPI y Libro de Reclamaciones.
-                      </span>
-                    </div>
-                  </button>
-                </div>
+              <span className="material-symbols-outlined text-[18px] text-[#00A3E0]">smart_display</span>
+              <span>Videos</span>
+              {isVideosActive && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00A3E0] ml-0.5 shrink-0" />
               )}
-            </div>
+            </button>
 
             {/* 3. Menú: Categorías SBS */}
             <div
@@ -470,7 +376,42 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
               )}
             </div>
 
-            {/* 4. Menú: Conócenos */}
+            {/* 4. Menú: Market */}
+            <button
+              onClick={() => handleNavigate('market')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13.5px] transition-all cursor-pointer font-sans select-none ${
+                isMarketActive
+                  ? 'text-[#0B3B60] font-bold bg-sky-50/70 shadow-2xs'
+                  : 'text-slate-700 hover:text-[#0B3B60] hover:bg-slate-50 font-medium'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px] text-[#00A3E0]">storefront</span>
+              <span>Market</span>
+              {isMarketActive && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00A3E0] ml-0.5 shrink-0" />
+              )}
+            </button>
+
+            {/* 5. Menú: Play */}
+            <button
+              onClick={() => handleNavigate('play')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13.5px] transition-all cursor-pointer font-sans select-none relative ${
+                isPlayActive
+                  ? 'text-[#0B3B60] font-bold bg-sky-50/70 shadow-2xs'
+                  : 'text-slate-700 hover:text-[#0B3B60] hover:bg-slate-50 font-medium'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px] text-[#00A3E0]">sports_esports</span>
+              <span>Play</span>
+              <span className="px-1.5 py-0.2 bg-[#F97316] text-white rounded-full text-[9px] font-black uppercase tracking-wider">
+                Juegos
+              </span>
+              {isPlayActive && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00A3E0] ml-0.5 shrink-0" />
+              )}
+            </button>
+
+            {/* 6. Menú: Conócenos */}
             <div
               className="relative h-full flex items-center"
               onMouseEnter={() => setActiveDropdown('conocenos')}
@@ -533,16 +474,16 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
             </div>
           </nav>
 
-          {/* --- A LA DERECHA: ÚNICO BOTÓN "PIDE ORIENTACIÓN" (ESCRITORIO) --- */}
+          {/* --- A LA DERECHA: BOTÓN "VER VIDEOS" (ESCRITORIO) --- */}
           <div className="hidden md:flex items-center gap-3 shrink-0">
             <button
-              onClick={() => handleNavigate('orientacion')}
+              onClick={() => handleNavigate('videos')}
               className="px-4 py-2.5 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] active:scale-95 text-white font-heading font-semibold text-[13.5px] tracking-tight transition-all flex items-center gap-2 shadow-xs cursor-pointer"
             >
               <span className="material-symbols-outlined text-[18px] text-[#00A3E0]">
-                support_agent
+                smart_display
               </span>
-              <span>Pide orientación</span>
+              <span>Ver videos</span>
             </button>
           </div>
 
@@ -660,24 +601,24 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
               )}
             </div>
 
-            {/* 2. SECCIÓN: ORIENTACIÓN */}
+            {/* 2. SECCIÓN: VIDEOS (REEMPLAZA ORIENTACIÓN) */}
             <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
               <button
-                onClick={() => handleNavigate('orientacion')}
+                onClick={() => handleNavigate('videos')}
                 className={`w-full p-4 flex items-center justify-between text-left font-heading font-bold text-[15px] cursor-pointer transition-colors ${
-                  isOrientacionActive
+                  isVideosActive
                     ? 'bg-sky-50 text-[#0B3B60]'
                     : 'bg-white hover:bg-slate-50 text-[#0B3B60]'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-sky-100 text-[#007EAF] flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[19px]">lightbulb</span>
+                    <span className="material-symbols-outlined text-[19px]">smart_display</span>
                   </div>
                   <div>
-                    <span>Orientación</span>
+                    <span>Videos</span>
                     <span className="text-[11.5px] font-sans font-normal text-slate-500 block">
-                      Situaciones frecuentes, preguntas y reclamos
+                      Videoteca oficial SBS sobre créditos, cuotas y derechos
                     </span>
                   </div>
                 </div>
@@ -714,7 +655,66 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
               </button>
             </div>
 
-            {/* 4. SECCIÓN: CONÓCENOS */}
+            {/* 4. SECCIÓN: AL DÍA MARKET */}
+            <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
+              <button
+                onClick={() => handleNavigate('market')}
+                className={`w-full p-4 flex items-center justify-between text-left font-heading font-bold text-[15px] cursor-pointer transition-colors ${
+                  isMarketActive
+                    ? 'bg-sky-50 text-[#0B3B60]'
+                    : 'bg-white hover:bg-slate-50 text-[#0B3B60]'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-sky-100 text-[#007EAF] flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[19px]">storefront</span>
+                  </div>
+                  <div>
+                    <span>AL DÍA Market</span>
+                    <span className="text-[11.5px] font-sans font-normal text-slate-500 block">
+                      Tienda virtual: útiles escolares, oficina y uso diario
+                    </span>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-[20px] text-slate-400">
+                  chevron_right
+                </span>
+              </button>
+            </div>
+
+            {/* 5. SECCIÓN: AL DÍA PLAY */}
+            <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
+              <button
+                onClick={() => handleNavigate('play')}
+                className={`w-full p-4 flex items-center justify-between text-left font-heading font-bold text-[15px] cursor-pointer transition-colors ${
+                  isPlayActive
+                    ? 'bg-sky-50 text-[#0B3B60]'
+                    : 'bg-white hover:bg-slate-50 text-[#0B3B60]'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-orange-100 text-[#F97316] flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[19px]">sports_esports</span>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span>AL DÍA Play</span>
+                      <span className="px-1.5 py-0.2 bg-[#F97316] text-white rounded-full text-[9px] font-black uppercase">
+                        Juegos
+                      </span>
+                    </div>
+                    <span className="text-[11.5px] font-sans font-normal text-slate-500 block">
+                      Trivia, mitos v/s verdades, retos de presupuesto y casos
+                    </span>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-[20px] text-slate-400">
+                  chevron_right
+                </span>
+              </button>
+            </div>
+
+            {/* 6. SECCIÓN: CONÓCENOS */}
             <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
               <button
                 onClick={handleGoToConocenos}
@@ -740,23 +740,23 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
             {/* Aviso pedagógico rápido */}
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-[11.5px] text-slate-600 leading-relaxed">
               <strong className="text-[#0B3B60] block mb-0.5">Plataforma pedagógica aldia:</strong>
-              Orientación ciudadana basada en la normativa de la SBS e INDECOPI. No realizamos cobranzas ni otorgamos préstamos.
+              Educación financiera basada en la normativa oficial de la SBS e INDECOPI.
             </div>
           </div>
 
-          {/* Pie del menú móvil con el botón único "Pide orientación" */}
+          {/* Pie del menú móvil con el botón "Ver videos" */}
           <div className="p-4 border-t border-slate-200 bg-white shrink-0 flex flex-col gap-2">
             <button
-              onClick={() => handleNavigate('orientacion')}
+              onClick={() => handleNavigate('videos')}
               className="w-full py-3.5 rounded-xl bg-[#0B3B60] active:scale-95 text-white font-heading font-bold text-[15px] flex items-center justify-center gap-2 shadow-md cursor-pointer"
             >
               <span className="material-symbols-outlined text-[20px] text-[#00A3E0]">
-                support_agent
+                smart_display
               </span>
-              <span>Pide orientación</span>
+              <span>Ver videos</span>
             </button>
             <p className="text-center text-[10.5px] text-slate-400 font-sans mt-0.5">
-              Orientación 100% gratuita y sin registro bancario
+              Material audiovisual oficial y 100% gratuito
             </p>
           </div>
         </div>
