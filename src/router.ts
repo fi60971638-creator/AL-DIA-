@@ -5,6 +5,7 @@ export const VALID_TABS: TabType[] = [
   'inicio',
   'videos',
   'orientacion',
+  'seguridad',
   'market',
   'play',
   'aprende_articulos',
@@ -30,6 +31,10 @@ const LEGACY_TAB_MAP: Record<string, TabType> = {
   juegos: 'play',
   trivia: 'play',
   orientacion: 'videos',
+  centro_seguridad: 'seguridad',
+  seguridad_financiera: 'seguridad',
+  fraudes: 'seguridad',
+  estafas: 'seguridad',
 };
 
 function parseHash(hash: string): TabType {

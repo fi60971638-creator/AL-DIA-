@@ -7,6 +7,7 @@ export type TabType =
   | 'inicio'
   | 'videos'
   | 'orientacion'
+  | 'seguridad'
   | 'market'
   | 'play'
   | 'aprende_articulos'
@@ -17,13 +18,14 @@ export type TabType =
 export interface EducationalArticle {
   id: string;
   category:
+    | 'Pagos y cuotas'
     | 'Créditos y préstamos'
-    | 'Organización del presupuesto'
-    | 'Intereses y comisiones'
-    | 'Pagos responsables'
+    | 'Cobranzas responsables'
     | 'Historial crediticio'
-    | 'Prevención del sobreendeudamiento'
-    | 'Derechos del consumidor financiero'
+    | 'Presupuesto familiar'
+    | 'Finanzas para emprendedores'
+    | 'Derechos del consumidor'
+    | 'Pagos digitales y seguridad'
     | string;
   title: string;
   shortDesc: string;
@@ -32,6 +34,19 @@ export interface EducationalArticle {
   summary: string;
   keyTakeaway: string;
   source?: string;
+  imageSrc?: string;
+  imageAlt?: string;
+  situacionCotidiana?: string;
+  explicacionSencilla?: string;
+  pasosPracticos?: string[];
+  ejemploSoles?: {
+    titulo: string;
+    detalle: string;
+    calculo?: string;
+  };
+  consejoAlDia?: string;
+  fuenteOficialUrl?: string;
+  fuenteOficialNombre?: string;
   sections: {
     title: string;
     paragraphs: string[];
@@ -71,19 +86,21 @@ export interface SituationItem {
 export interface VideoItem {
   id: string;
   titulo: string;
-  categoria:
-    | 'Educación financiera'
-    | 'Créditos y tasas de interés'
-    | 'Historial crediticio'
-    | 'Derechos del usuario'
-    | 'Reclamos y consultas'
-    | 'Prevención del fraude financiero'
-    | string;
+  canal: string;
+  categoria: string;
+  categoriaFiltro:
+    | 'sbs_oficiales'
+    | 'creditos_historial'
+    | 'pagos_cobranzas'
+    | 'presupuesto_ahorro'
+    | 'educacion_general';
   duracion: string;
   fuente: string;
+  tipoFuente: 'Entidad Oficial' | 'Especialista / Canal Educativo';
   url: string;
-  isFeatured?: boolean;
+  thumbnailUrl?: string;
   descripcion?: string;
+  isFeatured?: boolean;
   keyTakeaways?: string[];
 }
 

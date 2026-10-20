@@ -13,8 +13,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onNavigate }) 
     { id: 'aprende_articulos', label: 'Guías y Artículos', icon: 'menu_book', desc: 'Presupuestos, deudas y ahorro' },
     { id: 'aprende_diccionario', label: 'Diccionario financiero', icon: 'auto_stories', desc: 'Términos bancarios sencillos' },
     { id: 'aprende_derechos', label: 'Derechos del usuario', icon: 'verified_user', desc: 'Normas SBS e Indecopi' },
+    { id: 'seguridad', label: 'Seguridad', icon: 'shield', desc: 'Prevenir estafas y proteger cuentas' },
     { id: 'categorias_crediticias', label: 'Categorías crediticias', icon: 'speed', desc: 'Niveles de riesgo según la SBS' },
-    { id: 'market', label: 'AL DÍA Market', icon: 'storefront', desc: 'Tienda: útiles, oficina y uso diario' },
+    { id: 'market', label: 'AL DÍA Market', icon: 'storefront', desc: 'Tienda de útiles de oficina y escritorio' },
     { id: 'play', label: 'AL DÍA Play', icon: 'sports_esports', desc: 'Juegos interactivos y en línea' },
   ];
 

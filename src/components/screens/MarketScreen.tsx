@@ -5,7 +5,9 @@ import {
   PRODUCT_CATEGORIES,
   INITIAL_PRODUCTS,
   MarketCategoryDef,
+  MarketCategoryId,
 } from '../../data/marketData';
+import heroImg from '../../assets/images/market_escritorio_oficina_1792458073916.jpg';
 
 interface MarketScreenProps {
   onNavigate: (tab: TabType) => void;
@@ -16,8 +18,10 @@ interface CartItem {
   quantity: number;
 }
 
+type SortOrder = 'destacados' | 'precio_asc' | 'precio_desc' | 'nombre_asc';
+
 export const MarketScreen: React.FC<MarketScreenProps> = ({ onNavigate }) => {
-  // 1. Products state (allows demo price editing with localStorage persistence)
+  // 1. Products state (persisting customized referential prices)
   const [products, setProducts] = useState<ProductItem[]>(() => {
     try {
       const savedPrices = localStorage.getItem('aldia_market_custom_prices');
@@ -47,11 +51,15 @@ export const MarketScreen: React.FC<MarketScreenProps> = ({ onNavigate }) => {
     return [];
   });
 
-  // 3. Filters & Search state
-  const [selectedCategory, setSelectedCategory] = useState<'todos' | 'utiles' | 'oficina' | 'diario'>('todos');
-  const [searchQuery, setSearchQuery] = useState('');
+  // 3. Quantities selector state for cards before adding to cart (default 1 per card)
+  const [cardQuantities, setCardQuantities] = useState<Record<string, number>>({});
 
-  // 4. Modals & Drawers state
+  // 4. Filters, Search & Sort
+  const [selectedCategory, setSelectedCategory] = useState<MarketCategoryId>('todos');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('destacados');
+
+  // 5. Modals & Drawers
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
@@ -59,7 +67,7 @@ export const MarketScreen: React.FC<MarketScreenProps> = ({ onNavigate }) => {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [copiedSummary, setCopiedSummary] = useState(false);
 
-  // 5. WhatsApp commercial number configuration (no invented fake number)
+  // 6. WhatsApp commercial number configuration (user configured, no fake number)
   const [whatsappNumber, setWhatsappNumber] = useState<string>(() => {
     try {
       return localStorage.getItem('aldia_market_whatsapp_number') || '';
@@ -79,7 +87,7 @@ export const MarketScreen: React.FC<MarketScreenProps> = ({ onNavigate }) => {
     }
   }, [cart]);
 
-  // Toast auto-hide
+  // Toast timer
   useEffect(() => {
     if (!toastMessage) return;
     const timer = setTimeout(() => {
@@ -88,7 +96,7 @@ export const MarketScreen: React.FC<MarketScreenProps> = ({ onNavigate }) => {
     return () => clearTimeout(timer);
   }, [toastMessage]);
 
-  // Cart helper calculations
+  // Cart calculations
   const totalItemsCount = useMemo(() => {
     return cart.reduce((acc, item) => acc + item.quantity, 0);
   }, [cart]);
@@ -97,23 +105,71 @@ export const MarketScreen: React.FC<MarketScreenProps> = ({ onNavigate }) => {
     return cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   }, [cart]);
 
+  // Quantities handlers for individual product cards
+  const getCardQuantity = (productId: string) => cardQuantities[productId] || 1;
+
+  const handleUpdateCardQuantity = (productId: string, delta: number) => {
+    setCardQuantities((prev) => {
+      const current = prev[productId] || 1;
+      const next = Math.max(1, Math.min(99, current + delta));
+      return { ...prev, [productId]: next };
+    });
+  };
+
+  // Add to cart with specific quantity
+  const handleAddToCart = (product: ProductItem) => {
+    const qty = getCardQuantity(product.id);
+    setCart((prevCart) => {
+      const existing = prevCart.find((item) => item.product.id === product.id);
+      if (existing) {
+        return prevCart.map((item) =>
+          item.product.id === product.id ? { ...item, quantity: item.quantity + qty } : item
+        );
+      }
+      return [...prevCart, { product, quantity: qty }];
+    });
+    // Reset card quantity back to 1
+    setCardQuantities((prev) => ({ ...prev, [product.id]: 1 }));
+    setToastMessage(`Se agregó ${qty} ${qty > 1 ? 'unidades' : 'unidad'} de "${product.name}" al carrito`);
+  };
+
+  // Modify cart item quantity
+  const handleUpdateCartQuantity = (productId: string, newQty: number) => {
+    if (newQty <= 0) {
+      handleRemoveFromCart(productId);
+      return;
+    }
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.product.id === productId ? { ...item, quantity: Math.min(99, newQty) } : item
+      )
+    );
+  };
+
+  // Remove item from cart
+  const handleRemoveFromCart = (productId: string) => {
+    setCart((prevCart) => prevCart.filter((item) => item.product.id !== productId));
+    setToastMessage('Producto eliminado del carrito');
+  };
+
+  // Clear cart
+  const handleClearCart = () => {
+    setCart([]);
+    setToastMessage('Se vació el carrito');
+  };
+
   // Category counts
   const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = {
-      todos: products.length,
-      utiles: 0,
-      oficina: 0,
-      diario: 0,
-    };
+    const counts: Record<string, number> = { todos: products.length };
     products.forEach((p) => {
       counts[p.category] = (counts[p.category] || 0) + 1;
     });
     return counts;
   }, [products]);
 
-  // Filtered products list
+  // Filtered & sorted products list
   const filteredProducts = useMemo(() => {
-    return products.filter((p) => {
+    const list = products.filter((p) => {
       const matchesCategory = selectedCategory === 'todos' || p.category === selectedCategory;
       const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
@@ -123,54 +179,27 @@ export const MarketScreen: React.FC<MarketScreenProps> = ({ onNavigate }) => {
         p.categoryLabel.toLowerCase().includes(q);
       return matchesCategory && matchesSearch;
     });
-  }, [products, selectedCategory, searchQuery]);
 
-  // Cart operations
-  const handleAddToCart = (product: ProductItem) => {
-    setCart((prevCart) => {
-      const existing = prevCart.find((item) => item.product.id === product.id);
-      if (existing) {
-        return prevCart.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prevCart, { product, quantity: 1 }];
-    });
-    setToastMessage(`«${product.name}» agregado al carrito`);
-  };
-
-  const handleUpdateQuantity = (productId: string, delta: number) => {
-    setCart((prevCart) => {
-      return prevCart
-        .map((item) => {
-          if (item.product.id === productId) {
-            const newQty = item.quantity + delta;
-            return newQty > 0 ? { ...item, quantity: newQty } : null;
-          }
-          return item;
-        })
-        .filter((item): item is CartItem => item !== null);
-    });
-  };
-
-  const handleRemoveFromCart = (productId: string) => {
-    setCart((prevCart) => prevCart.filter((item) => item.product.id !== productId));
-  };
-
-  const handleClearCart = () => {
-    if (window.confirm('¿Deseas vaciar todos los productos del carrito?')) {
-      setCart([]);
+    switch (sortOrder) {
+      case 'precio_asc':
+        return [...list].sort((a, b) => a.price - b.price);
+      case 'precio_desc':
+        return [...list].sort((a, b) => b.price - a.price);
+      case 'nombre_asc':
+        return [...list].sort((a, b) => a.name.localeCompare(b.name));
+      default:
+        return list;
     }
+  }, [products, selectedCategory, searchQuery, sortOrder]);
+
+  // Reset all filters
+  const handleResetFilters = () => {
+    setSelectedCategory('todos');
+    setSearchQuery('');
+    setSortOrder('destacados');
   };
 
-  // Demo price editing functions
-  const handleOpenEditPrice = (product: ProductItem) => {
-    setEditingProduct(product);
-    setTempPriceInput(product.price.toFixed(2));
-  };
-
+  // Save custom demo price
   const handleSavePrice = () => {
     if (!editingProduct) return;
     const num = parseFloat(tempPriceInput.replace(',', '.'));
@@ -178,552 +207,579 @@ export const MarketScreen: React.FC<MarketScreenProps> = ({ onNavigate }) => {
       alert('Por favor ingresa un precio válido en soles.');
       return;
     }
-
-    const updated = products.map((p) =>
-      p.id === editingProduct.id ? { ...p, price: num } : p
-    );
+    const updated = products.map((p) => (p.id === editingProduct.id ? { ...p, price: num } : p));
     setProducts(updated);
 
-    // Save to localStorage map
-    try {
-      const savedPrices = localStorage.getItem('aldia_market_custom_prices');
-      const priceMap: Record<string, number> = savedPrices ? JSON.parse(savedPrices) : {};
-      priceMap[editingProduct.id] = num;
-      localStorage.setItem('aldia_market_custom_prices', JSON.stringify(priceMap));
-    } catch (e) {
-      console.warn('Error saving price', e);
-    }
-
-    // Also update in cart if present
-    setCart((prev) =>
-      prev.map((item) =>
+    // Update in cart as well if present
+    setCart((prevCart) =>
+      prevCart.map((item) =>
         item.product.id === editingProduct.id
           ? { ...item, product: { ...item.product, price: num } }
           : item
       )
     );
 
-    setToastMessage(`Precio de «${editingProduct.name}» actualizado a S/ ${num.toFixed(2)}`);
-    setEditingProduct(null);
-  };
-
-  const handleResetPrices = () => {
-    if (window.confirm('¿Restablecer los precios de todos los productos a sus valores iniciales de demostración?')) {
-      localStorage.removeItem('aldia_market_custom_prices');
-      setProducts(INITIAL_PRODUCTS);
-      setCart((prev) =>
-        prev.map((item) => {
-          const orig = INITIAL_PRODUCTS.find((p) => p.id === item.product.id);
-          return orig ? { ...item, product: orig } : item;
-        })
-      );
-      setToastMessage('Precios de demostración restablecidos');
+    // Save map in localStorage
+    try {
+      const priceMap: Record<string, number> = {};
+      updated.forEach((p) => {
+        priceMap[p.id] = p.price;
+      });
+      localStorage.setItem('aldia_market_custom_prices', JSON.stringify(priceMap));
+    } catch (e) {
+      console.warn('Error saving custom prices', e);
     }
+
+    setEditingProduct(null);
+    setToastMessage(`Precio actualizado para "${editingProduct.name}"`);
   };
 
-  // WhatsApp configuration
+  // Save commercial WhatsApp number
   const handleSaveWhatsappNumber = () => {
-    const clean = tempWhatsappInput.replace(/[^0-9]/g, '').trim();
-    setWhatsappNumber(clean);
-    localStorage.setItem('aldia_market_whatsapp_number', clean);
+    const cleanNumber = tempWhatsappInput.replace(/[^0-9+]/g, '');
+    setWhatsappNumber(cleanNumber);
+    try {
+      localStorage.setItem('aldia_market_whatsapp_number', cleanNumber);
+    } catch (e) {
+      console.warn('Error saving whatsapp number', e);
+    }
     setIsEditingWhatsapp(false);
-    setToastMessage(clean ? 'Número comercial de WhatsApp guardado' : 'Número eliminado');
+    setToastMessage('Número de WhatsApp comercial guardado');
   };
 
   // Generate order summary text
   const generateOrderSummary = () => {
-    let text = `*PEDIDO AL DÍA MARKET*\n`;
-    text += `Fecha: ${new Date().toLocaleDateString('es-PE')} ${new Date().toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })}\n`;
-    text += `------------------------------------\n`;
-    cart.forEach((item, index) => {
-      const sub = item.product.price * item.quantity;
-      text += `${index + 1}. ${item.product.name}\n`;
-      text += `   Cantidad: ${item.quantity} ${item.product.unit} x S/ ${item.product.price.toFixed(2)} = S/ ${sub.toFixed(2)}\n`;
-    });
-    text += `------------------------------------\n`;
-    text += `*TOTAL DEL PEDIDO: S/ ${totalAmount.toFixed(2)}*\n\n`;
-    text += `_Nota: Pedido generado desde el catálogo AL DÍA Market. Por favor confirmar disponibilidad y método de entrega._`;
-    return text;
+    const lines = [
+      '📋 *CONSULTA DE ÚTILES DE ESCRITORIO - AL DÍA MARKET*',
+      '----------------------------------------',
+      ...cart.map(
+        (item, index) =>
+          `${index + 1}. ${item.product.name}\n   Cant: ${item.quantity} ${item.product.unit} | Subtotal: S/ ${(item.product.price * item.quantity).toFixed(2)}`
+      ),
+      '----------------------------------------',
+      `*Total estimado referencial:* S/ ${totalAmount.toFixed(2)}`,
+      '',
+      '_Nota: Consulta generada desde la tienda virtual de demostración AL DÍA Market._',
+    ];
+    return lines.join('\n');
   };
 
+  // Copy order summary to clipboard
+  const handleCopySummary = () => {
+    const text = generateOrderSummary();
+    navigator.clipboard.writeText(text);
+    setCopiedSummary(true);
+    setToastMessage('¡Resumen del pedido copiado al portapapeles!');
+    setTimeout(() => setCopiedSummary(false), 2500);
+  };
+
+  // Open WhatsApp with order summary
   const handleSendWhatsapp = () => {
     if (!whatsappNumber) {
       setIsEditingWhatsapp(true);
       return;
     }
-    const message = encodeURIComponent(generateOrderSummary());
-    const url = `https://wa.me/${whatsappNumber}?text=${message}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
-
-  const handleCopySummary = () => {
-    navigator.clipboard.writeText(generateOrderSummary());
-    setCopiedSummary(true);
-    setTimeout(() => setCopiedSummary(false), 2500);
+    const cleanNumber = whatsappNumber.replace(/[^0-9]/g, '');
+    const text = encodeURIComponent(generateOrderSummary());
+    const url = `https://wa.me/${cleanNumber}?text=${text}`;
+    window.open(url, '_blank');
   };
 
   return (
-    <div className="flex flex-col gap-7 max-w-6xl mx-auto pb-16 fade-in text-slate-800">
+    <div className="flex flex-col gap-8 max-w-6xl mx-auto pb-14 fade-in">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#0B3B60] text-white px-5 py-3 rounded-2xl shadow-xl border border-sky-400/30 text-[13px] font-heading font-semibold flex items-center gap-2 fade-in">
+          <span className="material-symbols-outlined text-[18px] text-[#00A3E0]">check_circle</span>
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* ============================================================== */}
-      {/* 1. ENCABEZADO DE AL DÍA MARKET - TIENDA VIRTUAL COTIDIANA      */}
+      {/* 1. ENCABEZADO DE LA TIENDA                                      */}
       {/* ============================================================== */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex flex-col gap-2.5 max-w-2xl text-left">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 text-[#0B3B60] text-[11.5px] font-bold border border-sky-200">
-              <span className="material-symbols-outlined text-[15px] text-[#00A3E0]">storefront</span>
-              <span>Tienda Virtual de Productos Cotidianos</span>
-            </span>
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Precios en Soles (S/)
+      <section className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col md:flex-row text-left">
+        {/* Imagen realista de escritorio con útiles */}
+        <div className="w-full md:w-1/2 relative aspect-[16/10] md:aspect-auto overflow-hidden bg-slate-100 min-h-[240px] md:min-h-[320px]">
+          <img
+            src={heroImg}
+            alt="Escritorio organizado con cuadernos, lapiceros, folders y accesorios de oficina"
+            className="w-full h-full object-cover"
+            loading="eager"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
+          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
+            <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#0B3B60]/90 backdrop-blur-md border border-white/20 flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[15px] text-[#00A3E0]">desk</span>
+              <span>Útiles de Oficina y Escritorio</span>
             </span>
           </div>
+        </div>
 
-          <h1 className="text-[28px] sm:text-[34px] font-heading font-extrabold text-[#0B3B60] tracking-tight leading-tight">
-            AL DÍA Market
-          </h1>
+        {/* Textos y Acceso al Carrito */}
+        <div className="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-between gap-5">
+          <div className="flex flex-col gap-2.5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 text-[#0B3B60] text-[12px] font-bold border border-sky-200 w-fit">
+              <span className="material-symbols-outlined text-[16px] text-[#00A3E0]">storefront</span>
+              <span>Tienda Virtual AL DÍA</span>
+            </div>
 
-          <p className="text-[14px] sm:text-[15px] text-slate-600 font-sans leading-relaxed">
-            Encuentra todo lo necesario para tus actividades diarias: útiles escolares completos, insumos de oficina y artículos prácticos de uso cotidiano con precios claros y pedido organizado.
-          </p>
+            <h1 className="text-[26px] sm:text-[32px] font-extrabold text-[#0B3B60] tracking-tight leading-snug font-heading">
+              Market | Todo para tu escritorio
+            </h1>
 
-          <div className="flex flex-wrap items-center gap-3 pt-1 text-[11.5px] text-slate-500 font-medium">
-            <span className="flex items-center gap-1 text-slate-600">
-              <span className="material-symbols-outlined text-[15px] text-[#007EAF]">price_check</span>
-              Precios de demostración editables
-            </span>
-            <span>·</span>
-            <span className="flex items-center gap-1 text-slate-600">
-              <span className="material-symbols-outlined text-[15px] text-[#007EAF]">shopping_bag</span>
-              Carrito interactivo con revisión de pedido
-            </span>
-            <span>·</span>
+            <p className="text-[14px] sm:text-[15.5px] text-slate-600 leading-relaxed font-sans">
+              Encuentra tus útiles de oficina en un solo lugar. Cuadernos, lapiceros, archivadores, accesorios y papelería para tu trabajo y estudio.
+            </p>
+          </div>
+
+          {/* Botón flotante del carrito en el encabezado */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
+            <div className="flex flex-col">
+              <span className="text-[11px] uppercase font-bold tracking-wider text-slate-400">
+                Tu Carrito Actual
+              </span>
+              <span className="text-[13.5px] font-bold text-[#0B3B60]">
+                {totalItemsCount} {totalItemsCount === 1 ? 'artículo' : 'artículos'} · S/{' '}
+                {totalAmount.toFixed(2)}
+              </span>
+            </div>
+
             <button
-              onClick={handleResetPrices}
-              className="text-[#007EAF] hover:text-[#0B3B60] hover:underline cursor-pointer"
-              title="Restablecer precios iniciales de muestra"
+              onClick={() => setIsCartOpen(true)}
+              className="px-5 py-2.5 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] text-white font-heading font-bold text-[13px] transition-all flex items-center gap-2 cursor-pointer shadow-xs active:scale-95 shrink-0"
             >
-              Restablecer precios de demo
+              <div className="relative">
+                <span className="material-symbols-outlined text-[19px]">shopping_cart</span>
+                {totalItemsCount > 0 && (
+                  <span className="absolute -top-1.5 -right-2 bg-[#00A3E0] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                    {totalItemsCount}
+                  </span>
+                )}
+              </div>
+              <span>Ver mi carrito</span>
             </button>
           </div>
         </div>
+      </section>
 
-        {/* Botón Flotante / Acceso rápido al carrito */}
-        <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto">
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-[#0B3B60] hover:bg-[#082E4D] active:scale-95 text-white font-heading font-bold text-[14px] transition-all flex items-center justify-between sm:justify-center gap-3 shadow-md cursor-pointer group"
-          >
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[22px] text-[#00A3E0] group-hover:scale-110 transition-transform">
-                shopping_cart
-              </span>
-              <span>Ver mi Carrito</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded-full bg-[#00A3E0] text-white text-[12px] font-black">
-                {totalItemsCount}
-              </span>
-              <span className="text-[13px] text-sky-200 font-semibold border-l border-white/20 pl-2">
-                S/ {totalAmount.toFixed(2)}
-              </span>
-            </div>
-          </button>
+      {/* ============================================================== */}
+      {/* 2. CATEGORÍAS DE PRODUCTOS (6 CATEGORÍAS EXACTAS)             */}
+      {/* ============================================================== */}
+      <section className="flex flex-col gap-3 text-left">
+        <div className="flex items-center justify-between">
+          <span className="text-[12px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-[17px] text-[#00A3E0]">category</span>
+            <span>Categorías de Escritorio</span>
+          </span>
+          <span className="text-[11.5px] text-slate-400 font-medium">
+            {products.length} productos disponibles en demostración
+          </span>
         </div>
-      </div>
+
+        {/* Chips de categorías interactivos con scroll horizontal */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          {PRODUCT_CATEGORIES.map((cat) => {
+            const isSelected = selectedCategory === cat.id;
+            const count = categoryCounts[cat.id] || 0;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`px-4 py-2.5 rounded-2xl text-[12.5px] font-heading font-bold whitespace-nowrap transition-all flex items-center gap-2 shrink-0 cursor-pointer border ${
+                  isSelected
+                    ? 'bg-[#0B3B60] text-white border-[#0B3B60] shadow-xs'
+                    : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300'
+                }`}
+              >
+                <span
+                  className="material-symbols-outlined text-[18px]"
+                  style={{ color: isSelected ? '#00A3E0' : '#64748B' }}
+                >
+                  {cat.icon}
+                </span>
+                <span>{cat.label}</span>
+                <span
+                  className={`px-2 py-0.5 rounded-full text-[10.5px] font-bold ${
+                    isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
 
       {/* ============================================================== */}
-      {/* 2. BUSCADOR Y ACCESOS VISUALES A LAS CATEGORÍAS                 */}
+      {/* 3. BÚSQUEDA Y FILTROS INTERACTIVOS                             */}
       {/* ============================================================== */}
-      <div className="flex flex-col gap-4">
-        {/* Barra de búsqueda interactiva */}
-        <div className="relative w-full">
-          <span className="material-symbols-outlined absolute left-4 top-3.5 text-slate-400 text-[22px]">
+      <section className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 text-left">
+        {/* Input de Búsqueda */}
+        <div className="relative flex-1 max-w-lg">
+          <span className="material-symbols-outlined absolute left-3.5 top-2.5 text-slate-400 text-[19px]">
             search
           </span>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar por producto (cuaderno, lapicero, engrapador, tomatodo, tijeras, notas...)"
-            className="w-full pl-12 pr-10 py-3 rounded-2xl bg-white border border-slate-200 text-slate-800 placeholder-slate-400 text-[14px] focus:outline-none focus:border-[#00A3E0] focus:ring-2 focus:ring-[#00A3E0]/20 shadow-2xs font-sans transition-all"
+            placeholder="Buscar por útil (cuaderno, lapicero, folder, engrapador, papel...)"
+            className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 text-slate-800 placeholder-slate-400 text-[13.5px] focus:outline-none focus:border-[#00A3E0] transition-colors shadow-2xs"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 cursor-pointer p-1"
-              title="Borrar búsqueda"
+              className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 cursor-pointer"
             >
               <span className="material-symbols-outlined text-[18px]">close</span>
             </button>
           )}
         </div>
 
-        {/* Accesos visuales a las categorías en tarjetas / chips enriquecidos */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {PRODUCT_CATEGORIES.map((cat) => {
-            const isActive = selectedCategory === cat.id;
-            const count = categoryCounts[cat.id] || 0;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 group ${
-                  isActive
-                    ? 'bg-[#0B3B60] text-white border-[#0B3B60] shadow-md -translate-y-0.5'
-                    : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200/90 hover:border-slate-300'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${
-                      isActive
-                        ? 'bg-white/20 text-[#00A3E0]'
-                        : 'bg-sky-50 text-[#007EAF] border border-sky-100'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[22px]">
-                      {cat.icon}
-                    </span>
-                  </div>
-                  <span
-                    className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                      isActive
-                        ? 'bg-white/25 text-white'
-                        : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    {count} {count === 1 ? 'ítem' : 'ítems'}
-                  </span>
-                </div>
-
-                <div>
-                  <h3 className="text-[14px] sm:text-[15px] font-heading font-bold block leading-snug">
-                    {cat.label}
-                  </h3>
-                  <p
-                    className={`text-[11px] font-sans line-clamp-1 mt-0.5 ${
-                      isActive ? 'text-sky-200' : 'text-slate-500'
-                    }`}
-                  >
-                    {cat.description}
-                  </p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ============================================================== */}
-      {/* 3. GRILLA DE PRODUCTOS EN TARJETAS                              */}
-      {/* ============================================================== */}
-      <div className="flex flex-col gap-4">
-        {/* Cabecera de resultados */}
-        <div className="flex items-center justify-between text-left px-1">
-          <div className="flex items-center gap-2">
-            <h2 className="text-[18px] sm:text-[20px] font-heading font-extrabold text-[#0B3B60]">
-              {selectedCategory === 'todos'
-                ? 'Todos los productos disponibles'
-                : PRODUCT_CATEGORIES.find((c) => c.id === selectedCategory)?.label}
-            </h2>
-            <span className="text-[12px] text-slate-500 font-medium">
-              ({filteredProducts.length} {filteredProducts.length === 1 ? 'producto' : 'productos'})
-            </span>
+        {/* Filtro Ordenar por precio y Botón Ver todos */}
+        <div className="flex items-center gap-2.5 self-end md:self-auto shrink-0 w-full md:w-auto justify-between md:justify-start">
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[12.5px] text-slate-700 font-medium">
+            <span className="material-symbols-outlined text-[17px] text-[#00A3E0]">sort</span>
+            <label htmlFor="sort-select" className="hidden sm:inline text-slate-500">
+              Ordenar:
+            </label>
+            <select
+              id="sort-select"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+              className="bg-transparent font-bold text-[#0B3B60] focus:outline-none cursor-pointer pr-1"
+            >
+              <option value="destacados">Destacados</option>
+              <option value="precio_asc">Precio: menor a mayor</option>
+              <option value="precio_desc">Precio: mayor a menor</option>
+              <option value="nombre_asc">Nombre: A - Z</option>
+            </select>
           </div>
 
-          {searchQuery && (
+          {(selectedCategory !== 'todos' || searchQuery || sortOrder !== 'destacados') && (
             <button
-              onClick={() => setSearchQuery('')}
-              className="text-[12px] text-[#007EAF] hover:underline cursor-pointer"
+              onClick={handleResetFilters}
+              className="px-3.5 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-[#007EAF] border border-sky-200 font-heading font-semibold text-[12.5px] transition-colors cursor-pointer flex items-center gap-1"
             >
-              Limpiar filtro de búsqueda
+              <span className="material-symbols-outlined text-[16px]">restart_alt</span>
+              <span>Ver todos</span>
             </button>
           )}
         </div>
+      </section>
 
-        {/* Si no hay productos que coincidan */}
-        {filteredProducts.length === 0 ? (
-          <div className="bg-white rounded-3xl p-10 text-center border border-slate-200 flex flex-col items-center justify-center gap-3">
-            <span className="material-symbols-outlined text-[48px] text-slate-300">
-              inventory_2
-            </span>
-            <h3 className="text-[17px] font-heading font-bold text-[#0B3B60]">
-              No encontramos productos para "{searchQuery}"
-            </h3>
-            <p className="text-[13px] text-slate-500 max-w-md">
-              Prueba con términos como "cuaderno", "lapicero", "archivador", "clips", "tomatodo" o cambia de categoría.
-            </p>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCategory('todos');
-              }}
-              className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0B3B60] text-[13px] font-semibold cursor-pointer"
-            >
-              Ver todo el catálogo
-            </button>
+      {/* ============================================================== */}
+      {/* 4. CUADRÍCULA DE PRODUCTOS (2 POR FILA EN CELULARES)           */}
+      {/* ============================================================== */}
+      {filteredProducts.length === 0 ? (
+        <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 flex flex-col items-center justify-center gap-3">
+          <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+            <span className="material-symbols-outlined text-[36px]">search_off</span>
           </div>
-        ) : (
-          /* Grid de tarjetas de producto */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filteredProducts.map((product) => {
-              const inCartItem = cart.find((c) => c.product.id === product.id);
-              const inCartQty = inCartItem?.quantity || 0;
+          <h3 className="text-[17px] font-bold text-[#0B3B60] font-heading">
+            No encontramos útiles para "{searchQuery}"
+          </h3>
+          <p className="text-[13px] text-slate-500 max-w-md">
+            Prueba buscando con palabras como cuaderno, lapicero, folder, grapas o cartulina.
+          </p>
+          <button
+            onClick={handleResetFilters}
+            className="mt-2 px-5 py-2.5 rounded-xl bg-[#0B3B60] text-white font-heading font-bold text-[13px] hover:bg-[#082E4D] cursor-pointer"
+          >
+            Ver todos los productos
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5 text-left">
+          {filteredProducts.map((product) => {
+            const cardQty = getCardQuantity(product.id);
 
-              return (
-                <div
-                  key={product.id}
-                  className="bg-white rounded-3xl border border-slate-200/90 hover:border-[#00A3E0] shadow-xs hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col justify-between group"
-                >
-                  <div>
-                    {/* Fotografía del producto */}
-                    <div className="relative h-48 w-full bg-slate-100 overflow-hidden">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+            return (
+              <div
+                key={product.id}
+                className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-[#00A3E0] transition-all duration-200 flex flex-col justify-between overflow-hidden group"
+              >
+                <div>
+                  {/* Fotografía del producto */}
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                    />
 
-                      {/* Tag distintivo */}
-                      {product.tag && (
-                        <span
-                          className={`absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold border backdrop-blur-md shadow-2xs ${
-                            product.tagColor || 'bg-white/90 text-slate-700 border-slate-200'
-                          }`}
-                        >
-                          {product.tag}
-                        </span>
-                      )}
-
-                      {/* Botón para editar precio de demostración */}
-                      <button
-                        onClick={() => handleOpenEditPrice(product)}
-                        className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-slate-600 hover:text-[#0B3B60] flex items-center justify-center shadow-xs cursor-pointer transition-transform active:scale-95"
-                        title="Modificar precio de demostración"
+                    {/* Tag badge si existe */}
+                    {product.tag && (
+                      <span
+                        className={`absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-extrabold border shadow-2xs backdrop-blur-xs ${
+                          product.tagColor || 'bg-white text-slate-800 border-slate-200'
+                        }`}
                       >
-                        <span className="material-symbols-outlined text-[16px]">edit</span>
-                      </button>
-
-                      {/* Unidad */}
-                      <span className="absolute bottom-2.5 right-3 text-[11px] font-medium text-white/90 bg-black/40 backdrop-blur-xs px-2 py-0.5 rounded-md">
-                        {product.unit}
+                        {product.tag}
                       </span>
-                    </div>
+                    )}
 
-                    {/* Contenido descriptivo */}
-                    <div className="p-4 sm:p-5 flex flex-col gap-2 text-left">
-                      <span className="text-[11px] font-bold text-[#007EAF] uppercase tracking-wider">
-                        {product.categoryLabel}
+                    {/* Botón rápido para editar precio de demo */}
+                    <button
+                      onClick={() => {
+                        setEditingProduct(product);
+                        setTempPriceInput(product.price.toString());
+                      }}
+                      title="Editar precio referencial de demostración"
+                      className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 hover:bg-white text-slate-600 hover:text-[#0B3B60] shadow-xs flex items-center justify-center cursor-pointer transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">edit</span>
+                    </button>
+
+                    {/* Disponibilidad: Indicador de demo / stock */}
+                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[9.5px] sm:text-[10.5px] font-bold">
+                      <span className="px-2 py-0.5 rounded-md bg-black/60 text-white backdrop-blur-xs flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                        <span>
+                          {typeof product.stock === 'number'
+                            ? `Stock: ${product.stock}`
+                            : 'Consultar disponibilidad'}
+                        </span>
                       </span>
-
-                      <h3 className="text-[15px] sm:text-[15.5px] font-heading font-bold text-[#0B3B60] leading-snug line-clamp-2">
-                        {product.name}
-                      </h3>
-
-                      <p className="text-[12px] text-slate-500 font-sans leading-relaxed line-clamp-2">
-                        {product.shortDescription}
-                      </p>
                     </div>
                   </div>
 
-                  {/* Pie de tarjeta: Precio y botón Agregar al Carrito */}
-                  <div className="p-4 sm:p-5 pt-0 flex flex-col gap-3">
-                    <div className="flex items-baseline justify-between pt-2 border-t border-slate-100">
-                      <div>
-                        <span className="text-[10px] text-slate-400 block font-medium leading-none">
-                          Precio referencial:
+                  {/* Datos del producto */}
+                  <div className="p-3 sm:p-4 flex flex-col gap-1.5">
+                    <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#007EAF] block">
+                      {product.categoryLabel}
+                    </span>
+
+                    <h3 className="text-[13px] sm:text-[14.5px] font-bold text-[#0B3B60] font-heading leading-snug line-clamp-2 group-hover:text-[#007EAF] transition-colors">
+                      {product.name}
+                    </h3>
+
+                    <p className="text-[11px] sm:text-[12px] text-slate-500 font-sans line-clamp-2 leading-relaxed">
+                      {product.shortDescription}
+                    </p>
+
+                    {/* Precio en Soles (S/) */}
+                    <div className="mt-1 pt-2 border-t border-slate-100 flex items-baseline justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider">
+                          Precio referencial
                         </span>
-                        <div className="flex items-baseline gap-1 mt-0.5">
-                          <span className="text-[14px] font-bold text-[#0B3B60]">S/</span>
-                          <span className="text-[20px] font-heading font-extrabold text-[#0B3B60]">
-                            {product.price.toFixed(2)}
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-[16px] sm:text-[19px] font-black text-[#0B3B60] font-heading">
+                            S/ {product.price.toFixed(2)}
+                          </span>
+                          <span className="text-[10.5px] text-slate-400 font-sans">
+                            / {product.unit}
                           </span>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
 
-                      {inCartQty > 0 && (
-                        <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                          {inCartQty} en carrito
-                        </span>
-                      )}
+                {/* Selector de cantidad y Botón Agregar al carrito */}
+                <div className="p-3 sm:p-4 pt-0 flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    {/* Selector de cantidad */}
+                    <div className="inline-flex items-center border border-slate-200 rounded-xl bg-slate-50 p-0.5 shrink-0">
+                      <button
+                        onClick={() => handleUpdateCardQuantity(product.id, -1)}
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-600 hover:bg-white hover:text-[#0B3B60] cursor-pointer"
+                        title="Disminuir cantidad"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">remove</span>
+                      </button>
+                      <span className="w-7 text-center font-bold text-[12px] text-[#0B3B60]">
+                        {cardQty}
+                      </span>
+                      <button
+                        onClick={() => handleUpdateCardQuantity(product.id, 1)}
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-600 hover:bg-white hover:text-[#0B3B60] cursor-pointer"
+                        title="Aumentar cantidad"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">add</span>
+                      </button>
                     </div>
 
                     {/* Botón Agregar al carrito */}
                     <button
                       onClick={() => handleAddToCart(product)}
-                      className="w-full py-2.5 px-4 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] active:scale-[0.98] text-white font-heading font-semibold text-[13px] transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer group-hover:shadow-md"
+                      className="flex-1 py-2 px-2.5 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] text-white font-heading font-bold text-[12px] sm:text-[12.5px] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-95"
                     >
-                      <span className="material-symbols-outlined text-[18px] text-[#00A3E0]">
-                        add_shopping_cart
-                      </span>
-                      <span>Agregar al carrito</span>
+                      <span className="material-symbols-outlined text-[16px]">add_shopping_cart</span>
+                      <span className="truncate">Agregar</span>
                     </button>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* ============================================================== */}
-      {/* 4. MODAL / DRAWER LATERAL: MI CARRITO DE COMPRAS               */}
+      {/* 5. DRAWER / MODAL DEL CARRITO DE COMPRAS                       */}
       {/* ============================================================== */}
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs fade-in">
-          <div
-            onClick={() => setIsCartOpen(false)}
-            className="fixed inset-0"
-          />
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-xs fade-in">
+          {/* Backdrop click to close */}
+          <div onClick={() => setIsCartOpen(false)} className="fixed inset-0" />
 
-          <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between z-10 overflow-hidden text-left">
-            {/* Cabecera del Carrito */}
-            <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
+          {/* Cart Panel */}
+          <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between z-10 text-left">
+            {/* Cart Header */}
+            <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/80">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-sky-100 text-[#007EAF] flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[22px]">shopping_cart</span>
+                <div className="w-9 h-9 rounded-xl bg-[#0B3B60] text-white flex items-center justify-center shadow-xs">
+                  <span className="material-symbols-outlined text-[20px] text-[#00A3E0]">
+                    shopping_cart
+                  </span>
                 </div>
                 <div>
-                  <h3 className="text-[16px] font-heading font-bold text-[#0B3B60]">
-                    Carrito de Compras
+                  <h3 className="text-[16px] font-extrabold text-[#0B3B60] font-heading">
+                    Tu Carrito de Útiles
                   </h3>
                   <span className="text-[11.5px] text-slate-500 font-sans">
-                    {totalItemsCount} {totalItemsCount === 1 ? 'artículo seleccionado' : 'artículos seleccionados'}
+                    {totalItemsCount} {totalItemsCount === 1 ? 'producto' : 'productos'} en lista
                   </span>
                 </div>
               </div>
 
               <button
                 onClick={() => setIsCartOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer transition-colors"
-                title="Cerrar carrito"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
-            {/* Lista de productos en el carrito */}
-            <div className="flex-1 overflow-y-auto p-5 divide-y divide-slate-100">
+            {/* Cart Items List */}
+            <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-3">
               {cart.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center gap-3 py-16 text-slate-400">
+                <div className="h-full flex flex-col items-center justify-center text-center gap-3 py-14 text-slate-400">
                   <span className="material-symbols-outlined text-[54px] text-slate-300">
                     remove_shopping_cart
                   </span>
-                  <h4 className="text-[16px] font-heading font-bold text-slate-600">
-                    Tu carrito está vacío
-                  </h4>
-                  <p className="text-[12.5px] text-slate-500 max-w-xs leading-relaxed">
-                    Explora los útiles escolares, insumos de oficina o productos de uso diario y agrégalos con un clic.
-                  </p>
+                  <div className="flex flex-col gap-1">
+                    <h4 className="text-[16px] font-bold text-[#0B3B60] font-heading">
+                      Tu carrito está vacío
+                    </h4>
+                    <p className="text-[12.5px] text-slate-500 max-w-xs leading-relaxed">
+                      Explora nuestras categorías de cuadernos, lapiceros y folders para añadir tus artículos de escritorio.
+                    </p>
+                  </div>
                   <button
                     onClick={() => setIsCartOpen(false)}
-                    className="mt-2 px-4 py-2 rounded-xl bg-[#0B3B60] text-white text-[12.5px] font-semibold cursor-pointer shadow-xs"
+                    className="mt-2 px-5 py-2.5 rounded-xl bg-sky-50 text-[#007EAF] hover:bg-sky-100 font-heading font-semibold text-[13px] cursor-pointer"
                   >
-                    Ver catálogo de productos
+                    Explorar útiles
                   </button>
                 </div>
               ) : (
-                cart.map((item) => {
-                  const sub = item.product.price * item.quantity;
-                  return (
-                    <div key={item.product.id} className="py-3.5 flex items-center gap-3.5">
-                      <img
-                        src={item.product.image}
-                        alt={item.product.name}
-                        className="w-16 h-16 rounded-xl object-cover bg-slate-100 shrink-0 border border-slate-200"
-                      />
+                cart.map((item) => (
+                  <div
+                    key={item.product.id}
+                    className="p-3 rounded-2xl border border-slate-200/90 bg-white flex items-center justify-between gap-3 shadow-2xs"
+                  >
+                    {/* Imagen miniatura */}
+                    <img
+                      src={item.product.image}
+                      alt={item.product.name}
+                      className="w-14 h-14 rounded-xl object-cover bg-slate-100 shrink-0 border border-slate-100"
+                    />
 
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-[13.5px] font-heading font-bold text-[#0B3B60] truncate">
-                          {item.product.name}
-                        </h4>
-                        <span className="text-[11px] text-slate-500 block">
-                          S/ {item.product.price.toFixed(2)} c/u ({item.product.unit})
-                        </span>
-
-                        {/* Controles de Cantidad */}
-                        <div className="flex items-center gap-2 mt-2">
-                          <div className="flex items-center border border-slate-200 rounded-lg bg-slate-50">
-                            <button
-                              onClick={() => handleUpdateQuantity(item.product.id, -1)}
-                              className="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-black hover:bg-slate-200 rounded-l-lg cursor-pointer"
-                              title="Disminuir"
-                            >
-                              <span className="material-symbols-outlined text-[15px]">remove</span>
-                            </button>
-                            <span className="w-8 text-center text-[12.5px] font-bold text-[#0B3B60]">
-                              {item.quantity}
-                            </span>
-                            <button
-                              onClick={() => handleUpdateQuantity(item.product.id, 1)}
-                              className="w-7 h-7 flex items-center justify-center text-slate-600 hover:text-black hover:bg-slate-200 rounded-r-lg cursor-pointer"
-                              title="Aumentar"
-                            >
-                              <span className="material-symbols-outlined text-[15px]">add</span>
-                            </button>
-                          </div>
-
-                          <button
-                            onClick={() => handleRemoveFromCart(item.product.id)}
-                            className="text-slate-400 hover:text-rose-600 p-1 cursor-pointer transition-colors"
-                            title="Eliminar artículo"
-                          >
-                            <span className="material-symbols-outlined text-[18px]">delete</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Subtotal del item */}
-                      <div className="text-right shrink-0">
-                        <span className="text-[13.5px] font-heading font-extrabold text-[#0B3B60] block">
-                          S/ {sub.toFixed(2)}
+                    {/* Información y Precio */}
+                    <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+                      <h4 className="text-[12.5px] font-bold text-[#0B3B60] truncate font-heading">
+                        {item.product.name}
+                      </h4>
+                      <span className="text-[10px] text-slate-400">
+                        {item.product.categoryLabel}
+                      </span>
+                      <div className="text-[12px] font-bold text-[#0B3B60]">
+                        S/ {item.product.price.toFixed(2)}{' '}
+                        <span className="text-[10px] font-normal text-slate-500">
+                          x {item.quantity} = S/ {(item.product.price * item.quantity).toFixed(2)}
                         </span>
                       </div>
                     </div>
-                  );
-                })
+
+                    {/* Control de Cantidad y Eliminar */}
+                    <div className="flex flex-col items-end gap-1.5 shrink-0">
+                      <button
+                        onClick={() => handleRemoveFromCart(item.product.id)}
+                        className="text-slate-400 hover:text-rose-600 transition-colors p-1"
+                        title="Eliminar producto"
+                      >
+                        <span className="material-symbols-outlined text-[17px]">delete</span>
+                      </button>
+
+                      <div className="inline-flex items-center border border-slate-200 rounded-lg bg-slate-50">
+                        <button
+                          onClick={() =>
+                            handleUpdateCartQuantity(item.product.id, item.quantity - 1)
+                          }
+                          className="w-6 h-6 flex items-center justify-center text-slate-600 hover:bg-white rounded-l-lg cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-[13px]">remove</span>
+                        </button>
+                        <span className="w-6 text-center text-[11.5px] font-bold text-[#0B3B60]">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() =>
+                            handleUpdateCartQuantity(item.product.id, item.quantity + 1)
+                          }
+                          className="w-6 h-6 flex items-center justify-center text-slate-600 hover:bg-white rounded-r-lg cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-[13px]">add</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
               )}
             </div>
 
-            {/* Pie del Carrito: Totales y Botones de Acción */}
+            {/* Cart Footer */}
             {cart.length > 0 && (
-              <div className="p-5 border-t border-slate-200 bg-slate-50/80 flex flex-col gap-3">
-                <div className="flex items-center justify-between text-[13px] text-slate-600">
-                  <span>Subtotal:</span>
-                  <span>S/ {totalAmount.toFixed(2)}</span>
-                </div>
-                <div className="flex items-center justify-between text-[16px] font-heading font-extrabold text-[#0B3B60] pb-2 border-b border-slate-200">
-                  <span>Total a pagar:</span>
-                  <span className="text-[20px] text-[#007EAF]">S/ {totalAmount.toFixed(2)}</span>
+              <div className="p-5 border-t border-slate-200 bg-slate-50/90 flex flex-col gap-3">
+                <div className="flex flex-col gap-1 text-[13px]">
+                  <div className="flex items-center justify-between text-slate-500 text-[12px]">
+                    <span>Subtotal de productos:</span>
+                    <span>S/ {totalAmount.toFixed(2)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[16px] font-extrabold text-[#0B3B60] font-heading pt-1 border-t border-slate-200/80">
+                    <span>Total referencial:</span>
+                    <span>S/ {totalAmount.toFixed(2)}</span>
+                  </div>
                 </div>
 
-                <div className="flex flex-col gap-2 pt-1">
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleClearCart}
+                    className="py-2.5 px-3 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 text-[12px] font-bold transition-colors cursor-pointer"
+                  >
+                    Vaciar
+                  </button>
+
                   <button
                     onClick={() => {
                       setIsCartOpen(false);
                       setIsReviewModalOpen(true);
                     }}
-                    className="w-full py-3.5 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] active:scale-95 text-white font-heading font-bold text-[14px] flex items-center justify-center gap-2 shadow-md cursor-pointer"
+                    className="flex-1 py-3 px-4 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] text-white font-heading font-bold text-[13.5px] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                   >
-                    <span className="material-symbols-outlined text-[19px] text-[#00A3E0]">
-                      assignment
+                    <span>Revisar y consultar pedido</span>
+                    <span className="material-symbols-outlined text-[17px] text-[#00A3E0]">
+                      arrow_forward
                     </span>
-                    <span>Revisar pedido</span>
                   </button>
-
-                  <div className="flex items-center justify-between text-[11.5px] pt-1">
-                    <button
-                      onClick={handleClearCart}
-                      className="text-rose-600 hover:underline cursor-pointer"
-                    >
-                      Vaciar carrito
-                    </button>
-                    <span className="text-slate-400">Precios editables en Soles</span>
-                  </div>
                 </div>
               </div>
             )}
@@ -732,266 +788,219 @@ export const MarketScreen: React.FC<MarketScreenProps> = ({ onNavigate }) => {
       )}
 
       {/* ============================================================== */}
-      {/* 5. MODAL: REVISIÓN DEL PEDIDO ANTES DE COMPRAR                  */}
+      {/* 6. MODAL DE REVISIÓN Y CONSULTA DEL PEDIDO                     */}
       {/* ============================================================== */}
       {isReviewModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs fade-in">
-          <div
-            onClick={() => setIsReviewModalOpen(false)}
-            className="fixed inset-0"
-          />
+          <div onClick={() => setIsReviewModalOpen(false)} className="fixed inset-0" />
 
-          <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-200 z-10 max-h-[92vh] flex flex-col overflow-hidden text-left">
-            {/* Cabecera del modal */}
-            <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+          <div className="relative bg-white rounded-3xl w-full max-w-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh] z-10 text-left">
+            {/* Header */}
+            <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/90">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[22px]">checklist</span>
+                <div className="w-9 h-9 rounded-xl bg-[#0B3B60] text-white flex items-center justify-center shadow-xs">
+                  <span className="material-symbols-outlined text-[20px] text-[#00A3E0]">
+                    receipt_long
+                  </span>
                 </div>
                 <div>
-                  <h3 className="text-[17px] font-heading font-bold text-[#0B3B60]">
-                    Revisión de tu Pedido
+                  <h3 className="text-[17px] font-extrabold text-[#0B3B60] font-heading">
+                    Resumen de Consulta del Pedido
                   </h3>
                   <span className="text-[11.5px] text-slate-500 font-sans">
-                    Verifica el detalle antes de coordinar o enviar tu solicitud
+                    Demostración de catálogo interactivo sin pasarela de pagos
                   </span>
                 </div>
               </div>
 
               <button
                 onClick={() => setIsReviewModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center cursor-pointer transition-colors"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
-            {/* Contenido scrolleable */}
-            <div className="p-5 sm:p-6 overflow-y-auto flex flex-col gap-5">
-              {/* Desglose de ítems */}
-              <div className="rounded-2xl border border-slate-200 overflow-hidden divide-y divide-slate-100">
-                <div className="p-3 bg-slate-50 text-[11.5px] font-bold text-slate-500 grid grid-cols-12">
-                  <span className="col-span-6">Producto</span>
-                  <span className="col-span-3 text-center">Cant. / Unit.</span>
-                  <span className="col-span-3 text-right">Subtotal</span>
+            {/* Content */}
+            <div className="p-6 overflow-y-auto flex flex-col gap-5">
+              <div className="p-4 rounded-2xl bg-sky-50 border border-sky-100 text-[12.5px] text-[#0B3B60] flex items-start gap-2.5">
+                <span className="material-symbols-outlined text-[19px] text-[#007EAF] shrink-0 mt-0.5">
+                  info
+                </span>
+                <p className="leading-relaxed">
+                  <strong>Aviso de demostración:</strong> Este catálogo funciona con fines demostrativos y organizativos. No simula cobros reales ni requiere tarjetas bancarias. Puedes copiar la lista de útiles seleccionados para tus cotizaciones o consultas comerciales.
+                </p>
+              </div>
+
+              {/* Lista resumida */}
+              <div className="border border-slate-200 rounded-2xl overflow-hidden divide-y divide-slate-100 text-[13px]">
+                <div className="bg-slate-50 px-4 py-2.5 font-bold text-slate-600 text-[11.5px] uppercase tracking-wider flex items-center justify-between">
+                  <span>Artículo</span>
+                  <span>Subtotal</span>
                 </div>
                 {cart.map((item) => (
-                  <div key={item.product.id} className="p-3 text-[12.5px] grid grid-cols-12 items-center">
-                    <div className="col-span-6">
-                      <strong className="text-[#0B3B60] block leading-tight font-heading">
-                        {item.product.name}
-                      </strong>
-                      <span className="text-[11px] text-slate-400">
-                        {item.product.categoryLabel}
+                  <div key={item.product.id} className="p-3.5 flex items-center justify-between gap-3">
+                    <div className="flex flex-col">
+                      <span className="font-bold text-[#0B3B60]">{item.product.name}</span>
+                      <span className="text-[11.5px] text-slate-500">
+                        {item.quantity} {item.product.unit} a S/ {item.product.price.toFixed(2)} c/u
                       </span>
                     </div>
-                    <div className="col-span-3 text-center text-slate-600">
-                      <span>{item.quantity} x S/ {item.product.price.toFixed(2)}</span>
-                    </div>
-                    <div className="col-span-3 text-right font-bold text-[#0B3B60]">
+                    <span className="font-extrabold text-[#0B3B60] shrink-0">
                       S/ {(item.product.price * item.quantity).toFixed(2)}
-                    </div>
+                    </span>
                   </div>
                 ))}
-
-                <div className="p-3.5 bg-sky-50/70 flex items-center justify-between text-[#0B3B60]">
-                  <span className="text-[13px] font-bold">Total del Pedido:</span>
-                  <span className="text-[18px] font-heading font-extrabold text-[#007EAF]">
-                    S/ {totalAmount.toFixed(2)}
-                  </span>
-                </div>
               </div>
 
-              {/* Aviso pedagógico y de transparencia */}
-              <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-[12px] text-amber-900 leading-relaxed flex items-start gap-2.5">
-                <span className="material-symbols-outlined text-[18px] text-amber-600 shrink-0 mt-0.5">
-                  shield
-                </span>
-                <div>
-                  <strong className="block mb-0.5 text-amber-950 font-bold">
-                    Aviso de plataforma demostrativa:
-                  </strong>
-                  AL DÍA Market no solicita números de tarjetas, cuentas bancarias ni procesa cobros monetarios reales. Todos los pedidos se coordinan de forma externa o personalizada.
-                </div>
+              {/* Total final */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between text-[16px] font-extrabold text-[#0B3B60]">
+                <span>Total Estimado (Referencial):</span>
+                <span>S/ {totalAmount.toFixed(2)}</span>
               </div>
 
-              {/* Configuración de WhatsApp comercial para pedidos */}
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-3">
+              {/* Configuración opcional de WhatsApp comercial */}
+              <div className="p-4 rounded-2xl border border-slate-200 flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[20px] text-emerald-600">
-                      chat
-                    </span>
-                    <span className="text-[13px] font-heading font-bold text-[#0B3B60]">
-                      Recepción por WhatsApp Comercial
-                    </span>
-                  </div>
+                  <span className="text-[12px] font-bold text-slate-700 flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[17px] text-emerald-600">chat</span>
+                    <span>Número comercial para WhatsApp (Opcional):</span>
+                  </span>
                   <button
-                    onClick={() => {
-                      setIsEditingWhatsapp(!isEditingWhatsapp);
-                      setTempWhatsappInput(whatsappNumber);
-                    }}
-                    className="text-[11.5px] font-semibold text-[#007EAF] hover:underline cursor-pointer"
+                    onClick={() => setIsEditingWhatsapp(!isEditingWhatsapp)}
+                    className="text-[11.5px] font-semibold text-[#007EAF] hover:underline"
                   >
-                    {isEditingWhatsapp ? 'Cancelar' : whatsappNumber ? 'Cambiar número' : 'Configurar número'}
+                    {isEditingWhatsapp ? 'Cancelar' : whatsappNumber ? 'Cambiar número' : 'Configurar'}
                   </button>
                 </div>
 
                 {isEditingWhatsapp ? (
-                  <div className="flex flex-col gap-2 pt-1">
-                    <label className="text-[11.5px] text-slate-500 font-sans">
-                      Ingresa tu número comercial (incluye el código de país, ej. 51987654321):
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        type="tel"
-                        value={tempWhatsappInput}
-                        onChange={(e) => setTempWhatsappInput(e.target.value)}
-                        placeholder="Ejemplo: 51987654321"
-                        className="flex-1 px-3 py-2 rounded-xl bg-white border border-slate-300 text-[13px] text-slate-800 focus:outline-none focus:border-[#00A3E0]"
-                      />
-                      <button
-                        onClick={handleSaveWhatsappNumber}
-                        className="px-4 py-2 rounded-xl bg-[#0B3B60] text-white text-[12.5px] font-semibold cursor-pointer shadow-xs"
-                      >
-                        Guardar
-                      </button>
-                    </div>
+                  <div className="flex gap-2 mt-1">
+                    <input
+                      type="text"
+                      value={tempWhatsappInput}
+                      onChange={(e) => setTempWhatsappInput(e.target.value)}
+                      placeholder="Ej. +51987654321"
+                      className="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-[13px] focus:outline-none focus:border-[#00A3E0]"
+                    />
+                    <button
+                      onClick={handleSaveWhatsappNumber}
+                      className="px-4 py-2 rounded-xl bg-[#0B3B60] text-white text-[12.5px] font-bold cursor-pointer"
+                    >
+                      Guardar
+                    </button>
                   </div>
                 ) : (
-                  <p className="text-[12px] text-slate-600 leading-normal">
-                    {whatsappNumber ? (
-                      <>
-                        Número comercial asignado: <strong className="text-emerald-700">+{whatsappNumber}</strong>. El pedido se enviará formateado automáticamente a ese chat.
-                      </>
-                    ) : (
-                      <>
-                        <span className="text-slate-500 italic">Aún no has configurado tu número comercial.</span> Puedes configurarlo para enviar el resumen del pedido directamente a tu chat de ventas o copiar el texto.
-                      </>
-                    )}
-                  </p>
+                  <span className="text-[12px] text-slate-500">
+                    {whatsappNumber
+                      ? `Número configurado: ${whatsappNumber}`
+                      : 'No configurado aún. Puedes copiar el resumen directamente al portapapeles.'}
+                  </span>
                 )}
               </div>
             </div>
 
-            {/* Acciones finales del modal */}
-            <div className="p-5 sm:p-6 border-t border-slate-100 bg-slate-50/80 flex flex-col sm:flex-row items-center gap-3">
+            {/* Footer Buttons */}
+            <div className="p-5 border-t border-slate-200 bg-slate-50/90 flex flex-col sm:flex-row items-center justify-between gap-3">
               <button
                 onClick={handleCopySummary}
-                className="w-full sm:w-1/2 py-3 px-4 rounded-xl border border-slate-300 hover:bg-white text-slate-700 font-heading font-semibold text-[13px] flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-[#0B3B60] font-heading font-semibold text-[13px] transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
               >
-                <span className="material-symbols-outlined text-[18px]">
-                  {copiedSummary ? 'done' : 'content_copy'}
+                <span className="material-symbols-outlined text-[17px]">
+                  {copiedSummary ? 'check' : 'content_copy'}
                 </span>
-                <span>{copiedSummary ? '¡Copiado!' : 'Copiar resumen'}</span>
+                <span>{copiedSummary ? '¡Copiado!' : 'Copiar lista de útiles'}</span>
               </button>
 
-              <button
-                onClick={handleSendWhatsapp}
-                className="w-full sm:w-1/2 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-bold text-[13.5px] flex items-center justify-center gap-2 shadow-xs cursor-pointer transition-all active:scale-95"
-              >
-                <span className="material-symbols-outlined text-[18px]">send</span>
-                <span>{whatsappNumber ? 'Enviar a WhatsApp' : 'Configurar WhatsApp'}</span>
-              </button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                {whatsappNumber && (
+                  <button
+                    onClick={handleSendWhatsapp}
+                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-bold text-[13px] transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    <span className="material-symbols-outlined text-[17px]">chat</span>
+                    <span>Enviar a WhatsApp</span>
+                  </button>
+                )}
+
+                <button
+                  onClick={() => setIsReviewModalOpen(false)}
+                  className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] text-white font-heading font-bold text-[13px] cursor-pointer"
+                >
+                  Cerrar
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
 
       {/* ============================================================== */}
-      {/* 6. MODAL: EDITAR PRECIO DE DEMOSTRACIÓN                        */}
+      {/* 7. MODAL DE EDICIÓN DE PRECIO REFERENCIAL (FÁCIL DE EDITAR)   */}
       {/* ============================================================== */}
       {editingProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs fade-in">
-          <div
-            onClick={() => setEditingProduct(null)}
-            className="fixed inset-0"
-          />
+          <div onClick={() => setEditingProduct(null)} className="fixed inset-0" />
 
-          <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-slate-200 z-10 p-6 flex flex-col gap-4 text-left">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div className="relative bg-white rounded-3xl w-full max-w-md shadow-2xl border border-slate-200 p-6 z-10 text-left flex flex-col gap-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#00A3E0] text-[20px]">
-                  edit_note
-                </span>
-                <h4 className="text-[15px] font-heading font-bold text-[#0B3B60]">
-                  Editar Precio de Demo
-                </h4>
+                <span className="material-symbols-outlined text-[20px] text-[#00A3E0]">edit</span>
+                <h3 className="text-[16px] font-bold text-[#0B3B60] font-heading">
+                  Editar Precio Referencial
+                </h3>
               </div>
               <button
                 onClick={() => setEditingProduct(null)}
-                className="text-slate-400 hover:text-slate-600 cursor-pointer"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600"
               >
                 <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
             </div>
 
-            <div>
-              <span className="text-[11.5px] text-slate-500 font-medium block">
-                Producto seleccionado:
-              </span>
-              <strong className="text-[13.5px] text-[#0B3B60] block font-heading leading-tight mt-0.5">
-                {editingProduct.name}
-              </strong>
-              <span className="text-[11px] text-slate-400 block mt-0.5">
-                Unidad: {editingProduct.unit}
-              </span>
+            <div className="flex flex-col gap-1.5">
+              <span className="text-[12px] text-slate-500">Producto:</span>
+              <strong className="text-[14px] text-[#0B3B60]">{editingProduct.name}</strong>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-bold text-slate-700">
-                Nuevo precio en Soles (S/):
+              <label htmlFor="price-edit-input" className="text-[12px] font-bold text-slate-700">
+                Nuevo precio en soles (S/):
               </label>
               <div className="relative">
-                <span className="absolute left-3.5 top-2.5 font-bold text-[#0B3B60] text-[15px]">
+                <span className="absolute left-3.5 top-2.5 font-bold text-slate-400 text-[14px]">
                   S/
                 </span>
                 <input
+                  id="price-edit-input"
                   type="number"
-                  step="0.5"
+                  step="0.10"
                   min="0"
                   value={tempPriceInput}
                   onChange={(e) => setTempPriceInput(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-300 text-slate-800 text-[16px] font-heading font-bold focus:outline-none focus:border-[#00A3E0] focus:bg-white"
-                  autoFocus
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-[15px] font-bold text-[#0B3B60] focus:outline-none focus:border-[#00A3E0]"
                 />
               </div>
               <span className="text-[11px] text-slate-400">
-                El precio se guardará en tu navegador para pruebas de demostración.
+                El precio se guardará en tu navegador para que puedas editarlo cuando quieras.
               </span>
             </div>
 
-            <div className="flex items-center gap-2 pt-2">
+            <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 onClick={() => setEditingProduct(null)}
-                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[13px] cursor-pointer"
+                className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-[13px] font-semibold cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSavePrice}
-                className="flex-1 py-2.5 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] text-white font-semibold text-[13px] cursor-pointer shadow-xs"
+                className="px-5 py-2 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] text-white text-[13px] font-bold cursor-pointer"
               >
                 Guardar precio
               </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* ============================================================== */}
-      {/* 7. TOAST NOTIFICATION FLOTANTE                                  */}
-      {/* ============================================================== */}
-      {toastMessage && (
-        <div className="fixed bottom-20 md:bottom-8 right-6 z-50 bg-[#0B3B60] text-white px-4 py-3 rounded-2xl shadow-xl border border-sky-400/30 flex items-center gap-3 fade-in">
-          <span className="w-2 h-2 rounded-full bg-[#00A3E0] animate-ping" />
-          <span className="text-[13px] font-sans font-medium">{toastMessage}</span>
-          <button
-            onClick={() => setToastMessage(null)}
-            className="text-sky-200 hover:text-white cursor-pointer ml-1"
-          >
-            <span className="material-symbols-outlined text-[16px]">close</span>
-          </button>
         </div>
       )}
     </div>

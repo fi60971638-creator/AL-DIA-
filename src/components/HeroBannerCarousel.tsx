@@ -3,6 +3,7 @@ import { TabType } from '../types';
 import imgEstudiante from '../assets/images/aldia_banner_estudiante_1792268222609.jpg';
 import imgPagos from '../assets/images/aldia_banner_pagos_1792187859949.jpg';
 import imgOrientacion from '../assets/images/aldia_banner_orientacion_1792187860027.jpg';
+import imgSeguridad from '../assets/images/seguridad_financiera_peru_1792456729584.jpg';
 
 interface HeroBannerCarouselProps {
   onNavigate: (tab: TabType) => void;
@@ -68,6 +69,19 @@ export const HeroBannerCarousel: React.FC<HeroBannerCarouselProps> = ({ onNaviga
       imageSrc: imgOrientacion,
       imageAlt: 'Asesoría y acompañamiento financiero transparente',
       bgGradient: 'from-[#CBE8FA] via-[#E2F3FD] to-[#BBE1FA]',
+      theme: 'light-bank',
+    },
+    {
+      id: 3,
+      brandTag: 'AL DÍA',
+      tagPill: 'Seguridad & Prevención',
+      title: 'Protege tu dinero de fraudes y estafas',
+      description: 'Identifica ofertas falsas, protege tus cuentas y conoce dónde pedir ayuda ante la SBS, Indecopi y PNP.',
+      buttonText: 'Centro de Seguridad',
+      targetTab: 'seguridad',
+      imageSrc: imgSeguridad,
+      imageAlt: 'Personas en el Perú revisando la seguridad de sus cuentas digitales',
+      bgGradient: 'from-[#C2E3F8] via-[#DCF0FD] to-[#B3DCF6]',
       theme: 'light-bank',
     },
   ];

@@ -1,257 +1,429 @@
 import React, { useState } from 'react';
 
-interface CreditCategory {
-  id: string;
+type CreditType = 'consumo' | 'hipotecario';
+type CategoryFilter = 'todas' | 'normal' | 'cpp' | 'deficiente' | 'dudoso' | 'perdida';
+
+interface CategoryRowData {
+  id: 'normal' | 'cpp' | 'deficiente' | 'dudoso' | 'perdida';
   name: string;
-  riskLevel: 'Bajo' | 'Potencial' | 'Considerable' | 'Alto' | 'Muy alto';
-  shortDesc: string;
-  colorScheme: {
-    bgLight: string;
-    border: string;
-    badgeBg: string;
-    badgeText: string;
-    barColor: string;
+  code: string;
+  badgeColor: string;
+  dotColor: string;
+  iconName: string;
+  textColor: string;
+  diasAtraso: {
+    consumo: string;
+    hipotecario: string;
   };
+  queSignifica: string;
+  comoActuar: string;
   details: {
-    diasAtrasoComercial: string;
-    diasAtrasoConsumo: string;
-    impactoHistorial: string;
-    recomendacion: string;
+    descripcion: string;
+    ejemploCotidiano: string;
+    consecuencias: string;
+    quePuedoHacer: string[];
+    consejoAlDia: string;
   };
 }
 
-const CREDIT_CATEGORIES: CreditCategory[] = [
+const CATEGORIAS_SBS_DATA: CategoryRowData[] = [
   {
     id: 'normal',
-    name: 'NORMAL',
-    riskLevel: 'Bajo',
-    shortDesc: 'Cumple normalmente con sus obligaciones de pago según lo pactado.',
-    colorScheme: {
-      bgLight: 'bg-emerald-50/70',
-      border: 'border-emerald-200',
-      badgeBg: 'bg-emerald-100',
-      badgeText: 'text-emerald-800',
-      barColor: 'bg-emerald-500',
+    name: 'Normal',
+    code: '0',
+    badgeColor: 'bg-emerald-50 text-emerald-800 border-emerald-300',
+    dotColor: 'bg-emerald-500',
+    iconName: 'check_circle',
+    textColor: 'text-emerald-700',
+    diasAtraso: {
+      consumo: 'Hasta 8 días calendario',
+      hipotecario: 'Hasta 30 días calendario',
     },
+    queSignifica: 'Cumple puntualmente con sus pagos o presenta atrasos mínimos dentro del margen de tolerancia.',
+    comoActuar: 'Mantén la puntualidad en tus fechas de pago y programa recordatorios o débitos automáticos.',
     details: {
-      diasAtrasoComercial: 'Al día o hasta 8 días de retraso calendario.',
-      diasAtrasoConsumo: 'Pagos puntuales en fecha o con atraso menor a 8 días.',
-      impactoHistorial: 'Excelente récord crediticio. Acceso preferencial a préstamos y tasas de interés competitivas.',
-      recomendacion: 'Mantén la puntualidad en tus fechas de pago para conservar tu historial 100% normal en la SBS.',
+      descripcion:
+        'Es la categoría de menor riesgo y la máxima calificación crediticia en el sistema financiero peruano. Refleja que el deudor cancela sus cuotas a tiempo o registra pequeños atrasos dentro del plazo de tolerancia regulado por la SBS.',
+      ejemploCotidiano:
+        'Mariana tiene una tarjeta y un crédito personal con vencimiento el día 20; cancela la cuota total puntual el día 20 o a más tardar el 22 tras cobrar su quincena.',
+      consecuencias:
+        'Historial 100% positivo en la Central de Riesgos SBS. Acceso preferencial a préstamos, aumentos de línea de crédito y las tasas de costo efectivo anual (TCEA) más bajas del mercado.',
+      quePuedoHacer: [
+        'Activa débitos automáticos en tu cuenta sueldo o de ahorros para no olvidar ninguna fecha.',
+        'Sincroniza tus fechas de pago para que caigan 2 o 3 días después de tus fechas seguras de ingreso.',
+        'Revisa mensualmente tu estado de cuenta para verificar que todas tus cuotas figuren al día.',
+      ],
+      consejoAlDia:
+        'Mantener tu calificación en Normal te permite negociar mejores tasas y condiciones con cualquier banco o caja del Perú.',
     },
   },
   {
     id: 'cpp',
-    name: 'CPP',
-    riskLevel: 'Potencial',
-    shortDesc: 'Presenta señales iniciales de posibles dificultades de pago (Con Problemas Potenciales).',
-    colorScheme: {
-      bgLight: 'bg-amber-50/70',
-      border: 'border-amber-200',
-      badgeBg: 'bg-amber-100',
-      badgeText: 'text-amber-800',
-      barColor: 'bg-amber-500',
+    name: 'Problemas Potenciales (CPP)',
+    code: '1',
+    badgeColor: 'bg-amber-50 text-amber-900 border-amber-300',
+    dotColor: 'bg-amber-500',
+    iconName: 'warning',
+    textColor: 'text-amber-800',
+    diasAtraso: {
+      consumo: 'De 9 a 30 días calendario',
+      hipotecario: 'De 31 a 60 días calendario',
     },
+    queSignifica: 'Presenta retrasos iniciales reiterados que podrían dificultar pagos futuros si no se corrigen.',
+    comoActuar: 'Revisa tu presupuesto de inmediato, recorta gastos no esenciales y regulariza la cuota pendiente.',
     details: {
-      diasAtrasoComercial: 'Atrasos de 9 a 30 días calendario en el sistema financiero.',
-      diasAtrasoConsumo: 'Atrasos leves entre 9 y 30 días respecto al vencimiento pactado.',
-      impactoHistorial: 'Alerta temprana para el sistema. Puede frenar incrementos de línea de crédito o nuevos préstamos.',
-      recomendacion: 'Revisa tu presupuesto de inmediato y regulariza la cuota pendiente antes de cumplir los 30 días de atraso.',
+      descripcion:
+        'Con Problemas Potenciales (CPP) es una señal de advertencia temprana. La persona muestra dificultades leves para cumplir sus compromisos dentro de las fechas pactadas, aunque todavía cuenta con capacidad de recuperación.',
+      ejemploCotidiano:
+        'Carlos tuvo un gasto médico imprevisto y su cuota mensual de S/ 420 venció hace 16 días. Aún no la ha pagado, pero planea cancelarla con su gratificación o siguiente pago quincenal.',
+      consecuencias:
+        'Alerta preventiva en el sistema financiero. Las entidades pueden pausar incrementos automáticos de línea de crédito y revisar con mayor detalle nuevas solicitudes.',
+      quePuedoHacer: [
+        'Prioriza el pago de la cuota vencida antes de realizar cualquier compra prescindible del mes.',
+        'Comunícate con tu entidad para verificar si puedes realizar un abono parcial que reduzca los intereses moratorios.',
+        'Evita endeudarte con nuevos créditos o tarjetas para pagar la cuota atrasada.',
+      ],
+      consejoAlDia:
+        'La categoría CPP se subsana con rapidez: al regularizar tus pagos atrasados y mantenerte al día, tu récord en la SBS volverá a reflejar calificación Normal.',
     },
   },
   {
     id: 'deficiente',
-    name: 'DEFICIENTE',
-    riskLevel: 'Considerable',
-    shortDesc: 'Evidencia dificultades importantes para cumplir sus obligaciones.',
-    colorScheme: {
-      bgLight: 'bg-orange-50/70',
-      border: 'border-orange-200',
-      badgeBg: 'bg-orange-100',
-      badgeText: 'text-orange-800',
-      barColor: 'bg-orange-500',
+    name: 'Deficiente',
+    code: '2',
+    badgeColor: 'bg-orange-50 text-orange-900 border-orange-300',
+    dotColor: 'bg-orange-500',
+    iconName: 'priority_high',
+    textColor: 'text-orange-800',
+    diasAtraso: {
+      consumo: 'De 31 a 60 días calendario',
+      hipotecario: 'De 61 a 120 días calendario',
     },
+    queSignifica: 'Atraso considerable; la capacidad de pago actual es insuficiente para cumplir el cronograma inicial.',
+    comoActuar: 'Comunícate formalmente con la entidad para acordar una reprogramación de plazo antes de que pase a rangos críticos.',
     details: {
-      diasAtrasoComercial: 'Atrasos de 31 a 60 días calendario.',
-      diasAtrasoConsumo: 'Atrasos notables entre 31 y 60 días en créditos revolventes o personales.',
-      impactoHistorial: 'Afectación notoria en la Central de Riesgos SBS. Comienzan gestiones de cobranza extrajudicial activa.',
-      recomendacion: 'Comunícate formalmente con la entidad para evaluar una reprogramación antes de que pase a rangos críticos.',
+      descripcion:
+        'Indica un incumplimiento notorio que supera el mes de atraso en créditos de consumo o dos meses en préstamos para vivienda. Las entidades financieras están obligadas por ley a constituir provisiones contables por mayor riesgo.',
+      ejemploCotidiano:
+        'Patricia tiene un negocio y sus ventas cayeron; adeuda dos cuotas continuas (48 días de retraso) de su crédito personal y recibe recordatorios continuos de cobranza.',
+      consecuencias:
+        'Afectación notoria en la Central de Riesgos SBS. Bloqueo preventivo de tarjetas de crédito y traspaso de la cuenta a gestión de cobranza prejudicial activa.',
+      quePuedoHacer: [
+        'Acércate a la agencia o comunícate con el área de soluciones de pago para solicitar una reprogramación.',
+        'Pide una ampliación razonable del plazo del crédito para que la nueva cuota mensual sea menor y pagable.',
+        'Exige la simulación formal del nuevo cronograma por escrito antes de firmar cualquier convenio.',
+      ],
+      consejoAlDia:
+        'Mostrar iniciativa antes de los 60 días demuestra voluntad de pago y facilita acceder a reprogramaciones sin penalidades judiciales.',
     },
   },
   {
     id: 'dudoso',
-    name: 'DUDOSO',
-    riskLevel: 'Alto',
-    shortDesc: 'Presenta un riesgo sumamente elevado de incumplimiento de la deuda.',
-    colorScheme: {
-      bgLight: 'bg-rose-50/70',
-      border: 'border-rose-200',
-      badgeBg: 'bg-rose-100',
-      badgeText: 'text-rose-800',
-      barColor: 'bg-rose-500',
+    name: 'Dudoso',
+    code: '3',
+    badgeColor: 'bg-rose-50 text-rose-900 border-rose-300',
+    dotColor: 'bg-rose-500',
+    iconName: 'dangerous',
+    textColor: 'text-rose-700',
+    diasAtraso: {
+      consumo: 'De 61 a 120 días calendario',
+      hipotecario: 'De 121 a 365 días calendario',
     },
+    queSignifica: 'Riesgo sumamente elevado; la recuperación de la deuda es altamente improbable bajo las condiciones actuales.',
+    comoActuar: 'Asesórate sobre tus derechos frente a cobranzas y negocia un refinanciamiento integral o convenio viable.',
     details: {
-      diasAtrasoComercial: 'Atrasos de 61 a 120 días calendario.',
-      diasAtrasoConsumo: 'Atrasos severos de 61 a 120 días continuos.',
-      impactoHistorial: 'Restricción casi total de acceso al crédito formal. Inicio de acciones de recuperación pre-judicial.',
-      recomendacion: 'Infórmate sobre tus derechos ante gestores de cobranza y solicita una propuesta formal de refinanciamiento factible.',
+      descripcion:
+        'La entidad financiera considera improbable recuperar la totalidad del crédito bajo las condiciones contractuales pactadas. Los flujos de ingresos o garantías del titular no alcanzan para amortizar la deuda acumulada.',
+      ejemploCotidiano:
+        'Jorge lleva casi tres meses sin empleo y acumula 85 días de retraso en un préstamo de consumo de S/ 6,000; su caso ha sido transferido a un gestor externo de cobranza.',
+      consecuencias:
+        'Cierre de acceso al crédito formal en el sistema bancario. Preaviso de acciones legales y reporte con calificación crítica en todas las centrales de riesgo públicas y privadas.',
+      quePuedoHacer: [
+        'Conoce tus derechos: la ley prohíbe que las agencias de cobranza amenacen, llamen fuera de horario o contacten a terceros.',
+        'Plantea un plan de refinanciamiento con cuotas escalonadas ajustadas a tus ingresos reales demostrables.',
+        'Nunca aceptes préstamos informales tipo "gota a gota" para intentar cubrir una deuda bancaria.',
+      ],
+      consejoAlDia:
+        'Incluso en categoría Dudoso, tienes derecho a ser tratado con respeto y dignidad. Todo acuerdo debe ser documentado formalmente.',
     },
   },
   {
     id: 'perdida',
-    name: 'PÉRDIDA',
-    riskLevel: 'Muy alto',
-    shortDesc: 'Corresponde a una situación de incumplimiento prolongado o deuda castigada.',
-    colorScheme: {
-      bgLight: 'bg-red-50/70',
-      border: 'border-red-200',
-      badgeBg: 'bg-red-100',
-      badgeText: 'text-red-900',
-      barColor: 'bg-red-600',
+    name: 'Pérdida',
+    code: '4',
+    badgeColor: 'bg-red-100/90 text-red-950 border-red-400',
+    dotColor: 'bg-red-800',
+    iconName: 'block',
+    textColor: 'text-red-900',
+    diasAtraso: {
+      consumo: 'Más de 120 días calendario',
+      hipotecario: 'Más de 365 días calendario',
     },
+    queSignifica: 'Incumplimiento prolongado o deuda castigada; la entidad provisiona el 100% de la obligación.',
+    comoActuar: 'Evalúa alternativas de cancelación total con condonación de intereses y exige tu Constancia de No Adeudo.',
     details: {
-      diasAtrasoComercial: 'Atrasos superiores a 120 días calendario.',
-      diasAtrasoConsumo: 'Atrasos mayores a 120 días o deudas transferidas a cobranza judicial.',
-      impactoHistorial: 'Calificación máxima negativa en la Central de Riesgos SBS. La entidad puede provisionar el 100% de la deuda.',
-      recomendacion: 'Conserva la calma. Tienes derecho a un trato digno. Evalúa convenios de cancelación total con condonación de intereses.',
+      descripcion:
+        'Es la calificación más severa según la normativa de la SBS. Corresponde a deudas con atrasos superiores a 4 meses en consumo o más de 1 año en hipotecas. Contablemente se considera irrecuperable, aunque la obligación legal subsiste.',
+      ejemploCotidiano:
+        'Rosa mantiene una deuda con más de 150 días de retraso; el banco ha provisionado el 100% del saldo y gestiona la recuperación a través de cobranza legal.',
+      consecuencias:
+        'Inhabilitación en el sistema crediticio supervisado. Posible inicio de demandas judiciales de pago o medidas cautelares conforme al contrato suscrito.',
+      quePuedoHacer: [
+        'Solicita a la entidad financiera una campaña de amortización con condonación de intereses moratorios y gastos de cobranza.',
+        'Al cancelar la totalidad acordada, exige de forma obligatoria y gratuita tu Constancia de No Adeudo oficial.',
+        'Verifica que transcurridos los plazos de ley, la entidad reporte la deuda como cancelada ante la SBS.',
+      ],
+      consejoAlDia:
+        'Una deuda en categoría Pérdida no se borra automáticamente con tramitadores. La única vía legal y efectiva es negociar una salida factible y conservar tu constancia de pago.',
     },
   },
 ];
 
 export const CategoriasCrediticiasScreen: React.FC = () => {
-  const [expandedId, setExpandedId] = useState<string | null>('normal');
+  const [selectedCreditType, setSelectedCreditType] = useState<CreditType>('consumo');
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('todas');
+  const [expandedRowId, setExpandedRowId] = useState<string | null>('normal');
 
   const toggleRow = (id: string) => {
-    setExpandedId((prev) => (prev === id ? null : id));
+    setExpandedRowId((prev) => (prev === id ? null : id));
   };
 
+  const filteredCategories = CATEGORIAS_SBS_DATA.filter((cat) => {
+    if (categoryFilter === 'todas') return true;
+    return cat.id === categoryFilter;
+  });
+
   return (
-    <div className="flex flex-col gap-8 max-w-5xl mx-auto pb-14 fade-in">
-      {/* 1. Encabezado principal */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-xs flex flex-col gap-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-teal-800 text-[12px] font-bold border border-teal-200 w-fit">
-          <span className="material-symbols-outlined text-[16px] text-teal-600">verified</span>
-          <span>Normativa SBS · Clasificación de Deudores en el Perú</span>
+    <div className="flex flex-col gap-8 max-w-6xl mx-auto pb-14 fade-in">
+      {/* ============================================================== */}
+      {/* 1. ENCABEZADO PRINCIPAL DE LA SECCIÓN                          */}
+      {/* ============================================================== */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-xs flex flex-col gap-3 text-left">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 text-[#0B3B60] text-[12px] font-bold border border-sky-200 w-fit">
+          <span className="material-symbols-outlined text-[16px] text-[#00A3E0]">account_balance</span>
+          <span>Central de Riesgos SBS · Escala Oficial de Clasificación</span>
         </div>
 
-        <h1 className="text-[26px] sm:text-[32px] font-black text-[#0F172A] tracking-tight leading-tight">
-          Conoce las categorías de riesgo crediticio
+        <h1 className="text-[26px] sm:text-[32px] font-extrabold text-[#0B3B60] tracking-tight leading-snug font-heading">
+          Categorías de riesgo crediticio según la SBS
         </h1>
 
-        <p className="text-[14.5px] sm:text-[15.5px] text-slate-600 max-w-3xl leading-relaxed">
-          Aprende qué significan las 5 categorías oficiales utilizadas por la Superintendencia de Banca, Seguros y AFP (SBS) para clasificar el riesgo crediticio en el sistema financiero peruano.
+        <p className="text-[14px] sm:text-[15.5px] text-slate-600 max-w-3xl leading-relaxed font-sans">
+          Conoce qué significa cada categoría, cuántos días de atraso contempla y qué puedes hacer para cuidar tu historial crediticio.
         </p>
       </div>
 
-      {/* 2. Barra Visual Progresiva de las 5 Categorías */}
-      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-xs flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <span className="text-[12px] font-extrabold uppercase tracking-wider text-slate-500">
-            Escala Progresiva de Riesgo SBS
-          </span>
-          <span className="text-[11.5px] font-bold text-teal-700">
-            De Menor a Mayor Riesgo →
-          </span>
+      {/* ============================================================== */}
+      {/* 2. SELECTORES Y FILTROS INTERACTIVOS                           */}
+      {/* ============================================================== */}
+      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-xs flex flex-col gap-5 text-left">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          {/* Selector de Tipo de Crédito */}
+          <div className="flex flex-col gap-2">
+            <span className="text-[11.5px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[16px] text-[#00A3E0]">tune</span>
+              <span>1. Selecciona el tipo de crédito:</span>
+            </span>
+
+            <div className="inline-flex items-center p-1.5 rounded-2xl bg-slate-100/80 border border-slate-200/90 w-fit">
+              <button
+                type="button"
+                onClick={() => setSelectedCreditType('consumo')}
+                className={`px-4 py-2.5 rounded-xl text-[13px] font-heading font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                  selectedCreditType === 'consumo'
+                    ? 'bg-[#0B3B60] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-[#0B3B60] hover:bg-white/60'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  {selectedCreditType === 'consumo' ? 'check_circle' : 'credit_card'}
+                </span>
+                <span>Crédito de consumo</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSelectedCreditType('hipotecario')}
+                className={`px-4 py-2.5 rounded-xl text-[13px] font-heading font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                  selectedCreditType === 'hipotecario'
+                    ? 'bg-[#0B3B60] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-[#0B3B60] hover:bg-white/60'
+                }`}
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  {selectedCreditType === 'hipotecario' ? 'check_circle' : 'real_estate_agent'}
+                </span>
+                <span>Crédito hipotecario para vivienda</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Indicador de regla SBS activa */}
+          <div className="p-3 rounded-2xl bg-sky-50 border border-sky-100 text-[12px] text-[#0B3B60] flex items-center gap-2.5 max-w-md">
+            <span className="material-symbols-outlined text-[20px] text-[#00A3E0] shrink-0">
+              info
+            </span>
+            <span className="leading-snug">
+              Mostrando rangos oficiales para <strong>{selectedCreditType === 'consumo' ? 'Créditos de Consumo' : 'Créditos Hipotecarios para Vivienda'}</strong> según la Resolución SBS N° 11356-2008.
+            </span>
+          </div>
         </div>
 
-        <div className="grid grid-cols-5 gap-1.5 sm:gap-2.5">
-          {CREDIT_CATEGORIES.map((cat) => {
-            const isSelected = expandedId === cat.id;
-            return (
+        {/* Filtro: Mostrar categoría */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px] text-slate-400">filter_list</span>
+            <span className="text-[12.5px] font-bold text-slate-700">Mostrar categoría:</span>
+          </div>
+
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            {(
+              [
+                { id: 'todas', label: 'Todas' },
+                { id: 'normal', label: 'Normal' },
+                { id: 'cpp', label: 'CPP' },
+                { id: 'deficiente', label: 'Deficiente' },
+                { id: 'dudoso', label: 'Dudoso' },
+                { id: 'perdida', label: 'Pérdida' },
+              ] as const
+            ).map((filterOption) => (
               <button
-                key={cat.id}
-                onClick={() => toggleRow(cat.id)}
-                className={`flex flex-col items-center gap-1.5 p-2.5 sm:p-3 rounded-2xl transition-all cursor-pointer text-center group border ${
-                  isSelected
-                    ? `${cat.colorScheme.bgLight} ${cat.colorScheme.border} border-2 shadow-xs scale-[1.02]`
-                    : 'bg-slate-50 hover:bg-slate-100/80 border-slate-200/60'
+                key={filterOption.id}
+                onClick={() => setCategoryFilter(filterOption.id)}
+                className={`px-3 py-1.5 rounded-xl text-[12px] font-bold whitespace-nowrap transition-all cursor-pointer ${
+                  categoryFilter === filterOption.id
+                    ? 'bg-[#0B3B60] text-white shadow-xs'
+                    : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
                 }`}
-                title={`Haz clic para ver detalles de ${cat.name}`}
               >
-                <div
-                  className={`w-full h-2.5 sm:h-3 rounded-full ${cat.colorScheme.barColor} transition-transform group-hover:scale-y-110`}
-                />
-                <span className="text-[11.5px] sm:text-[13px] font-black text-slate-800 tracking-tight block">
-                  {cat.name}
-                </span>
-                <span
-                  className={`text-[9.5px] sm:text-[11px] font-bold px-1.5 py-0.5 rounded-md ${cat.colorScheme.badgeBg} ${cat.colorScheme.badgeText}`}
-                >
-                  {cat.riskLevel}
-                </span>
+                {filterOption.label}
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* 3. Cuadro Comparativo Interactivo */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
-        {/* Tabla para Desktop */}
-        <div className="hidden sm:block overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+      {/* ============================================================== */}
+      {/* 3. CUADRO COMPARATIVO INTERACTIVO DE 6 COLUMNAS                */}
+      {/* ============================================================== */}
+      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden text-left">
+        {/* Aviso de deslizamiento para móviles */}
+        <div className="sm:hidden px-4 py-2 bg-sky-50/70 border-b border-sky-100 flex items-center justify-between text-[11px] text-[#007EAF] font-bold">
+          <span className="flex items-center gap-1">
+            <span className="material-symbols-outlined text-[14px]">swipe</span>
+            <span>Desplaza horizontalmente para ver todas las columnas</span>
+          </span>
+          <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[760px]">
+            {/* Encabezado azul institucional con texto blanco */}
             <thead>
-              <tr className="bg-slate-50/90 border-b border-slate-200 text-[12px] font-black uppercase tracking-wider text-slate-500">
-                <th className="py-4 px-6 w-36">Categoría</th>
-                <th className="py-4 px-6 w-40">Nivel de riesgo</th>
-                <th className="py-4 px-6">Descripción</th>
-                <th className="py-4 px-6 text-right w-36">Acción</th>
+              <tr className="bg-[#0B3B60] text-white text-[12.5px] font-heading font-extrabold uppercase tracking-wider">
+                <th className="py-4 px-5 w-48">Categoría SBS</th>
+                <th className="py-4 px-4 text-center w-20">Código</th>
+                <th className="py-4 px-5 w-44">Días de atraso</th>
+                <th className="py-4 px-5">¿Qué significa?</th>
+                <th className="py-4 px-5">¿Cómo actuar?</th>
+                <th className="py-4 px-4 text-center w-28">Detalles</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-[13.5px]">
-              {CREDIT_CATEGORIES.map((category) => {
-                const isExpanded = expandedId === category.id;
+
+            {/* Filas alternadas en blanco y azul muy claro */}
+            <tbody className="divide-y divide-slate-100 text-[13px] font-sans">
+              {filteredCategories.map((cat, index) => {
+                const isExpanded = expandedRowId === cat.id;
+                const isEven = index % 2 === 1;
+
                 return (
-                  <React.Fragment key={category.id}>
+                  <React.Fragment key={cat.id}>
+                    {/* Fila Principal */}
                     <tr
-                      onClick={() => toggleRow(category.id)}
-                      className={`transition-colors cursor-pointer group ${
+                      onClick={() => toggleRow(cat.id)}
+                      className={`transition-all duration-150 cursor-pointer group ${
                         isExpanded
-                          ? `${category.colorScheme.bgLight}`
-                          : 'hover:bg-slate-50/80'
+                          ? 'bg-sky-50/90 border-l-4 border-l-[#00A3E0]'
+                          : isEven
+                          ? 'bg-[#F6F9FD] hover:bg-sky-50/50'
+                          : 'bg-white hover:bg-sky-50/50'
                       }`}
                     >
-                      {/* Categoría */}
-                      <td className="py-4 px-6 font-black text-slate-900 tracking-tight">
+                      {/* 1. Categoría SBS con icono y color distintivo */}
+                      <td className="py-4 px-5">
                         <div className="flex items-center gap-2.5">
                           <span
-                            className={`w-3 h-3 rounded-full ${category.colorScheme.barColor}`}
-                          />
-                          <span className="text-[14.5px]">{category.name}</span>
+                            className={`material-symbols-outlined text-[20px] shrink-0 ${cat.textColor}`}
+                          >
+                            {cat.iconName}
+                          </span>
+                          <div>
+                            <span className="font-heading font-bold text-[14px] text-[#0B3B60] block leading-tight">
+                              {cat.name}
+                            </span>
+                            <span
+                              className={`inline-block mt-0.5 px-2 py-0.2 rounded-full text-[10px] font-extrabold border ${cat.badgeColor}`}
+                            >
+                              Nivel {cat.id.toUpperCase()}
+                            </span>
+                          </div>
                         </div>
                       </td>
 
-                      {/* Nivel de riesgo */}
-                      <td className="py-4 px-6">
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-black border ${category.colorScheme.badgeBg} ${category.colorScheme.badgeText} ${category.colorScheme.border}`}
-                        >
-                          {category.riskLevel}
+                      {/* 2. Código */}
+                      <td className="py-4 px-4 text-center">
+                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-[#0B3B60] font-black text-[13px] border border-slate-200">
+                          {cat.code}
                         </span>
                       </td>
 
-                      {/* Descripción */}
-                      <td className="py-4 px-6 text-slate-600 font-medium leading-snug">
-                        {category.shortDesc}
+                      {/* 3. Días de atraso (actualizado dinámicamente) */}
+                      <td className="py-4 px-5 font-bold text-[#0B3B60]">
+                        <div className="flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-[16px] text-[#00A3E0]">
+                            schedule
+                          </span>
+                          <span>
+                            {selectedCreditType === 'consumo'
+                              ? cat.diasAtraso.consumo
+                              : cat.diasAtraso.hipotecario}
+                          </span>
+                        </div>
                       </td>
 
-                      {/* Botón Ver Detalle */}
-                      <td className="py-4 px-6 text-right">
+                      {/* 4. ¿Qué significa? (máximo dos líneas) */}
+                      <td className="py-4 px-5 text-slate-700 leading-snug line-clamp-2 max-w-xs">
+                        {cat.queSignifica}
+                      </td>
+
+                      {/* 5. ¿Cómo actuar? */}
+                      <td className="py-4 px-5 text-slate-700 leading-snug max-w-xs">
+                        <div className="flex items-start gap-1.5">
+                          <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0 mt-0.5">
+                            check
+                          </span>
+                          <span className="text-[12.5px]">{cat.comoActuar}</span>
+                        </div>
+                      </td>
+
+                      {/* 6. Detalles: Botón funcional Ver más / Ver menos */}
+                      <td className="py-4 px-4 text-center">
                         <button
+                          type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleRow(category.id);
+                            toggleRow(cat.id);
                           }}
-                          className={`px-3.5 py-1.5 rounded-xl text-[12px] font-bold border transition-all inline-flex items-center gap-1 cursor-pointer ${
+                          className={`px-3 py-1.5 rounded-xl text-[12px] font-heading font-bold border transition-all inline-flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap ${
                             isExpanded
-                              ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                              : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                              ? 'bg-[#0B3B60] text-white border-[#0B3B60] shadow-xs'
+                              : 'bg-white hover:bg-slate-100 text-[#0B3B60] border-slate-200'
                           }`}
                         >
-                          <span>{isExpanded ? 'Ocultar' : 'Ver detalle'}</span>
+                          <span>{isExpanded ? 'Ver menos' : 'Ver más'}</span>
                           <span
-                            className={`material-symbols-outlined text-[16px] transition-transform ${
-                              isExpanded ? 'rotate-180' : ''
+                            className={`material-symbols-outlined text-[16px] transition-transform duration-200 ${
+                              isExpanded ? 'rotate-180 text-[#00A3E0]' : 'text-slate-400'
                             }`}
                           >
                             expand_more
@@ -260,58 +432,104 @@ export const CategoriasCrediticiasScreen: React.FC = () => {
                       </td>
                     </tr>
 
-                    {/* Fila desplegable con información complementaria */}
+                    {/* Panel Desplegable debajo de la misma fila */}
                     {isExpanded && (
-                      <tr className={`${category.colorScheme.bgLight} border-b border-slate-200/60`}>
-                        <td colSpan={4} className="p-5 sm:p-6">
-                          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col gap-4 fade-in">
-                            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                              <div className="flex items-center gap-2">
-                                <span className="material-symbols-outlined text-[20px] text-teal-700">
-                                  info
+                      <tr className="bg-sky-50/60 border-b border-slate-200/90 fade-in">
+                        <td colSpan={6} className="p-4 sm:p-6">
+                          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-sky-200 shadow-sm flex flex-col gap-5 text-left">
+                            {/* Cabecera del panel expandido */}
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                              <div className="flex items-center gap-2.5">
+                                <span className={`material-symbols-outlined text-[24px] ${cat.textColor}`}>
+                                  {cat.iconName}
                                 </span>
-                                <h3 className="text-[15px] font-black text-slate-900">
-                                  Criterios y normas SBS: Categoría {category.name}
-                                </h3>
+                                <div>
+                                  <h3 className="text-[16px] font-extrabold text-[#0B3B60] font-heading">
+                                    Detalle Completo: Categoría {cat.name} (Código {cat.code})
+                                  </h3>
+                                  <span className="text-[11.5px] text-slate-500 font-sans">
+                                    Evaluación oficial según la Superintendencia de Banca, Seguros y AFP (SBS)
+                                  </span>
+                                </div>
                               </div>
+
                               <span
-                                className={`text-[11px] font-black px-2.5 py-0.5 rounded-full border ${category.colorScheme.badgeBg} ${category.colorScheme.badgeText} ${category.colorScheme.border}`}
+                                className={`px-3 py-1 rounded-full text-[11px] font-extrabold border self-start sm:self-auto ${cat.badgeColor}`}
                               >
-                                Riesgo {category.riskLevel}
+                                {selectedCreditType === 'consumo' ? 'Crédito de Consumo: ' : 'Crédito Hipotecario: '}
+                                {selectedCreditType === 'consumo'
+                                  ? cat.diasAtraso.consumo
+                                  : cat.diasAtraso.hipotecario}
                               </span>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[12.5px]">
-                              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-                                <span className="text-[10.5px] uppercase font-bold text-slate-500 block mb-1">
-                                  Días de atraso referenciales (SBS)
+                            {/* 1. Descripción & 2. Ejemplo Cotidiano */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[13px]">
+                              {/* Descripción */}
+                              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-1.5">
+                                <span className="text-[11px] font-bold uppercase tracking-wider text-[#007EAF] flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-[15px]">description</span>
+                                  <span>Descripción de la categoría</span>
                                 </span>
-                                <p className="font-semibold text-slate-800 leading-snug">
-                                  {category.details.diasAtrasoComercial}
+                                <p className="text-slate-700 leading-relaxed font-sans">
+                                  {cat.details.descripcion}
                                 </p>
                               </div>
 
-                              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-                                <span className="text-[10.5px] uppercase font-bold text-slate-500 block mb-1">
-                                  Impacto en el historial financiero
+                              {/* Ejemplo Cotidiano Peruano */}
+                              <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200 flex flex-col gap-1.5">
+                                <span className="text-[11px] font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-[15px] text-amber-600">person_pin_circle</span>
+                                  <span>Ejemplo cotidiano en el Perú</span>
                                 </span>
-                                <p className="font-semibold text-slate-800 leading-snug">
-                                  {category.details.impactoHistorial}
+                                <p className="text-amber-950/90 leading-relaxed font-sans">
+                                  {cat.details.ejemploCotidiano}
                                 </p>
                               </div>
                             </div>
 
-                            <div className="p-3.5 rounded-xl bg-sky-50 border border-sky-200 text-[12.5px] flex items-start gap-2.5">
-                              <span className="material-symbols-outlined text-[18px] text-[#007EAF] shrink-0 mt-0.5">
+                            {/* 3. Consecuencias y 4. ¿Qué puedo hacer? */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[13px]">
+                              {/* ¿Qué consecuencias puede tener? */}
+                              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-2">
+                                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-[15px] text-[#00A3E0]">history_edu</span>
+                                  <span>¿Qué consecuencias puede tener?</span>
+                                </span>
+                                <p className="text-slate-700 leading-relaxed font-sans">
+                                  {cat.details.consecuencias}
+                                </p>
+                              </div>
+
+                              {/* ¿Qué puedo hacer? (3 recomendaciones) */}
+                              <div className="p-4 rounded-xl bg-emerald-50/60 border border-emerald-200 flex flex-col gap-2">
+                                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-[15px] text-emerald-600">checklist</span>
+                                  <span>¿Qué puedo hacer? (3 pasos prácticos)</span>
+                                </span>
+                                <div className="flex flex-col gap-1.5">
+                                  {cat.details.quePuedoHacer.map((paso, idx) => (
+                                    <div key={idx} className="flex items-start gap-2 text-[12.5px] text-emerald-950">
+                                      <span className="w-4 h-4 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                                        {idx + 1}
+                                      </span>
+                                      <span className="leading-snug">{paso}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* 5. Consejo AL DÍA */}
+                            <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-sky-50 via-blue-50 to-sky-50 border border-sky-200 text-[#0B3B60] flex items-start gap-3">
+                              <span className="material-symbols-outlined text-[22px] text-[#00A3E0] shrink-0 mt-0.5">
                                 lightbulb
                               </span>
-                              <div>
-                                <span className="font-bold block text-[#0B3B60]">
-                                  Orientación preventiva aldia:
-                                </span>
-                                <p className="text-[#0B3B60] mt-0.5 leading-snug font-medium">
-                                  {category.details.recomendacion}
-                                </p>
+                              <div className="text-[13px] leading-relaxed font-sans">
+                                <strong className="font-heading font-bold text-[#0B3B60] mr-1">
+                                  Consejo AL DÍA:
+                                </strong>
+                                {cat.details.consejoAlDia}
                               </div>
                             </div>
                           </div>
@@ -324,137 +542,94 @@ export const CategoriasCrediticiasScreen: React.FC = () => {
             </tbody>
           </table>
         </div>
-
-        {/* Vista móvil en tarjetas */}
-        <div className="sm:hidden flex flex-col divide-y divide-slate-100">
-          {CREDIT_CATEGORIES.map((category) => {
-            const isExpanded = expandedId === category.id;
-            return (
-              <div
-                key={category.id}
-                className={`p-4 transition-colors ${
-                  isExpanded ? category.colorScheme.bgLight : 'bg-white'
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`w-3 h-3 rounded-full ${category.colorScheme.barColor}`}
-                    />
-                    <h3 className="text-[16px] font-black text-slate-900 tracking-tight">
-                      {category.name}
-                    </h3>
-                  </div>
-                  <span
-                    className={`inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-black border ${category.colorScheme.badgeBg} ${category.colorScheme.badgeText} ${category.colorScheme.border}`}
-                  >
-                    {category.riskLevel}
-                  </span>
-                </div>
-
-                <p className="text-[13px] text-slate-600 font-medium mb-3 leading-snug">
-                  {category.shortDesc}
-                </p>
-
-                <button
-                  onClick={() => toggleRow(category.id)}
-                  className={`w-full py-2 rounded-xl text-[12px] font-bold border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                    isExpanded
-                      ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                      : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
-                  }`}
-                >
-                  <span>{isExpanded ? 'Ocultar detalle' : 'Ver detalle'}</span>
-                  <span
-                    className={`material-symbols-outlined text-[16px] transition-transform ${
-                      isExpanded ? 'rotate-180' : ''
-                    }`}
-                  >
-                    expand_more
-                  </span>
-                </button>
-
-                {/* Detalle en móvil */}
-                {isExpanded && (
-                  <div className="mt-3 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-3 text-[12px] fade-in">
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
-                        Días de atraso referenciales
-                      </span>
-                      <p className="font-semibold text-slate-800 leading-snug">
-                        {category.details.diasAtrasoComercial}
-                      </p>
-                    </div>
-
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
-                        Impacto en el historial
-                      </span>
-                      <p className="font-semibold text-slate-800 leading-snug">
-                        {category.details.impactoHistorial}
-                      </p>
-                    </div>
-
-                    <div className="p-2.5 rounded-xl bg-sky-50 border border-sky-200 text-[#0B3B60]">
-                      <span className="font-bold text-[#0B3B60] block text-[11px]">
-                        Orientación aldia:
-                      </span>
-                      <p className="mt-0.5 leading-snug">
-                        {category.details.recomendacion}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
       </div>
 
-      {/* 4. Sección Informativa: Consulta de reporte oficial SBS */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-xs flex flex-col gap-5">
-        <div className="flex items-start sm:items-center gap-3.5">
-          <div className="w-11 h-11 rounded-2xl bg-sky-50 text-[#007EAF] flex items-center justify-center shrink-0 border border-sky-200">
-            <span className="material-symbols-outlined text-[24px]">account_balance</span>
+      {/* ============================================================== */}
+      {/* 4. FRANJA VISUAL: CONSEJOS PARA CUIDAR TU HISTORIAL            */}
+      {/* ============================================================== */}
+      <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-xs flex flex-col gap-6 text-left">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11.5px] font-bold border border-emerald-200 mb-1.5">
+            <span className="material-symbols-outlined text-[15px] text-emerald-600">verified_user</span>
+            <span>Prevención y Hábitos Financieros</span>
           </div>
-          <div>
-            <h2 className="text-[18px] sm:text-[20px] font-extrabold text-[#0B3B60] tracking-tight font-heading">
-              ¿Cómo puedo conocer mi clasificación crediticia?
-            </h2>
-            <p className="text-[12.5px] sm:text-[13.5px] text-slate-500 font-medium mt-0.5">
-              Consulta gratuita de deudas y reporte de riesgo financiero.
+          <h2 className="text-[20px] sm:text-[24px] font-extrabold text-[#0B3B60] tracking-tight font-heading">
+            Consejos para cuidar tu historial crediticio
+          </h2>
+          <p className="text-[13.5px] text-slate-500 font-sans mt-0.5">
+            Tres acciones cotidianas y fundamentales para proteger tu calificación en la Central de Riesgos de la SBS
+          </p>
+        </div>
+
+        {/* 3 Consejos Breves */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Consejo 1 */}
+          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#0B3B60] text-white flex items-center justify-center font-bold text-[15px] font-heading shadow-xs">
+              1
+            </div>
+            <h3 className="text-[15px] font-bold text-[#0B3B60] font-heading leading-snug">
+              Organiza las fechas de vencimiento de tus cuotas
+            </h3>
+            <p className="text-[12.5px] text-slate-600 font-sans leading-relaxed">
+              Solicita a tu entidad sincronizar tu fecha de corte para que venza dos o tres días después de recibir tus ingresos seguros.
+            </p>
+          </div>
+
+          {/* Consejo 2 */}
+          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#0B3B60] text-white flex items-center justify-center font-bold text-[15px] font-heading shadow-xs">
+              2
+            </div>
+            <h3 className="text-[15px] font-bold text-[#0B3B60] font-heading leading-snug">
+              Si tienes dificultades para pagar, contacta a tu entidad financiera
+            </h3>
+            <p className="text-[12.5px] text-slate-600 font-sans leading-relaxed">
+              No esperes a cumplir 30 días de atraso. Acercarte proactivamente te abre opciones formales de reprogramación o traslado de cuota.
+            </p>
+          </div>
+
+          {/* Consejo 3 */}
+          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#0B3B60] text-white flex items-center justify-center font-bold text-[15px] font-heading shadow-xs">
+              3
+            </div>
+            <h3 className="text-[15px] font-bold text-[#0B3B60] font-heading leading-snug">
+              Revisa periódicamente tu reporte de deudas
+            </h3>
+            <p className="text-[12.5px] text-slate-600 font-sans leading-relaxed">
+              Verifica cada 3 o 6 meses que tus pagos figuren correctamente registrados y que no existan créditos no autorizados a tu nombre.
             </p>
           </div>
         </div>
 
-        <p className="text-[13.5px] sm:text-[14.5px] text-slate-600 leading-relaxed font-normal">
-          Cada ciudadano puede consultar su información crediticia oficial directamente mediante el reporte gratuito emitido por la{' '}
-          <strong className="text-[#0B3B60]">Superintendencia de Banca, Seguros y AFP (SBS)</strong> ingresando a su portal con su DNI.
-        </p>
+        {/* Botón azul oficial hacia la SBS */}
+        <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-slate-100">
+          <div className="text-[12.5px] text-slate-600 leading-snug">
+            Puedes consultar tu historial oficial gratis en línea ingresando con tu DNI al portal institucional de la SBS.
+          </div>
 
-        {/* Botón funcional hacia la SBS */}
-        <div className="pt-1">
           <a
             href="https://www.sbs.gob.pe/usuarios/nuestros-servicios/reporte-de-deudas"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] text-white font-bold text-[13.5px] sm:text-[14px] shadow-sm transition-all duration-200 cursor-pointer font-heading"
+            className="px-5 py-3 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] active:scale-95 text-white font-heading font-bold text-[13.5px] transition-all flex items-center gap-2 shadow-xs shrink-0 cursor-pointer"
           >
-            <span>Consultar reporte oficial SBS</span>
-            <span className="material-symbols-outlined text-[18px]">open_in_new</span>
+            <span>Consultar reporte de deudas SBS</span>
+            <span className="material-symbols-outlined text-[17px] text-[#00A3E0]">open_in_new</span>
           </a>
         </div>
 
-        {/* Nota aclaratoria obligatoria */}
-        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-[12px] text-slate-600 leading-relaxed flex items-start gap-2.5">
+        {/* Nota aclaratoria legal SBS */}
+        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-[11.5px] text-slate-600 leading-relaxed flex items-start gap-2.5">
           <span className="material-symbols-outlined text-[18px] text-slate-400 shrink-0 mt-0.5">
-            shield
+            info
           </span>
           <p>
-            <strong className="text-[#0B3B60]">Aviso educativo:</strong> aldia brinda información pedagógica orientativa y no determina ni evalúa clasificaciones crediticias individuales. Las entidades financieras supervisadas son las únicas facultadas para emitir y reportar clasificaciones según la normativa SBS.
+            <strong className="text-[#0B3B60]">Aclaración importante:</strong> Los días de atraso señalados en este cuadro son una referencia informativa según el Reglamento para la Evaluación y Clasificación del Deudor (Resolución SBS N° 11356-2008 y modificatorias). La clasificación oficial de cada cliente depende de las reglas aplicables al tipo de crédito contratado, su comportamiento crediticio consolidado en todo el sistema financiero y los demás criterios objetivos y subjetivos establecidos por la SBS.
           </p>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

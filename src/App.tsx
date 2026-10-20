@@ -12,6 +12,7 @@ import { CategoriasCrediticiasScreen } from './components/screens/CategoriasCred
 import { MarketScreen } from './components/screens/MarketScreen';
 import { PlayScreen } from './components/screens/PlayScreen';
 import { VideosScreen } from './components/screens/VideosScreen';
+import { CentroSeguridadScreen } from './components/screens/CentroSeguridadScreen';
 
 export default function App() {
   const { currentTab, navigate, aprendeSubTab } = useRoute();
@@ -30,6 +31,7 @@ export default function App() {
         {currentTab === 'inicio' && <DashboardScreen onNavigate={handleNavigate} />}
         {currentTab === 'videos' && <VideosScreen onNavigate={handleNavigate} />}
         {currentTab === 'orientacion' && <VideosScreen onNavigate={handleNavigate} />}
+        {currentTab === 'seguridad' && <CentroSeguridadScreen onNavigate={handleNavigate} />}
         {currentTab === 'market' && <MarketScreen onNavigate={handleNavigate} />}
         {currentTab === 'play' && <PlayScreen onNavigate={handleNavigate} />}
         {currentTab === 'categorias_crediticias' && <CategoriasCrediticiasScreen />}

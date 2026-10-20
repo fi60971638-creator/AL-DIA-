@@ -108,6 +108,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
   const isAprendeActive = currentTab.startsWith('aprende_');
   const isVideosActive = currentTab === 'videos' || currentTab === 'aprende_videos' || currentTab === 'orientacion';
   const isCategoriasActive = currentTab === 'categorias_crediticias';
+  const isSeguridadActive = currentTab === 'seguridad';
   const isMarketActive = currentTab === 'market';
   const isPlayActive = currentTab === 'play';
 
@@ -264,18 +265,17 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
               )}
             </div>
 
-            {/* 2. Menú: Videos (reemplaza Orientación) */}
+            {/* 2. Menú: Seguridad (sin icono según solicitud) */}
             <button
-              onClick={() => handleNavigate('videos')}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13.5px] transition-all cursor-pointer font-sans select-none ${
-                isVideosActive
+              onClick={() => handleNavigate('seguridad')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13.5px] transition-all cursor-pointer font-sans select-none relative ${
+                isSeguridadActive
                   ? 'text-[#0B3B60] font-bold bg-sky-50/70 shadow-2xs'
                   : 'text-slate-700 hover:text-[#0B3B60] hover:bg-slate-50 font-medium'
               }`}
             >
-              <span className="material-symbols-outlined text-[18px] text-[#00A3E0]">smart_display</span>
-              <span>Videos</span>
-              {isVideosActive && (
+              <span>Seguridad</span>
+              {isSeguridadActive && (
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00A3E0] ml-0.5 shrink-0" />
               )}
             </button>
@@ -376,7 +376,23 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
               )}
             </div>
 
-            {/* 4. Menú: Market */}
+            {/* 4. Menú: Videos */}
+            <button
+              onClick={() => handleNavigate('videos')}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13.5px] transition-all cursor-pointer font-sans select-none relative ${
+                isVideosActive
+                  ? 'text-[#0B3B60] font-bold bg-sky-50/70 shadow-2xs'
+                  : 'text-slate-700 hover:text-[#0B3B60] hover:bg-slate-50 font-medium'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[18px] text-[#00A3E0]">smart_display</span>
+              <span>Videos</span>
+              {isVideosActive && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00A3E0] ml-0.5 shrink-0" />
+              )}
+            </button>
+
+            {/* 5. Menú: Market */}
             <button
               onClick={() => handleNavigate('market')}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[13.5px] transition-all cursor-pointer font-sans select-none ${
@@ -474,18 +490,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
             </div>
           </nav>
 
-          {/* --- A LA DERECHA: BOTÓN "VER VIDEOS" (ESCRITORIO) --- */}
-          <div className="hidden md:flex items-center gap-3 shrink-0">
-            <button
-              onClick={() => handleNavigate('videos')}
-              className="px-4 py-2.5 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] active:scale-95 text-white font-heading font-semibold text-[13.5px] tracking-tight transition-all flex items-center gap-2 shadow-xs cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[18px] text-[#00A3E0]">
-                smart_display
-              </span>
-              <span>Ver videos</span>
-            </button>
-          </div>
+
 
           {/* --- BOTÓN HAMBURGUESA PARA CELULARES --- */}
           <div className="flex md:hidden items-center gap-2">
@@ -602,25 +607,21 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
             </div>
 
             {/* 2. SECCIÓN: VIDEOS (REEMPLAZA ORIENTACIÓN) */}
+            {/* 2. SECCIÓN: SEGURIDAD */}
             <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
               <button
-                onClick={() => handleNavigate('videos')}
+                onClick={() => handleNavigate('seguridad')}
                 className={`w-full p-4 flex items-center justify-between text-left font-heading font-bold text-[15px] cursor-pointer transition-colors ${
-                  isVideosActive
+                  isSeguridadActive
                     ? 'bg-sky-50 text-[#0B3B60]'
                     : 'bg-white hover:bg-slate-50 text-[#0B3B60]'
                 }`}
               >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-sky-100 text-[#007EAF] flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[19px]">smart_display</span>
-                  </div>
-                  <div>
-                    <span>Videos</span>
-                    <span className="text-[11.5px] font-sans font-normal text-slate-500 block">
-                      Videoteca oficial SBS sobre créditos, cuotas y derechos
-                    </span>
-                  </div>
+                <div>
+                  <span>Seguridad</span>
+                  <span className="text-[11.5px] font-sans font-normal text-slate-500 block">
+                    Protege tu dinero, evita estafas y pide ayuda
+                  </span>
                 </div>
                 <span className="material-symbols-outlined text-[20px] text-slate-400">
                   chevron_right
@@ -655,7 +656,34 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
               </button>
             </div>
 
-            {/* 4. SECCIÓN: AL DÍA MARKET */}
+            {/* 4. SECCIÓN: VIDEOS */}
+            <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
+              <button
+                onClick={() => handleNavigate('videos')}
+                className={`w-full p-4 flex items-center justify-between text-left font-heading font-bold text-[15px] cursor-pointer transition-colors ${
+                  isVideosActive
+                    ? 'bg-sky-50 text-[#0B3B60]'
+                    : 'bg-white hover:bg-slate-50 text-[#0B3B60]'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-sky-100 text-[#007EAF] flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[19px]">smart_display</span>
+                  </div>
+                  <div>
+                    <span>Videos</span>
+                    <span className="text-[11.5px] font-sans font-normal text-slate-500 block">
+                      Videoteca oficial SBS sobre créditos, cuotas y derechos
+                    </span>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-[20px] text-slate-400">
+                  chevron_right
+                </span>
+              </button>
+            </div>
+
+            {/* 5. SECCIÓN: AL DÍA MARKET */}
             <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
               <button
                 onClick={() => handleNavigate('market')}
@@ -672,7 +700,7 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onNavigate }) => {
                   <div>
                     <span>AL DÍA Market</span>
                     <span className="text-[11.5px] font-sans font-normal text-slate-500 block">
-                      Tienda virtual: útiles escolares, oficina y uso diario
+                      Tienda virtual: útiles de oficina y escritorio
                     </span>
                   </div>
                 </div>

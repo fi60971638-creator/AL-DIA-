@@ -82,6 +82,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 Derechos del usuario
               </button>
               <button
+                onClick={() => onNavigate('seguridad')}
+                className="text-left text-slate-600 hover:text-[#007EAF] transition-colors cursor-pointer flex items-center gap-1 font-semibold text-[#0B3B60]"
+              >
+                <span>Seguridad</span>
+              </button>
+              <button
                 onClick={() => onNavigate('categorias_crediticias')}
                 className="text-left text-slate-600 hover:text-[#007EAF] transition-colors cursor-pointer"
               >

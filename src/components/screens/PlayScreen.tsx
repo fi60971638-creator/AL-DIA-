@@ -920,6 +920,30 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({ onNavigate }) => {
           </div>
         </div>
       )}
+
+      {/* Banner al reto ¿Es una estafa? */}
+      <div className="bg-gradient-to-r from-sky-50 via-blue-50 to-sky-50 rounded-3xl p-5 sm:p-6 border border-sky-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-2xl bg-[#0B3B60] text-white flex items-center justify-center shrink-0">
+            <span className="material-symbols-outlined text-[24px] text-[#00A3E0]">crisis_alert</span>
+          </div>
+          <div>
+            <h4 className="text-[15px] font-heading font-bold text-[#0B3B60]">
+              Nuevo Reto: ¿Es una Estafa o una Operación Segura?
+            </h4>
+            <p className="text-[12.5px] text-slate-600 font-sans">
+              Evalúa 5 casos cotidianos de préstamos fraudulentos, phishing y llamadas falsas en el Centro de Seguridad.
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => onNavigate('seguridad')}
+          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#0B3B60] hover:bg-[#082E4D] text-white font-heading font-semibold text-[13px] flex items-center justify-center gap-2 cursor-pointer shadow-xs shrink-0"
+        >
+          <span>Ir al Centro de Seguridad</span>
+          <span className="material-symbols-outlined text-[16px] text-[#00A3E0]">arrow_forward</span>
+        </button>
+      </div>
     </div>
   );
 };

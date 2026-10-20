@@ -45,23 +45,26 @@ export const AprendeFinanzasScreen: React.FC<AprendeFinanzasScreenProps> = ({
 
   const categories = [
     'TODOS',
+    'Pagos y cuotas',
     'Créditos y préstamos',
-    'Organización del presupuesto',
-    'Intereses y comisiones',
-    'Pagos responsables',
+    'Cobranzas responsables',
     'Historial crediticio',
-    'Prevención del sobreendeudamiento',
+    'Presupuesto familiar',
+    'Finanzas para emprendedores',
     'Derechos del consumidor',
+    'Pagos digitales y seguridad',
   ];
 
   const filteredArticles = EDUCATIONAL_ARTICLES.filter((art) => {
     const matchCategory =
       selectedCategory === 'TODOS' ||
-      art.category.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-      (selectedCategory === 'Créditos y préstamos' && (art.category.includes('Deudas') || art.category.includes('Tarjetas')));
+      art.category.toLowerCase() === selectedCategory.toLowerCase();
+    const q = searchTerm.toLowerCase().trim();
     const matchSearch =
-      art.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      art.shortDesc.toLowerCase().includes(searchTerm.toLowerCase());
+      !q ||
+      art.title.toLowerCase().includes(q) ||
+      art.shortDesc.toLowerCase().includes(q) ||
+      art.category.toLowerCase().includes(q);
     return matchCategory && matchSearch;
   });
 
@@ -111,19 +114,19 @@ export const AprendeFinanzasScreen: React.FC<AprendeFinanzasScreenProps> = ({
           <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-xs flex flex-col gap-2 text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 text-[#0B3B60] text-[12px] font-bold border border-sky-200 w-fit">
               <span className="material-symbols-outlined text-[16px] text-[#00A3E0]">menu_book</span>
-              <span>Biblioteca Educativa aldia</span>
+              <span>Guías y Artículos Financieros aldia</span>
             </div>
             <h1 className="text-[24px] sm:text-[30px] font-extrabold text-[#0B3B60] tracking-tight font-heading">
-              Guías y Artículos Prácticos
+              Educación Financiera para el Perú Real
             </h1>
             <p className="text-[14px] text-slate-600 leading-relaxed max-w-3xl">
-              Lecturas diseñadas para fortalecer tus hábitos financieros, comparar préstamos de forma transparente y evitar costos ocultos.
+              Artículos prácticos con situaciones cotidianas peruanas, ejemplos reales en soles y consejos claros para ordenar tus cuotas, proteger tu negocio familiar y exigir tus derechos.
             </p>
           </div>
 
           {/* Search and Category Filter */}
-          <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
-            <div className="relative flex-1 max-w-md">
+          <div className="flex flex-col gap-3.5">
+            <div className="relative w-full max-w-md">
               <span className="material-symbols-outlined absolute left-3.5 top-2.5 text-slate-400 text-[18px]">
                 search
               </span>
@@ -131,68 +134,118 @@ export const AprendeFinanzasScreen: React.FC<AprendeFinanzasScreenProps> = ({
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Buscar por tema (TCEA, cronograma, cuotas...)"
+                placeholder="Buscar por tema (cuotas, bodega, Yape, SBS, TCEA...)"
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 placeholder-slate-400 text-[14px] focus:outline-none focus:border-[#00A3E0] shadow-2xs"
               />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
+                >
+                  <span className="material-symbols-outlined text-[18px]">close</span>
+                </button>
+              )}
             </div>
 
+            {/* Chips de las 8 Categorías */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-              {categories.slice(0, 5).map((cat) => (
+              {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-lg text-[12px] font-bold whitespace-nowrap transition-colors cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-xl text-[12px] font-bold whitespace-nowrap transition-colors cursor-pointer ${
                     selectedCategory === cat
-                      ? 'bg-[#0B3B60] text-white'
-                      : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200'
+                      ? 'bg-[#0B3B60] text-white shadow-xs'
+                      : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
                   }`}
                 >
-                  {cat}
+                  {cat === 'TODOS' ? 'Todas las guías' : cat}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Articles Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filteredArticles.map((article) => (
-              <div
-                key={article.id}
-                className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-4 text-left"
+          {/* Articles Grid con imágenes realistas */}
+          {filteredArticles.length === 0 ? (
+            <div className="bg-white rounded-3xl p-10 text-center border border-slate-200 flex flex-col items-center justify-center gap-2">
+              <span className="material-symbols-outlined text-[44px] text-slate-300">search_off</span>
+              <h3 className="text-[16px] font-bold text-[#0B3B60]">
+                No encontramos guías para "{searchTerm}"
+              </h3>
+              <p className="text-[13px] text-slate-500">
+                Prueba buscando por cuota, bodega, crédito o selecciona otra categoría.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedCategory('TODOS');
+                }}
+                className="mt-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0B3B60] text-[12.5px] font-bold"
               >
-                <div>
-                  <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider mb-2">
-                    <span className="text-[#007EAF]">{article.category}</span>
-                    <span className="text-slate-400 flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[13px]">schedule</span>
-                      {article.readTime}
-                    </span>
+                Ver todas las guías
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {filteredArticles.map((article) => (
+                <div
+                  key={article.id}
+                  onClick={() => setSelectedArticle(article)}
+                  className="bg-white rounded-3xl border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-[#00A3E0] transition-all duration-200 flex flex-col justify-between overflow-hidden text-left cursor-pointer group"
+                >
+                  <div>
+                    {/* Fotografía realista peruana */}
+                    {article.imageSrc && (
+                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
+                        <img
+                          src={article.imageSrc}
+                          alt={article.imageAlt || article.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                        <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-white/95 text-[#0B3B60] shadow-xs backdrop-blur-xs">
+                          {article.category}
+                        </span>
+                        <span className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-black/75 text-white backdrop-blur-xs flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[12px]">schedule</span>
+                          <span>{article.readTime}</span>
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="p-5 flex flex-col gap-2">
+                      <h3 className="text-[16.5px] font-bold text-[#0B3B60] leading-snug font-heading group-hover:text-[#007EAF] transition-colors">
+                        {article.title}
+                      </h3>
+
+                      <p className="text-[12.5px] text-slate-600 line-clamp-2 leading-relaxed">
+                        {article.shortDesc}
+                      </p>
+                    </div>
                   </div>
 
-                  <h3 className="text-[17px] font-bold text-[#0B3B60] leading-snug font-heading">
-                    {article.title}
-                  </h3>
-
-                  <p className="text-[13px] text-slate-600 mt-2 line-clamp-3 leading-relaxed">
-                    {article.shortDesc}
-                  </p>
-                </div>
-
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[11.5px] text-slate-500 font-medium">aldia Educa</span>
-                  <button
-                    onClick={() => setSelectedArticle(article)}
-                    className="inline-flex items-center gap-1 text-[13px] font-bold text-[#0B3B60] hover:text-[#007EAF] transition-colors cursor-pointer"
-                  >
-                    <span>Leer guía</span>
-                    <span className="material-symbols-outlined text-[16px]">
-                      arrow_forward
+                  <div className="px-5 pb-5 pt-2 border-t border-slate-100 flex items-center justify-between">
+                    <span className="text-[11px] text-slate-400 font-medium flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[14px] text-emerald-600">verified</span>
+                      <span>aldia Educa</span>
                     </span>
-                  </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedArticle(article);
+                      }}
+                      className="inline-flex items-center gap-1 text-[13px] font-bold text-[#0B3B60] group-hover:text-[#007EAF] transition-colors cursor-pointer"
+                    >
+                      <span>Leer guía</span>
+                      <span className="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform">
+                        arrow_forward
+                      </span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

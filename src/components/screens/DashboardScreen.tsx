@@ -223,8 +223,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigate }) 
           <div className="flex flex-col gap-2.5">
             <div className="flex items-center justify-between">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100/80 text-[#007EAF] text-[11px] font-bold">
-                <span className="material-symbols-outlined text-[15px]">storefront</span>
-                <span>Tienda de Productos Cotidianos</span>
+                <span className="material-symbols-outlined text-[15px]">desk</span>
+                <span>Todo para tu Escritorio</span>
               </span>
               <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                 Precios en Soles (S/)
@@ -234,7 +234,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigate }) 
               AL DÍA Market
             </h3>
             <p className="text-[13.5px] font-sans text-slate-600 leading-relaxed">
-              Catálogo de artículos esenciales de uso diario: útiles escolares completos, insumos de oficina y artículos prácticos con carrito de compras y revisión de pedidos.
+              Catálogo de útiles de oficina y escritorio: cuadernos, lapiceros, archivadores, accesorios y papelería con carrito interactivo y cotización.
             </p>
           </div>
           <button
@@ -271,6 +271,35 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigate }) 
           >
             <span>Jugar y aprender</span>
             <span className="material-symbols-outlined text-[16px] text-[#00A3E0]">sports_esports</span>
+          </button>
+        </div>
+
+        {/* Banner Destacado: Centro de Seguridad Financiera */}
+        <div className="md:col-span-2 bg-gradient-to-r from-[#0B3B60] via-[#082E4D] to-[#041B2D] rounded-3xl p-6 sm:p-7 text-white shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-5 relative overflow-hidden">
+          <div className="flex items-start gap-3.5 z-10">
+            <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 text-[#00A3E0] flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[26px]">shield</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-sky-200 text-[11px] font-bold w-fit border border-white/10">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00A3E0] animate-pulse" />
+                <span>Prevención de Fraudes y Alerta Digital</span>
+              </div>
+              <h3 className="text-[19px] sm:text-[21px] font-heading font-extrabold text-white">
+                Centro de Seguridad Financiera
+              </h3>
+              <p className="text-[13px] sm:text-[13.5px] text-slate-200 max-w-2xl leading-relaxed font-sans">
+                Aprende a reconocer préstamos fraudulentos, mensajes falsos, esquemas piramidales y descubre dónde pedir ayuda ante la SBS, Indecopi y la PNP.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => onNavigate('seguridad')}
+            className="z-10 px-5 py-2.5 rounded-xl bg-[#00A3E0] hover:bg-[#008ec4] text-white font-heading font-bold text-[13px] transition-all flex items-center gap-2 cursor-pointer shadow-md shrink-0 self-start md:self-auto"
+          >
+            <span>Entrar a Seguridad</span>
+            <span className="material-symbols-outlined text-[17px]">arrow_forward</span>
           </button>
         </div>
       </section>
@@ -310,33 +339,43 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigate }) 
             <div
               key={art.id}
               onClick={() => setSelectedArticle(art)}
-              className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs hover:shadow-xl hover:border-[#00A3E0] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between gap-5 group cursor-pointer"
+              className="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-xs hover:shadow-xl hover:border-[#00A3E0] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group cursor-pointer"
             >
               <div>
-                {/* Categoría y tiempo de lectura */}
-                <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider mb-3">
-                  <span className="text-[#007EAF] bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-100">
-                    {art.category}
-                  </span>
-                  <div className="flex items-center gap-1 text-slate-400">
-                    <span className="material-symbols-outlined text-[14px]">schedule</span>
-                    <span>{art.readTime}</span>
+                {/* Imagen realista peruana */}
+                {art.imageSrc && (
+                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
+                    <img
+                      src={art.imageSrc}
+                      alt={art.imageAlt || art.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-white/95 text-[#0B3B60] shadow-xs backdrop-blur-xs">
+                      {art.category}
+                    </span>
+                    <span className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md text-[10.5px] font-bold bg-black/75 text-white backdrop-blur-xs flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[12px]">schedule</span>
+                      <span>{art.readTime}</span>
+                    </span>
                   </div>
+                )}
+
+                <div className="p-5 flex flex-col gap-2">
+                  {/* Título del artículo */}
+                  <h3 className="text-[16.5px] font-heading font-bold text-[#0B3B60] group-hover:text-[#007EAF] transition-colors leading-snug">
+                    {art.title}
+                  </h3>
+
+                  {/* Resumen breve */}
+                  <p className="text-[13px] font-sans font-normal text-slate-600 leading-relaxed line-clamp-3">
+                    {art.shortDesc}
+                  </p>
                 </div>
-
-                {/* Título del artículo */}
-                <h3 className="text-[16.5px] font-heading font-bold text-[#0B3B60] group-hover:text-[#007EAF] transition-colors leading-snug">
-                  {art.title}
-                </h3>
-
-                {/* Resumen breve */}
-                <p className="text-[13px] font-sans font-normal text-slate-600 mt-2.5 leading-relaxed line-clamp-3">
-                  {art.shortDesc}
-                </p>
               </div>
 
               {/* Botón de lectura */}
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+              <div className="px-5 pb-5 pt-3 border-t border-slate-100 flex items-center justify-between">
                 <span className="text-[11.5px] font-medium text-slate-400 font-sans">
                   AL DÍA Educa
                 </span>
